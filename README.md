@@ -1,4 +1,4 @@
-Shop Brands Service
+Shop Categories Service
 --
 > Description:
 
