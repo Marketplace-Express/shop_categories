@@ -13,6 +13,13 @@ $loader->registerNamespaces([
 ]);
 
 /**
+ * Register Autoloader
+ */
+$loader->registerFiles([
+    APP_PATH . '/common/Library/vendor/autoload.php'
+]);
+
+/**
  * Register module classes
  */
 $loader->registerClasses([
