@@ -8,12 +8,17 @@ defined('APP_PATH') || define('APP_PATH', BASE_PATH . '/app');
 
 return new \Phalcon\Config([
     'version' => '1.0',
+    'api' => [
+        'version' => '1.0'
+    ],
+
+    'debug' => true,
 
     'database' => [
         'adapter'  => 'Mysql',
         'host'     => 'localhost',
-        'username' => 'root',
-        'password' => '',
+        'username' => 'phalcon',
+        'password' => 'secret',
         'dbname'   => 'shop_categories',
         'charset'  => 'utf8',
     ],
@@ -23,6 +28,7 @@ return new \Phalcon\Config([
         'modelsDir'      => APP_PATH . '/common/models/',
         'migrationsDir'  => APP_PATH . '/migrations/',
         'cacheDir'       => BASE_PATH . '/cache/',
+        'logsDir'        => APP_PATH . '/logs/',
 
         // This allows the baseUri to be understand project paths that are not in the root directory
         // of the webpspace.  This will break if the public/index.php entry point is moved or

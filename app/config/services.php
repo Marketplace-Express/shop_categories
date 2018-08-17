@@ -13,6 +13,13 @@ $di->setShared('config', function () {
 });
 
 /**
+ * Profiler service
+ */
+$di->setShared('profiler', function () {
+    return new Phalcon\Db\Profiler();
+});
+
+/**
  * Database connection is created based in the parameters defined in the configuration file
  */
 $di->setShared('db', function () {
@@ -32,6 +39,26 @@ $di->setShared('db', function () {
     }
 
     $connection = new $class($params);
+
+    // Attach profiler to database
+    $profiler = $this->getProfiler();
+    $eventsManager = new \Phalcon\Events\Manager();
+    $eventsManager->attach('db', function ($event, $connection) use ($profiler, $config) {
+        if ($event->getType() == 'beforeQuery') {
+            $profiler->startProfile($connection->getSQLStatement());
+        }
+
+        if ($event->getType() == 'afterQuery') {
+            $profiler->stopProfile();
+
+            // Log last SQL statement
+            \Phalcon\Logger\Factory::load([
+                'name' => $config->application->logsDir . 'db.log',
+                'adapter' => 'file'
+            ])->info($profiler->getLastProfile()->getSqlStatement());
+        }
+    });
+    $connection->setEventsManager($eventsManager);
 
     return $connection;
 });
