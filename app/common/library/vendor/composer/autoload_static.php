@@ -8,20 +8,39 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'T' => 
+        array (
+            'Twig\\' => 5,
+        ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
         ),
         'R' => 
         array (
             'Ramsey\\Uuid\\' => 12,
         ),
+        'P' => 
+        array (
+            'Phalcon\\' => 8,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Twig\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/twig/twig/src',
+        ),
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
@@ -30,6 +49,27 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
         array (
             0 => __DIR__ . '/..' . '/ramsey/uuid/src',
         ),
+        'Phalcon\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phalcon/incubator/Library/Phalcon',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'T' => 
+        array (
+            'Twig_' => 
+            array (
+                0 => __DIR__ . '/..' . '/twig/twig/lib',
+            ),
+        ),
+        'J' => 
+        array (
+            'JsonMapper' => 
+            array (
+                0 => __DIR__ . '/..' . '/netresearch/jsonmapper/src',
+            ),
+        ),
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -37,6 +77,7 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInite8ebf12b2093946eb77d5a28655d191b::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInite8ebf12b2093946eb77d5a28655d191b::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInite8ebf12b2093946eb77d5a28655d191b::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

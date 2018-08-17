@@ -3,6 +3,8 @@ namespace Shop_categories\Modules\Frontend;
 
 use Phalcon\DiInterface;
 use Phalcon\Loader;
+use Phalcon\Mvc\Dispatcher;
+use Phalcon\Mvc\Router\Annotations;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\View\Engine\Php as PhpEngine;
 use Phalcon\Mvc\ModuleDefinitionInterface;

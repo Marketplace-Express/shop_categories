@@ -1,0 +1,6 @@
+[Fri, 17 Aug 18 18:06:12 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME`= 'category' AND `TABLE_SCHEMA` = 'shop_categories'
+[Fri, 17 Aug 18 18:06:12 +0000][INFO] DESCRIBE `shop_categories`.`category`
+[Fri, 17 Aug 18 18:06:12 +0000][INFO] SELECT `category`.`category_id`, `category`.`category_name`, `category`.`category_parent_id`, `category`.`lft`, `category`.`rgt`, `category`.`level`, `category`.`created_at`, `category`.`updated_at`, `category`.`deleted_at`, `category`.`is_deleted` FROM `shop_categories`.`category` WHERE `category`.`lft` = 1 AND `category`.`is_deleted` = 0
+[Fri, 17 Aug 18 19:02:31 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME`= 'category' AND `TABLE_SCHEMA` = 'shop_categories'
+[Fri, 17 Aug 18 19:02:31 +0000][INFO] DESCRIBE `shop_categories`.`category`
+[Fri, 17 Aug 18 19:02:31 +0000][INFO] SELECT `category`.`category_id`, `category`.`category_name`, `category`.`category_parent_id`, `category`.`lft`, `category`.`rgt`, `category`.`level`, `category`.`created_at`, `category`.`updated_at`, `category`.`deleted_at`, `category`.`is_deleted` FROM `shop_categories`.`category` WHERE `category`.`lft` = 1 AND `category`.`is_deleted` = 0

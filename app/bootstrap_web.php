@@ -45,15 +45,17 @@ try {
      * Register application modules
      */
     $application->registerModules([
+        'api' => ['className' => 'Shop_categories\Modules\Api\Module'],
         'frontend' => ['className' => 'Shop_categories\Modules\Frontend\Module'],
+        'cli' => ['className' => 'Shop_categories\Modules\Cli\Module']
     ]);
 
     /**
      * Include routes
      */
-    require APP_PATH . '/config/routes.php';
+//    require APP_PATH . '/config/routes.php';
 
-    echo str_replace(["\n","\r","\t"], '', $application->handle()->getContent());
+    echo $application->handle()->getContent();
 
 } catch (\Exception $e) {
     echo $e->getMessage() . '<br>';

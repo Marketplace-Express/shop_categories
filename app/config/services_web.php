@@ -12,9 +12,12 @@ use Phalcon\Flash\Direct as Flash;
  * Registering a router
  */
 $di->setShared('router', function () {
-    $router = new Router();
 
-    $router->setDefaultModule('frontend');
+    $config = $this->getConfig();
+
+    $router = new Router\Annotations(false);
+    $router->addModuleResource('api', 'Shop_categories\Modules\Api\Controllers\Index', '/api/' . $config->api->version);
+    $router->addModuleResource('frontend', 'Shop_categories\Modules\Frontend\Controllers\Index', '/ui');
 
     return $router;
 });
@@ -57,7 +60,37 @@ $di->set('flash', function () {
 * Set the default namespace for dispatcher
 */
 $di->setShared('dispatcher', function() {
+    $evManager = $this->getEventsManager();
+    $evManager->attach(
+        "dispatch:beforeException",
+        function ($event, $dispatcher, $exception) {
+            switch ($exception->getCode()) {
+                case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+                case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+                    $dispatcher->forward(
+                        [
+                            'controller' => 'notFound',
+                            'action'     => 'index'
+                        ]
+                    );
+                    return false;
+                    break;
+            }
+
+            switch (true) {
+                case $exception instanceof \Phalcon\Mvc\Model\Exception:
+                case $exception instanceof PDOException:
+                    $dispatcher->forward([
+                        'controller' => 'exceptionHandler',
+                        'action' => 'serverError',
+                        'params' => [$exception->getMessage()]
+                    ]);
+                    return false;
+                    break;
+            }
+        }
+    );
     $dispatcher = new Dispatcher();
-    $dispatcher->setDefaultNamespace('Shop_categories\Modules\Frontend\Controllers');
+    $dispatcher->setEventsManager($evManager);
     return $dispatcher;
 });
