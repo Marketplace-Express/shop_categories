@@ -1,15 +1,13 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: wajdi
+
+ * User: Wajdi Jurry
  * Date: 28/07/18
  * Time: 08:06 م
  */
 
-namespace Shop_categories\Validators;
+namespace Shop_categories\RequestHandler;
 
-
-use Phalcon\Http\Response;
 use Phalcon\Validation\Message\Group;
 
 interface RequestValidationInterface
@@ -21,9 +19,11 @@ interface RequestValidationInterface
 
     public function isValid() : bool;
 
-    public function notFound($message = 'Not Found'): Response;
+    public function notFound($message = 'Not Found');
 
-    public function invalidRequest($message = null) : Response;
+    public function invalidRequest($message = null);
 
-    public function successRequest($message = null) : Response;
+    public function successRequest($message = null);
+
+    public function toArray(): array;
 }

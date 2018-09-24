@@ -23,6 +23,14 @@ return new \Phalcon\Config([
         'charset'  => 'utf8',
     ],
 
+    'cache' => [
+        'host' => 'localhost',
+        'port' => 6379,
+        'auth' => '',
+        'persistent' => true,
+        'database' => 0
+    ],
+
     'application' => [
         'appDir'         => APP_PATH . '/',
         'modelsDir'      => APP_PATH . '/common/models/',

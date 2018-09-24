@@ -1,345 +1,223 @@
 <?php
 namespace Shop_categories\Modules\Api\Controllers;
 
-use Phalcon\Exception;
-use Phalcon\Http\Response;
-use Phalcon\Mvc\Model;
-use Phalcon\Mvc\ModelInterface;
-use Ramsey\Uuid\Uuid;
-use Shop_categories\Repositories\CategoryRepository;
-use Shop_categories\Validators\CreateRequestValidator;
-use Shop_categories\Validators\DeleteRequestValidator;
-use Shop_categories\Validators\GetRequestValidator;
-use Shop_categories\Validators\UpdateRequestValidator;
+use Shop_categories\Behaviors\AdjacencyListModelHelper;
+use Shop_categories\RequestHandler\CreateRequestValidator;
+use Shop_categories\RequestHandler\DeleteRequestValidator;
+use Shop_categories\RequestHandler\GetRequestValidator;
+use Shop_categories\RequestHandler\UpdateRequestValidator;
+use JsonMapper_Exception;
 
 /**
  * @RoutePrefix("/api/1.0/")
  */
 class IndexController extends ControllerBase
 {
+    public function initialize()
+    {
+        $this->getService()::setVendorId('00492bc1-d22d-47b1-9372-8bc2ebf3c12d');
+    }
+
     /**
      * Get all roots
      * @Get('roots')
-     * @throws \JsonMapper_Exception
      */
     public function rootsAction()
     {
-        /**
-         * @var GetRequestValidator $request
-         */
-        $request = $this->jsonMapper->map(new \stdClass(), new GetRequestValidator());
+        try {
+            /** @var GetRequestValidator $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            $request->successRequest($this->showPublicColumns($this->getService()->getRoots()));
+        } catch (JsonMapper_Exception $exception) {
+            $this->handleError($exception->getMessage(), 400);
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage());
+        }
+    }
 
-        /**
-         * @var CategoryRepository $roots
-         */
-        if ($roots = CategoryRepository::getRoots()) {
-            return $request->successRequest($this->showPublicColumns($roots->toArray()));
-        } else {
-            return $request->notFound();
+    /**
+     * Get all categories related to vendor
+     * @Get('/')
+     */
+    public function getAllAction()
+    {
+        try {
+            //phpinfo(); exit;
+            /** @var GetRequestValidator $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            $request->successRequest($this->showPublicColumns($this->getService()->getAll()));
+        } catch (JsonMapper_Exception $exception) {
+            $this->handleError($exception->getMessage(), 400);
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage(), 500);
         }
     }
 
 
     /**
      * Get category by Id
-     * @Get('{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}')
-     * @param $id
-     * @return Response|\Phalcon\Http\ResponseInterface
-     * @throws \JsonMapper_Exception
+     * @Get('{categoryId:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}')
+     * @param $categoryId
      */
-    public function getAction($id)
+    public function getAction($categoryId)
     {
-        /**
-         * @var GetRequestValidator $request
-         */
-        $request = $this->jsonMapper->map(new \stdClass(), new GetRequestValidator());
-
-        /**
-         * @var CategoryRepository $category
-         */
-        if ($category = CategoryRepository::findById($id)) {
-            return $request->successRequest($this->showPublicColumns($category->toArray()));
-        } else {
-            return $request->notFound();
+        try {
+            /** @var GetRequestValidator $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            $category = $this->getService()->getCategory($categoryId);
+            $request->successRequest($this->showPublicColumns($category));
+        } catch (JsonMapper_Exception $exception) {
+            $this->handleError($exception->getMessage(), 400);
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage(), $exception->getCode());
         }
     }
 
     /**
      * Get category descendants
      * @Get('{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/descendants')
-     * @param $id
-     * @return Response|\Phalcon\Http\ResponseInterface
-     * @throws \JsonMapper_Exception
+     * @param $categoryId
      */
-    public function descendantsAction($id)
+    public function descendantsAction($categoryId)
     {
-        /**
-         * @var GetRequestValidator $request
-         */
-        $request = $this->jsonMapper->map(new \stdClass(), new GetRequestValidator());
-
-        /**
-         * @var Model\Behavior\NestedSet $descendants
-         */
-        if ($descendants = CategoryRepository::getDescendants($id)) {
-            return $request->successRequest($this->showPublicColumns($descendants->toTree()));
-        } else {
-            return $request->notFound();
+        try {
+            /** @var GetRequestValidator $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            $descendants = $this->getService()->getDescendants($categoryId);
+            $request->successRequest($this->showPublicColumns($descendants));
+        } catch (JsonMapper_Exception $exception) {
+            $this->handleError($exception->getMessage(), 400);
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage(), $exception->getCode());
         }
     }
 
     /**
      * Get category children
      * @Get('{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/children')
-     * @param $id
-     * @return Response|\Phalcon\Http\ResponseInterface
-     * @throws \JsonMapper_Exception
+     * @param $categoryId
      */
-    public function childrenAction($id)
+    public function childrenAction($categoryId)
     {
-        /***
-         * @var GetRequestValidator $request
-         */
-        $request = $this->jsonMapper->map(new \stdClass(), new GetRequestValidator());
-
-        /**
-         * @var Model\Behavior\NestedSet $children
-         */
-        if ($children = CategoryRepository::getChildren($id)) {
-            return $request->successRequest($this->showPublicColumns($children->toTree()));
-        } else {
-            return $request->notFound();
+        try {
+            /** @var GetRequestValidator $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            $children = $this->getService()->getChildren($categoryId);
+            $request->successRequest($this->showPublicColumns($children));
+        } catch (JsonMapper_Exception $exception) {
+            $this->handleError($exception->getMessage(), 400);
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage(), 500);
         }
     }
 
     /**
      * Get category parents
-     * @Get('{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/parents')
-     * @param $id
-     * @return Response|\Phalcon\Http\ResponseInterface
-     * @throws \JsonMapper_Exception
+     * @Get('{id}/parents')
+     * @param $categoryId
      */
-    public function parentsAction($id)
+    public function parentsAction($categoryId)
     {
-        /**
-         * @var GetRequestValidator $request
-         */
-        $request = $this->jsonMapper->map(new \stdClass(), new GetRequestValidator());
-
-        /**
-         * @var Model\Behavior\NestedSet $parents
-         */
-        $parents = CategoryRepository::getParents($id);
-
-        if ($parents) {
-            return $request->successRequest($parents->toTree());
-        } else {
-            return $request->notFound();
+        try {
+            /** @var GetRequestValidator $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            $parents = $this->getService()->getParents($categoryId);
+            $request->successRequest($this->showPublicColumns($parents));
+        } catch (JsonMapper_Exception $exception) {
+            $this->handleError($exception->getMessage(), 400);
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage(), 500);
         }
     }
 
     /**
      * Get category parent
      * @Get('{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/parent')
-     * @param $id
-     * @return Response|\Phalcon\Http\ResponseInterface
-     * @throws \JsonMapper_Exception
+     * @param $categoryId
      */
-    public function parentAction($id)
+    public function parentAction($categoryId)
     {
-        /**
-         * @var GetRequestValidator $request
-         */
-        $request = $this->jsonMapper->map(new \stdClass(), new GetRequestValidator());
-
-        /**
-         * @var Model\Behavior\NestedSet $parent
-         */
-        $parent = CategoryRepository::getParents($id, 1);
-
-        if ($parent) {
-            return $request->successRequest($parent->toTree());
-        } else {
-            return $request->notFound();
+        try {
+            /** @var GetRequestValidator $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            $parent = $this->getService()->getParent($categoryId);
+            $request->successRequest($this->showPublicColumns($parent));
+        } catch (JsonMapper_Exception $exception) {
+            $this->handleError($exception->getMessage(), 400);
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage());
         }
     }
 
     /**
      * Create category
+     * Send response on success/fail
      * @Post('/')
      */
-    public function createAction()
+    public function createAction(): void
     {
         try {
-            /** @var UpdateRequestValidator $request */
-            $request = $this->jsonMapper->map($this->request->getJsonRawBody(), new CreateRequestValidator());
+            /** @var CreateRequestValidator $request */
+            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateRequestValidator());
 
             if (!$request->isValid()) {
-                return $request->invalidRequest();
+                $request->invalidRequest();
             }
 
-            /**
-             * @var Model\Behavior\NestedSet $category
-             */
-            $category = new CategoryRepository();
+            $category = $this->getService()->save($request->toArray());
 
-            $data['categoryId'] = Uuid::uuid4()->toString();
-            $data['categoryName'] = $request->getName();
-
-            if ($request->getParentId()) {
-                /**
-                 * @var $parent ModelInterface
-                 */
-                $parent = CategoryRepository::findById($request->getParentId());
-                if (!$parent) {
-                    return $request->notFound('Parent category not found!');
-                }
-                try {
-                    $category->appendTo($parent, $data);
-                } catch (\Exception $exception) {
-                    return $this->handleServerError($exception->getMessage());
-                }
-            }
-
-            $isCreated = $category->saveNode($data);
-
-            if (!$isCreated) {
-                $errors = array_map(function (
-                    /**
-                     * @var Exception $message
-                     */
-                    $message
-                ){
-                    return $message->getMessage();
-                }, $category->getMessages());
-
-                return $this->handleServerError($errors);
-            }
-
-            $category = $this->showPublicColumns($category->toArray());
-            return $request->successRequest($category);
-
-        } catch (\JsonMapper_Exception $exception) {
-
-            return $request->invalidRequest($exception->getMessage());
-
-        } catch (\Exception $exception) {
-
-            return $this->handleServerError($exception->getMessage());
-
+            $request->successRequest($this->showPublicColumns($category->toArray()));
+        } catch (JsonMapper_Exception $exception) {
+            $this->handleError($exception->getMessage(), 400);
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage());
         }
     }
 
     /**
      * Update category
      * @Put('{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}')
-     * @param $id
-     * @return Response
+     * @param $categoryId
      */
-    public function updateAction($id)
+    public function updateAction($categoryId)
     {
         try {
             /** @var UpdateRequestValidator $request */
-            $request = $this->jsonMapper->map($this->request->getJsonRawBody(), new UpdateRequestValidator());
+            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateRequestValidator());
 
             if (!$request->isValid()) {
                 return $request->invalidRequest();
             }
 
-            /**
-             * Find category
-             * @var Model\Behavior\NestedSet $category
-             */
-            $category = CategoryRepository::findById($id);
-
-            // Check if category exists
-            if (!$category) {
-                return $request->notFound();
+            if ($category = $this->getService()->getCategoryFromRepository($categoryId)) {
+                $category = $this->getService()->save($request->toArray(), $category);
             }
 
-            // Initialize "fields to be updated" array
-            $data = [];
-
-            if ($request->getName()) {
-                $data['categoryName'] = $request->getName();
-            }
-
-            if ($request->getParentId()) {
-                /**
-                 * @var ModelInterface $parent
-                 */
-                $parent = CategoryRepository::findById($request->getParentId());
-                if (!$parent) {
-                    return $request->notFound('Parent category not found!');
-                }
-
-                // Move category to last position at parent
-                $category->moveAsLast($parent);
-
-                if (!$data) {
-                    // If no fields to be updated, return success
-                    $category = $this->showPublicColumns($category->toArray());
-                    return $request->successRequest($category);
-                }
-            }
-
-            if ($data) {
-                // If there are remaining fields to be updated
-                if (!$category->saveNode($data)) {
-                    $errors = array_map(function (
-                        /** @var Exception $message **/
-                        $message
-                    ) {
-                        return $message->getMessage();
-                    }, $category->getMessages());
-                    return $this->handleServerError($errors);
-                }
-
-                $category = $this->showPublicColumns($category->toArray());
-                return $request->successRequest($category);
-
-            } else {
-                return $request->invalidRequest('Nothing to be updated!');
-            }
-
-        } catch (\JsonMapper_Exception $exception) {
-
-            return $request->invalidRequest($exception->getMessage());
-
-        } catch (\Exception $exception) {
-
-            return $this->handleServerError($exception->getMessage());
-
+            $request->successRequest($this->showPublicColumns($category->toArray()));
+        } catch (JsonMapper_Exception $exception) {
+            $request->invalidRequest($exception->getMessage());
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage());
         }
     }
 
     /**
      * Delete category
      * @Delete('{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}')
-     * @param $id
-     * @return Response|\Phalcon\Http\ResponseInterface
+     * @param $categoryId
      */
-    public function deleteAction($id)
+    public function deleteAction($categoryId)
     {
         try {
-            /**
-             * @var DeleteRequestValidator $request
-             */
-            $request = $this->jsonMapper->map(new \stdClass(), new DeleteRequestValidator());
-
-            /**
-             * @var Model\Behavior\NestedSet $category
-             */
-            if ($category = CategoryRepository::findById($id)) {
-                $category->deleteNode();
-                return $request->successRequest('Deleted!');
-            } else {
-                return $request->notFound();
-            }
-        } catch (\Exception $exception) {
-
-            return $this->handleServerError($exception->getMessage());
-
+            /** @var DeleteRequestValidator $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new DeleteRequestValidator());
+            $this->getService()->delete($categoryId);
+            $this->getService()->invalidateCache();
+            $request->successRequest('Deleted');
+        } catch (JsonMapper_Exception $exception) {
+            $this->handleError($exception->getMessage(), 400);
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage(), 500);
         }
     }
 }

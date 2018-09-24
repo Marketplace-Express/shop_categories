@@ -1,16 +1,16 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: wajdi
+
+ * User: Wajdi Jurry
  * Date: 28/07/18
  * Time: 01:47 م
  */
 
-namespace Shop_categories\Validators;
+namespace Shop_categories\RequestHandler;
 
-use Phalcon\Http\Response;
 use Phalcon\Validation;
 use Shop_categories\Modules\Api\Controllers\ControllerBase;
+use Shop_categories\Utils\UuidUtil;
 
 class UpdateRequestValidator extends ControllerBase implements RequestValidationInterface
 {
@@ -27,6 +27,7 @@ class UpdateRequestValidator extends ControllerBase implements RequestValidation
 
     public $validator;
     public $errorMessages = [];
+    public $uuidUtil;
 
     /**
      * @return string
@@ -61,36 +62,49 @@ class UpdateRequestValidator extends ControllerBase implements RequestValidation
     }
 
     /**
+     * @return mixed
+     */
+    private function getUuidUtil()
+    {
+        if (!$this->uuidUtil) {
+            $this->uuidUtil = new UuidUtil();
+        }
+        return $this->uuidUtil;
+    }
+
+    /**
      * @return Validation\Message\Group
      */
     public function validate() : Validation\Message\Group
     {
         $validator = new Validation();
 
-        $validator->add('name',
-            new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => true,
-                'underscore' => true,
-                'max' => 100,
-                'message' => 'Invalid input',
-                'allowEmpty' => true
-            ])
-        );
-
-        $validator->add('parentId',
-            new Validation\Validator\Callback([
-                'callback' => function ($data) {
-                    return \Ramsey\Uuid\Uuid::isValid($data['parentId']);
-                },
-                'message' => 'Invalid parent category Id',
-                'allowEmpty' => true
-            ]));
-
-        if($this->getName()) {
+        if (isset($this->name)) {
+            $validator->add(
+                'name',
+                new Validation\Validator\AlphaNumericValidator([
+                    'whiteSpace' => true,
+                    'underscore' => true,
+                    'max' => 100,
+                    'message' => 'Invalid input',
+                    'messageMinimum' => 'Category name should be at least 5 characters',
+                    'messageMaximum' => 'Category name should not exceed 100 characters'
+                ])
+            );
             $fields['name'] = $this->getName();
         }
 
-        if ($this->getParentId()) {
+        if (!empty($this->parentId)) {
+            $validator->add(
+                'parentId',
+                new Validation\Validator\Callback([
+                    'callback' => function ($data) {
+                        return $this->getUuidUtil()->isValid($data['parentId']);
+                    },
+                    'message' => 'Invalid parent category Id',
+                    'allowEmpty' => true
+                ])
+            );
             $fields['parentId'] = $this->getParentId();
         }
 
@@ -112,46 +126,51 @@ class UpdateRequestValidator extends ControllerBase implements RequestValidation
         return true;
     }
 
-    /**
-     * @param string $message
-     * @return Response
-     */
-    public function notFound($message = 'Not Found!') : Response
+    public function notFound($message = 'Not Found!')
     {
-        return $this->response
-            ->setStatusCode(404)
+        $this->response->setStatusCode(404)
             ->setJsonContent([
                 'status' => 404,
                 'message' => $message
             ])->send();
+        exit;
     }
 
-    public function invalidRequest($message = null) : Response
+    public function invalidRequest($message = null)
     {
         if (is_null($message)) {
             $message = $this->errorMessages;
         }
-        return $this->response
-            ->setStatusCode(400)
+        $this->response->setStatusCode(400)
             ->setJsonContent([
                 'status' => 400,
                 'message' => $message
-            ])
-            ->send();
+            ])->send();
+        exit;
     }
 
-    /**
-     * @param null $message
-     * @return Response
-     */
-    public function successRequest($message = null) : Response
+    public function successRequest($message = null)
     {
-        return $this->response
-            ->setStatusCode(200)
+        $this->response->setStatusCode(200)
             ->setJsonContent([
                 'status' => 200,
                 'message' => $message
-            ])
-            ->send();
+            ])->send();
+        exit;
+    }
+
+    public function toArray(): array
+    {
+        $result = [];
+
+        if (!empty($this->getName())) {
+            $result['categoryName'] = $this->getName();
+        }
+
+        if (isset($this->parentId)) {
+            $result['categoryParentId'] = $this->getParentId();
+        }
+
+        return $result;
     }
 }

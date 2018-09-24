@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./TestHelper.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         verbose="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuite name="Shop_categories - TestSuite">
+        <directory>./tests/</directory>
+    </testsuite>
+</phpunit>

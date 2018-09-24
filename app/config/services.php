@@ -1,6 +1,5 @@
 <?php
 
-use Phalcon\Loader;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 
@@ -38,12 +37,21 @@ $di->setShared('db', function () {
         unset($params['charset']);
     }
 
+    /**
+     * @var \Phalcon\Db\Adapter\Pdo $connection
+     */
     $connection = new $class($params);
 
-    // Attach profiler to database
+    /**
+     * @var \Phalcon\Db\Profiler $profiler
+     */
     $profiler = $this->getProfiler();
     $eventsManager = new \Phalcon\Events\Manager();
     $eventsManager->attach('db', function ($event, $connection) use ($profiler, $config) {
+        /**
+         * @var \Phalcon\Events\Event $event
+         * @var \Phalcon\Db\Adapter\Pdo $connection
+         */
         if ($event->getType() == 'beforeQuery') {
             $profiler->startProfile($connection->getSQLStatement());
         }
@@ -68,6 +76,21 @@ $di->setShared('db', function () {
  */
 $di->setShared('modelsMetadata', function () {
     return new MetaDataAdapter();
+});
+
+/**
+ * Register cache service
+ */
+$di->setShared('cache', function () {
+    $config = $this->getConfig();
+    return new \Phalcon\Cache\Backend\Redis(
+        new \Phalcon\Cache\Frontend\Data(['lifetime' => 8600]), [
+        'host' => $config->cache->host,
+        'port' => $config->cache->port,
+        'auth' => $config->cache->auth,
+        'persistent' => $config->cache->persistent,
+        'index' => $config->cache->database
+    ]);
 });
 
 /**
