@@ -9,7 +9,6 @@
 namespace Shop_categories\RequestHandler;
 
 
-use Phalcon\Http\Response;
 use Phalcon\Validation\Message\Group;
 use Shop_categories\Modules\Api\Controllers\ControllerBase;
 
