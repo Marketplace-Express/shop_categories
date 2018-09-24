@@ -9,14 +9,21 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
+        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         'p' => 
         array (
             'phpDocumentor\\Reflection\\' => 25,
+        ),
+        'X' => 
+        array (
+            'XdgBaseDir\\' => 11,
         ),
         'W' => 
         array (
@@ -28,10 +35,13 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php72\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Component\\VarDumper\\' => 28,
             'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\DependencyInjection\\' => 38,
+            'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
         ),
         'R' => 
@@ -40,7 +50,9 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
         ),
         'P' => 
         array (
+            'Psy\\' => 4,
             'Psr\\Container\\' => 14,
+            'PhpParser\\' => 10,
             'Phalcon\\' => 8,
             'PDepend\\' => 8,
         ),
@@ -58,6 +70,10 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
             1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
+        'XdgBaseDir\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src',
+        ),
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
@@ -65,6 +81,10 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
         'Twig\\' => 
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
+        ),
+        'Symfony\\Polyfill\\Php72\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php72',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
@@ -74,6 +94,10 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
+        'Symfony\\Component\\VarDumper\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/var-dumper',
+        ),
         'Symfony\\Component\\Filesystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
@@ -81,6 +105,10 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
         'Symfony\\Component\\DependencyInjection\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/dependency-injection',
+        ),
+        'Symfony\\Component\\Console\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/console',
         ),
         'Symfony\\Component\\Config\\' => 
         array (
@@ -90,13 +118,22 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
         array (
             0 => __DIR__ . '/..' . '/ramsey/uuid/src',
         ),
+        'Psy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psy/psysh/src',
+        ),
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
+        'PhpParser\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
+        ),
         'Phalcon\\' => 
         array (
             0 => __DIR__ . '/..' . '/phalcon/incubator/Library/Phalcon',
+            1 => __DIR__ . '/..' . '/phalcon/devtools/scripts/Phalcon',
         ),
         'PDepend\\' => 
         array (
@@ -136,6 +173,14 @@ class ComposerStaticInite8ebf12b2093946eb77d5a28655d191b
             'JsonMapper' => 
             array (
                 0 => __DIR__ . '/..' . '/netresearch/jsonmapper/src',
+            ),
+            'JakubOnderka\\PhpConsoleHighlighter' => 
+            array (
+                0 => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src',
+            ),
+            'JakubOnderka\\PhpConsoleColor' => 
+            array (
+                0 => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src',
             ),
         ),
     );

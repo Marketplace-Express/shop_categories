@@ -17,7 +17,8 @@ use Shop_categories\Helpers\AdjacencyListModelHelper;
 
 class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
 {
-    //use AdjacencyModelEventManagerTrait;
+    use AdjacencyModelEventManagerTrait;
+
     /**
      * @var AdapterInterface|null
      */

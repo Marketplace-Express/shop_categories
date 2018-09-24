@@ -1,11 +1,10 @@
 <?php
 namespace Shop_categories\Modules\Api\Controllers;
 
-use Shop_categories\Behaviors\AdjacencyListModelHelper;
-use Shop_categories\RequestHandler\CreateRequestValidator;
-use Shop_categories\RequestHandler\DeleteRequestValidator;
-use Shop_categories\RequestHandler\GetRequestValidator;
-use Shop_categories\RequestHandler\UpdateRequestValidator;
+use Shop_categories\RequestHandler\CreateRequestHandler;
+use Shop_categories\RequestHandler\DeleteRequestHandler;
+use Shop_categories\RequestHandler\GetRequestHandler;
+use Shop_categories\RequestHandler\UpdateRequestHandler;
 use JsonMapper_Exception;
 
 /**
@@ -25,8 +24,8 @@ class IndexController extends ControllerBase
     public function rootsAction()
     {
         try {
-            /** @var GetRequestValidator $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->showPublicColumns($this->getService()->getRoots()));
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
@@ -43,8 +42,8 @@ class IndexController extends ControllerBase
     {
         try {
             //phpinfo(); exit;
-            /** @var GetRequestValidator $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->showPublicColumns($this->getService()->getAll()));
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
@@ -62,8 +61,8 @@ class IndexController extends ControllerBase
     public function getAction($categoryId)
     {
         try {
-            /** @var GetRequestValidator $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $category = $this->getService()->getCategory($categoryId);
             $request->successRequest($this->showPublicColumns($category));
         } catch (JsonMapper_Exception $exception) {
@@ -81,8 +80,8 @@ class IndexController extends ControllerBase
     public function descendantsAction($categoryId)
     {
         try {
-            /** @var GetRequestValidator $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $descendants = $this->getService()->getDescendants($categoryId);
             $request->successRequest($this->showPublicColumns($descendants));
         } catch (JsonMapper_Exception $exception) {
@@ -100,8 +99,8 @@ class IndexController extends ControllerBase
     public function childrenAction($categoryId)
     {
         try {
-            /** @var GetRequestValidator $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $children = $this->getService()->getChildren($categoryId);
             $request->successRequest($this->showPublicColumns($children));
         } catch (JsonMapper_Exception $exception) {
@@ -119,8 +118,8 @@ class IndexController extends ControllerBase
     public function parentsAction($categoryId)
     {
         try {
-            /** @var GetRequestValidator $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $parents = $this->getService()->getParents($categoryId);
             $request->successRequest($this->showPublicColumns($parents));
         } catch (JsonMapper_Exception $exception) {
@@ -138,8 +137,8 @@ class IndexController extends ControllerBase
     public function parentAction($categoryId)
     {
         try {
-            /** @var GetRequestValidator $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestValidator());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $parent = $this->getService()->getParent($categoryId);
             $request->successRequest($this->showPublicColumns($parent));
         } catch (JsonMapper_Exception $exception) {
@@ -157,8 +156,8 @@ class IndexController extends ControllerBase
     public function createAction(): void
     {
         try {
-            /** @var CreateRequestValidator $request */
-            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateRequestValidator());
+            /** @var CreateRequestHandler $request */
+            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateRequestHandler());
 
             if (!$request->isValid()) {
                 $request->invalidRequest();
@@ -182,8 +181,8 @@ class IndexController extends ControllerBase
     public function updateAction($categoryId)
     {
         try {
-            /** @var UpdateRequestValidator $request */
-            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateRequestValidator());
+            /** @var UpdateRequestHandler $request */
+            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateRequestHandler());
 
             if (!$request->isValid()) {
                 return $request->invalidRequest();
@@ -209,8 +208,8 @@ class IndexController extends ControllerBase
     public function deleteAction($categoryId)
     {
         try {
-            /** @var DeleteRequestValidator $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new DeleteRequestValidator());
+            /** @var DeleteRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new DeleteRequestHandler());
             $this->getService()->delete($categoryId);
             $this->getService()->invalidateCache();
             $request->successRequest('Deleted');
