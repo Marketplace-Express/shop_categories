@@ -9,9 +9,15 @@ $loader = new Loader();
  */
 $loader->registerNamespaces([
     'Shop_categories\Models' => APP_PATH . '/common/models/',
+    'Shop_categories\Models\Behaviors' => APP_PATH . '/common/models/behaviors/',
+    'Shop_categories\Helpers' => APP_PATH . '/common/helpers/',
     'Shop_categories\Traits' => APP_PATH . '/common/traits/',
+    'Shop_categories\Utils' => APP_PATH . '/common/utils/',
     'Shop_categories\Repositories' => APP_PATH . '/common/repositories/',
-    'Shop_categories\Validators' => APP_PATH . '/common/validators/',
+    'Shop_categories\RequestHandler' => APP_PATH . '/common/request-handler/',
+    'Shop_categories\Services' => APP_PATH . '/common/services/',
+    'Shop_categories\Services\Cache' => APP_PATH . '/common/services/cache',
+    'Shop_categories\Services\Cache\Utils' => APP_PATH . '/common/services/cache/utils',
     'Shop_categories\Modules\Frontend\Controllers' => APP_PATH . '/modules/frontend/controllers',
     'Shop_categories\Modules\Api\Controllers' => APP_PATH . '/modules/api/' . $config->api->version . '/controllers',
 ]);

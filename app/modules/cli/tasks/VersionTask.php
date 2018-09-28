@@ -7,7 +7,8 @@ class VersionTask extends \Phalcon\Cli\Task
     {
         $config = $this->getDI()->get('config');
 
-        echo $config['version'];
+        echo 'Api version: ' . $config['api']['version'] . "\n";
+        echo "Phalcon version: " . \Phalcon\Version::get();
     }
 
 }

@@ -4,8 +4,7 @@ use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Router;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
-use Phalcon\Mvc\View;
-use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
+use Phalcon\Logger\Adapter\File;
 use Phalcon\Flash\Direct as Flash;
 
 /**
@@ -60,16 +59,23 @@ $di->set('flash', function () {
 * Set the default namespace for dispatcher
 */
 $di->setShared('dispatcher', function() {
+    /**
+     * @var \Phalcon\Events\Manager $evManager
+     */
     $evManager = $this->getEventsManager();
     $evManager->attach(
         "dispatch:beforeException",
         function ($event, $dispatcher, $exception) {
+            /**
+             * @var Exception $exception
+             * @var Dispatcher $dispatcher
+             */
             switch ($exception->getCode()) {
                 case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
                 case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
                     $dispatcher->forward(
                         [
-                            'controller' => 'notFound',
+                            'controller' => '\Shop_categories\Modules\Api\Controllers\Notfound',
                             'action'     => 'index'
                         ]
                     );
@@ -81,7 +87,7 @@ $di->setShared('dispatcher', function() {
                 case $exception instanceof \Phalcon\Mvc\Model\Exception:
                 case $exception instanceof PDOException:
                     $dispatcher->forward([
-                        'controller' => 'exceptionHandler',
+                        'controller' => 'Shop_categories\Modules\Api\Controllers\exceptionHandler',
                         'action' => 'serverError',
                         'params' => [$exception->getMessage()]
                     ]);

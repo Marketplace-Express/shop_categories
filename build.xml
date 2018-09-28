@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Shop_categories" default="build">
+    <property name="basedir" value="." />
+    <property name="phpunit" value="${basedir}/app/common/library/vendor/bin/phpunit"/>
+    <target name="build" depends="chmod-assets, chmod-build, chmod-runtime, composer-install, swagger" />
+    <target name="composer-update">
+        <echo>Running composer update</echo>
+        <exec executable="php" dir="${basedir}/protected/" failonerror="true">
+            <arg line="composer.phar" />
+            <arg line="update" />
+            <arg line="--lock" />
+            <arg line="--no-scripts" />
+        </exec>
+    </target>
+    <target name="composer-install">
+        <echo>Running composer install</echo>
+        <exec executable="php" dir="${basedir}/protected/" failonerror="true">
+            <arg line="composer.phar" />
+            <arg line="install" />
+        </exec>
+    </target>
+
+    <target name="phpunit" unless="phpunit.done" description="Run unit tests with PHPUnit.">
+        <exec executable="${phpunit}" resultproperty="result.phpunit" taskname="phpunit">
+            <arg value="--configuration"/>
+            <arg path="${basedir}/tests/phpunit.xml"/>
+            <arg path="tests"/>
+        </exec>
+        <property name="phpunit.done" value="true"/>
+    </target>
+
+    <target name="phpunit-coverage" depends="chmod-build">
+        <exec executable="${basedir}/protected/vendor/bin/phpunit" dir="${basedir}/protected/tests/" failonerror="true">
+            <arg line="--coverage-html" />
+            <arg line="${basedir}/build/phpunit-reports" />
+        </exec>
+    </target>
+
+    <target name="chmod-assets">
+        <exec executable="chmod" dir="${basedir}" failonerror="true">
+            <arg value="777" />
+            <arg value="-R" />
+            <arg value="assets" />
+        </exec>
+    </target>
+
+    <target name="chmod-runtime">
+        <exec executable="chmod" dir="${basedir}" failonerror="true">
+            <arg value="777" />
+            <arg value="-R" />
+            <arg value="protected/runtime" />
+        </exec>
+    </target>
+
+    <target name="chmod-build">
+        <exec executable="chmod" dir="${basedir}" failonerror="true">
+            <arg value="777" />
+            <arg value="-R" />
+            <arg value="build" />
+        </exec>
+    </target>
+
+    <target name="swagger">
+        <echo>Generate swagger docs</echo>
+        <exec executable="php" dir="${basedir}/protected/" failonerror="true">
+            <arg line="${basedir}/protected/swagger.php" />
+            <arg line="${basedir}/protected/modules" />
+        </exec>
+    </target>
+
+    <target name="migrate">
+        <echo>Running mongo migrations</echo>
+        <exec executable="php" failonerror="true">
+            <arg line="migrations.php" />
+            <arg line="--interactive=0" />
+        </exec>
+    </target>
+
+    <target name="verify_migrations">
+        <echo>Verify mongo migrations</echo>
+        <exec executable="php" failonerror="true">
+            <arg line="migrations.php verify" />
+            <arg line="--interactive=0" />
+        </exec>
+    </target>
+
+</project>

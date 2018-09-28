@@ -1,106 +1,122 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: wajdi
+ * User: Wajdi Jurry
  * Date: 27/07/18
  * Time: 06:13 م
  */
 
 namespace Shop_categories\Repositories;
 
-use Phalcon\Mvc\Model\Behavior\NestedSet;
 use Phalcon\Mvc\Model\ResultInterface;
+use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
 use Shop_categories\Models\Category;
 
 class CategoryRepository extends Category
 {
 
+    private static $resultSet;
+
     /**
-     * Find node ny ID
+     * Find category by ID
      * @param string $categoryId
-     * @return \Phalcon\Mvc\Model\ResultInterface
+     * @param string $vendorId
+     * @return ResultInterface
      */
-    public static function findById(string $categoryId)
+    public static function findById(string $categoryId, string $vendorId)
     {
         return self::findFirst([
-            'conditions' => 'categoryId = :id: AND isDeleted = 0',
-            'bind' => ['id' => $categoryId]
+            'conditions' => 'categoryId = :id: AND vendorId = :vendorId: AND isDeleted = 0',
+            'bind' => ['id' => $categoryId, 'vendorId' => $vendorId]
         ]);
     }
 
     /**
+     * Find multiple categories
+     * @param array $categoriesIds
+     * @return \Phalcon\Mvc\Model\ResultsetInterface
+     */
+    public static function findAllByIds(array $categoriesIds)
+    {
+        $result = self::find([
+            'conditions' => 'categoryId IN ({categoriesIds:array})',
+            'bind' => ['categoriesIds' => $categoriesIds]
+        ]);
+
+        self::$resultSet = $result;
+
+        return $result;
+    }
+
+    /**
      * Get All Roots
+     * @param string $vendorId
      * @return bool|\Phalcon\Mvc\Model\Resultset|\Phalcon\Mvc\Model\ResultSetInterface|CategoryRepository|CategoryRepository[]
      */
-    public static function getRoots()
+    public static function getRoots(string $vendorId)
     {
-        return self::find('lft = 1 AND isDeleted = 0');
+        $result = self::find([
+            'conditions' => 'categoryParentId IS NULL AND vendorId = :vendorId: AND isDeleted = 0',
+            'bind' => ['vendorId' => $vendorId]
+        ]);
+
+        return $result;
     }
 
     /**
      * Getting all children of a node
      * @param string $categoryId
-     * @return bool|\Phalcon\Mvc\Model\ResultsetInterface
+     * @param string $vendorId
+     * @return \Phalcon\Mvc\Model
      */
-    public static function getChildren(string $categoryId)
+    public static function getChildren(string $categoryId, string $vendorId)
     {
-        /**
-         * @var NestedSet $category
-         */
-        $category = self::findFirst([
-            'conditions' => 'categoryId = :id: AND isDeleted = 0',
-            'bind' => ['id' => $categoryId]
+        $children = self::findFirst([
+            'conditions' => 'categoryParentId = :id: AND vendorID = :vendorId: AND isDeleted = 0',
+            'bind' => ['id' => $categoryId, 'vendorId' => $vendorId]
         ]);
 
-        if ($category) {
-            return $category->children(null, true);
-        }
+        self::$resultSet = $children;
 
-        return false;
+        return $children;
     }
 
     /**
      * Getting all descendants of node
      * @param string $categoryId
-     * @return bool|NestedSet
+     * @param string $vendorId
+     * @return array|bool
      */
-    public static function getDescendants(string $categoryId)
+    public function getDescendants(string $categoryId, string  $vendorId)
     {
-        /**
-         * @var NestedSet $category
-         */
-        $category = self::findFirst([
-            'conditions' => 'categoryId = :id: AND isDeleted = 0',
-            'bind' => ['id' => $categoryId]
-        ]);
-
-        if ($category) {
-            return $category->descendants(null, true);
-        }
-
-        return false;
+        return $this->descendants(['categoryId' => $categoryId, 'vendorId' => $vendorId]);
     }
 
     /**
      * Get ancestor of node
      * @param string $categoryId
+     * @param string $vendorId
      * @param null $depth
-     * @return bool|NestedSet
+     * @return array|bool
      */
-    public static function getParents(string $categoryId, $depth = null)
+    public function getParents(string $categoryId, string $vendorId)
     {
-        /**
-         * @var NestedSet $category
-         */
-        $category = self::findFirst([
-            'conditions' => 'categoryId = :id: AND isDeleted = 0',
-            'bind' => ['id' => $categoryId]
+        return $this->parents(['categoryId' => $categoryId, 'vendorId' => $vendorId]);
+    }
+
+    /**
+     * Gett all categories related to vendor
+     * @param string $vendorId
+     * @return array
+     * @throws \Exception
+     */
+    public function getAll(string $vendorId)
+    {
+        $roots = self::find([
+            'conditions' => 'vendorId = :vendorId: AND isDeleted = false',
+            'order' => 'categoryOrder ASC',
+            'bind' => ['vendorId' => $vendorId]
         ]);
 
-        if ($category) {
-            return $category->ancestors($depth);
-        }
-
-        return false;
+        return $this->recursive($roots->toArray());
     }
 }

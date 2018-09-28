@@ -51,11 +51,16 @@ try {
     ]);
 
     /**
+     * Disable view service
+     */
+    $application->useImplicitView(false);
+
+    /**
      * Include routes
      */
 //    require APP_PATH . '/config/routes.php';
 
-    echo $application->handle()->getContent();
+    echo ($application->handle()->getContent());
 
 } catch (\Exception $e) {
     echo $e->getMessage() . '<br>';

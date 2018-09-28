@@ -9,12 +9,9 @@ use Phalcon\Mvc\Model\Exception;
 use Phalcon\Db\AdapterInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\Model\ResultsetInterface;
+use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Traits\EventManagerAwareTrait;
 
-/**
- * @method getMessages()
- * @method toArray()
- */
 class NestedSet extends Behavior implements BehaviorInterface
 {
     use EventManagerAwareTrait;
@@ -487,6 +484,7 @@ class NestedSet extends Behavior implements BehaviorInterface
      */
     public function append(ModelInterface $target, array $attributes = null)
     {
+        /** @var NestedSet $target */
         return $target->appendTo($this->getOwner(), $attributes);
     }
 
@@ -745,163 +743,211 @@ class NestedSet extends Behavior implements BehaviorInterface
     {
         $owner = $this->getOwner();
 
+        if (!$target) {
+            throw new \Phalcon\Mvc\Model\Exception('Target node is not defined.');
+        }
+
         if ($this->getIsNewRecord()) {
-            throw new Exception('The node should not be new record.');
+            throw new \Phalcon\Mvc\Model\Exception('The node should not be new record.');
         }
 
         if ($this->getIsDeletedRecord()) {
-            throw new Exception('The node should not be deleted.');
+            throw new \Phalcon\Mvc\Model\Exception('The node should not be deleted.');
         }
 
         if ($target->getIsDeletedRecord()) {
-            throw new Exception('The target node should not be deleted.');
+            throw new \Phalcon\Mvc\Model\Exception('The target node should not be deleted.');
         }
 
         if ($owner == $target) {
-            throw new Exception('The target node should not be self.');
+            throw new \Phalcon\Mvc\Model\Exception('The target node should not be self.');
         }
 
         if ($target->isDescendantOf($owner)) {
-            throw new Exception('The target node should not be descendant.');
+            throw new \Phalcon\Mvc\Model\Exception('The target node should not be descendant.');
         }
 
         if (!$levelUp && $target->isRoot()) {
-            throw new Exception('The target node should not be root.');
+            throw new \Phalcon\Mvc\Model\Exception('The target node should not be root.');
         }
-
-        $this->db->begin();
 
         $left = $owner->{$this->leftAttribute};
         $right = $owner->{$this->rightAttribute};
-        $levelDelta = $target->{$this->levelAttribute} - $owner->{$this->levelAttribute} + $levelUp;
+        $root = $owner->{$this->rootAttribute};
+        $tLeft = $target->{$this->leftAttribute};
+        $tRight = $target->{$this->rightAttribute};
+        $tRoot = $target->{$this->rootAttribute};
+        $delta = $right - $left + 1;
+        $levelDelta = $target->{$this->levelAttribute} + $levelUp - $owner->{$this->levelAttribute};
 
-        if ($this->hasManyRoots && $owner->{$this->rootAttribute} !== $target->{$this->rootAttribute}) {
-            $this->ignoreEvent = true;
+        $owner->getDI()->getDb()->begin();
 
-            // 1. Rebuild the target tree
-            foreach ([$this->leftAttribute, $this->rightAttribute] as $attribute) {
-                $condition = join(' AND ', [
-                    $attribute . '>=' . $key,
-                    $this->rootAttribute . '= :targetRootAttr:',
-                ]);
+        /** @var Model\Query\Builder $query */
+        $query = $owner::query()
+            ->columns($this->primaryKey)
+            ->where($this->leftAttribute . '>=' . $left)
+            ->andWhere($this->rightAttribute . '<=' . $right);
 
-                $this->bind['targetRootAttr'] = $target->{$this->rootAttribute};
-                $result = $target::find([
-                    'conditions' => $condition,
-                    'bind' => $this->bind
-                ]);
-
-                foreach ($result as $i) {
-                    $delta = $right - $left + 1;
-                    /** @var ModelInterface $i */
-                    if (!$i->update([$attribute => $i->{$attribute} + $delta])) {
-                        $this->db->rollback();
-                        $this->ignoreEvent = false;
-
-                        return false;
-                    }
-                }
-            }
-
-            // Empty bind array
-            unset($this->bind);
-
-            $delta = $key - $left;
-
-            // 2. Rebuild the owner's tree of children (owner sub-tree)
-            $condition = $this->leftAttribute . '>=' . $left . ' AND ';
-            $condition .= $this->rightAttribute . '<=' . $right . ' AND ';
-            $condition .= $this->rootAttribute . '= :rootAttr:';
-
-            $this->bind['rootAttr'] = $owner->{$this->rootAttribute};
-            $result = $owner::find([
-                'conditions' => $condition,
-                'bind' => $this->bind
-            ]);
-
-            foreach ($result as $i) {
-                $arr = [
-                    $this->leftAttribute => $i->{$this->leftAttribute} + $delta,
-                    $this->rightAttribute => $i->{$this->rightAttribute} + $delta,
-                    $this->levelAttribute => $i->{$this->levelAttribute} + $levelDelta,
-                    $this->rootAttribute => $target->{$this->rootAttribute}
-                ];
-
-                if ($i->update($arr) == false) {
-                    $this->db->rollback();
-                    $this->ignoreEvent = false;
-
-                    return false;
-                }
-            }
-
-            // 3. Rebuild the owner tree
-            $this->shiftLeftRight($right + 1, $left - $right - 1, $owner);
-
-            $this->ignoreEvent = false;
-            $this->db->commit();
-        } else {
-            $delta = $right - $left + 1;
-            $this->ignoreEvent = true;
-            $this->shiftLeftRight($key, $delta);
-
-            if ($left >= $key) {
-                $left += $delta;
-                $right += $delta;
-            }
-
-            $condition = $this->leftAttribute . '>=' . $left . ' AND ' . $this->rightAttribute . '<=' . $right;
-
-            if ($this->hasManyRoots) {
-                $condition .= ' AND ' . $this->rootAttribute . '= :rootAttr:';
-                $this->bind['rootAttr'] = $owner->{$this->rootAttribute};
-            }
-
-            $result = $owner::find([
-                'conditions' => $condition,
-                'bind' => $this->bind
-            ]);
-
-            foreach ($result as $i) {
-                if ($i->update([$this->levelAttribute => $i->{$this->levelAttribute} + $levelDelta]) == false) {
-                    $this->db->rollback();
-                    $this->ignoreEvent = false;
-
-                    return false;
-                }
-            }
-
-            foreach ([$this->leftAttribute, $this->rightAttribute] as $attribute) {
-                $condition = $attribute . '>=' . $left . ' AND ' . $attribute . '<=' . $right;
-
-                if ($this->hasManyRoots) {
-                    $condition .= ' AND ' . $this->rootAttribute . '= :rootAttr:';
-                    $this->bind['rootAttr'] = $owner->{$this->rootAttribute};
-                }
-
-                $result = $owner::find([
-                    'conditions' => $condition,
-                    'bind' => $this->bind
-                ]);
-
-                foreach ($result as $i) {
-                    if ($i->update([$attribute => $i->{$attribute} + $key - $left]) == false) {
-                        $this->db->rollback();
-                        $this->ignoreEvent = false;
-
-                        return false;
-                    }
-                }
-            }
-
-            $this->shiftLeftRight($right + 1, -$delta);
-            $this->ignoreEvent = false;
-
-            $this->ignoreEvent = false;
-            $this->db->commit();
+        $this->bind['rootAttr'] = $root;
+        $this->bind['tRootAttr'] = $tRoot;
+        if ($this->hasManyRoots) {
+            $query = $query->andWhere($this->rootAttribute . '= :rootAttr:', ['rootAttr' => $this->bind['rootAttr']]);
         }
 
-        return true;
+        $data = $query->execute();
+
+        $ownerTreePks = array();
+        foreach ($data as $row) {
+            $ownerTreePks[] = $row->{$this->primaryKey};
+        }
+
+        // --- moving in own tree
+        if ($root === $tRoot) {
+            // moving from left to right
+            if ($key > $right) {
+                foreach (array($this->leftAttribute, $this->rightAttribute) as $attribute) {
+
+                    if ($levelUp) {
+                        $condition = $attribute . '<=' . ($key - $levelUp);
+                    } else {
+                        $condition = $attribute . '<' . ($key);
+                    }
+                    $condition .= ' AND ' . $attribute . '>' . $right;
+                    if ($this->hasManyRoots) {
+                        $condition .= ' AND ' . $this->rootAttribute . ' = :tRootAttr:';
+                    }
+                    $result = $owner::find([
+                        'conditions' => $condition,
+                        'bind' => ['tRootAttr' => $this->bind['tRootAttr']]
+                    ]);
+                    if ($result) {
+                        foreach ($result as $category) {
+                            $category->saveNode([
+                                $attribute => $category->{'get'.ucfirst($attribute)}() - $delta
+                            ]);
+                        }
+                    }
+                }
+                $delta = $key - $right - $levelUp;
+                if (!$levelUp) {
+                    $delta = $delta - 1;
+                }
+            }
+            // moving from right to left
+            elseif ($key < $left) {
+                foreach (array($this->leftAttribute, $this->rightAttribute) as $attribute) {
+                    $condition = $attribute . '>=' . $key;
+                    $condition .= ' AND ' . $attribute . '<' . $left;
+                    if ($this->hasManyRoots) {
+                        $condition .= ' AND ' . $this->rootAttribute . '= :tRootAttr:';
+                    }
+                    $result = $owner::find([
+                        'conditions' => $condition,
+                        'bind' => ['tRootAttr' => $this->bind['tRootAttr']]
+                    ]);
+                    if ($result) {
+                        foreach ($result as $category) {
+                            $category->saveNode([
+                                $attribute => $category->{'get'.ucfirst($attribute)}() + $delta
+                            ]);
+                        }
+                    }
+                }
+                $delta = $key - $left;
+            }
+            // no change
+            else {
+                $owner->getDI()->getDb()->rollback();
+                return true;
+            }
+            // update owner tree
+            $condition = $this->primaryKey . ' IN ({ownerTreePks:array})';
+            $result = $owner::find([
+                'conditions' => $condition,
+                'bind' => ['ownerTreePks' => $ownerTreePks]
+            ]);
+            if ($result) {
+                foreach ($result as $category) {
+                    if (!$category->saveNode([
+                        $this->leftAttribute => $category->{'get'.ucfirst($this->leftAttribute)}() + $delta,
+                        $this->rightAttribute => $category->{'get'.ucfirst($this->rightAttribute)}() + $delta,
+                        $this->levelAttribute => $category->{'get'.ucfirst($this->levelAttribute)}() + $levelDelta
+                        ])
+                    ) {
+                        $owner->getDI()->getDb()->rollback();
+                        return false;
+                    }
+                }
+                $owner->{$this->leftAttribute} = $left + $delta;
+                $owner->{$this->rightAttribute} = $right + $delta;
+                $owner->{$this->levelAttribute} = $owner->{$this->levelAttribute} + $levelDelta;
+                $owner->getDI()->getDb()->commit();
+                return true;
+            }
+        }
+
+        // --- moving to another tree
+        // make place for new elements
+        foreach (array($this->leftAttribute, $this->rightAttribute) as $attribute) {
+            $condition = $attribute . '>=' . $key;
+            $condition .= ' AND ' . $this->rootAttribute . '= :tRootAttr:';
+            $result = $owner::find([
+                'conditions' => $condition,
+                'bind' => ['tRootAttr' => $this->bind['tRootAttr']]
+            ]);
+            if ($result) {
+                foreach ($result as $category) {
+                    $category->saveNode([
+                        $attribute => $category->{'get'.ucfirst($attribute)}() + $delta
+                    ]);
+                }
+            }
+        }
+        // closing the gap on old tree
+        if (!$owner->isRoot()) {
+            foreach (array($this->leftAttribute, $this->rightAttribute) as $attribute) {
+                $condition = $attribute . '>' . $right;
+                $condition .= ' AND ' . $this->rootAttribute . '= :rootAttr:';
+                $result = $owner::find([
+                    'conditions' => $condition,
+                    'bind' => ['rootAttr' => $this->bind['rootAttr']]
+                ]);
+                if ($result) {
+                    foreach ($result as $category) {
+                        $category->saveNode([
+                            $attribute => $category->{'get'.ucfirst($attribute)}() - $delta
+                        ]);
+                    }
+                }
+            }
+        }
+        // update owner tree
+        $delta = $key - $left;
+        $condition = $this->primaryKey . ' IN ({ownerTreePks:array})';
+        $result = $owner::find([
+            'conditions' => $condition,
+            'bind' => ['ownerTreePks' => $ownerTreePks]
+        ]);
+        if ($result) {
+            foreach ($result as $category) {
+                if (!$category->saveNode([
+                    $this->rootAttribute => $tRoot,
+                    $this->leftAttribute = $this->leftAttribute + $delta,
+                    $this->rightAttribute = $this->rightAttribute + $delta,
+                    $this->levelAttribute = $this->leftAttribute + $levelDelta
+                    ])
+                ) {
+                    $owner->getDI()->getDb()->rollback();
+                    return false;
+                }
+            }
+            $owner->{$this->rootAttribute} = $tRoot;
+            $owner->{$this->leftAttribute} = $left + $delta;
+            $owner->{$this->rightAttribute} = $right + $delta;
+            $owner->{$this->levelAttribute} = $owner->{$this->levelAttribute} + $levelDelta;
+            $owner->getDI()->getDb()->commit();
+            return true;
+        }
     }
 
     /**
@@ -942,7 +988,7 @@ class NestedSet extends Behavior implements BehaviorInterface
     }
 
     /**
-     * @param  ModelInterface $target
+     * @param  ModelInterface|NestedSet $target
      * @param  int $key
      * @param  int $levelUp
      * @param  array $attributes
@@ -1000,7 +1046,6 @@ class NestedSet extends Behavior implements BehaviorInterface
 
                 return false;
             }
-
             $db->commit();
         } catch (\Exception $e) {
             $db->rollback();
@@ -1026,7 +1071,7 @@ class NestedSet extends Behavior implements BehaviorInterface
         $owner->{$this->leftAttribute} = 1;
         $owner->{$this->rightAttribute} = 2;
         $owner->{$this->levelAttribute} = 1;
-        $owner->{$this->rootAttribute} = $owner->{$this->primaryKey};
+        $owner->{$this->rootAttribute} = $owner->{$this->primaryKey} ?? $attributes[$this->primaryKey];
 
         if ($this->hasManyRoots) {
             $this->db->begin();
@@ -1037,6 +1082,7 @@ class NestedSet extends Behavior implements BehaviorInterface
 
                 return false;
             }
+
             $this->ignoreEvent = false;
 
             $this->db->commit();

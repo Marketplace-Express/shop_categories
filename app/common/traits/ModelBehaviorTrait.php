@@ -1,13 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: wajdi
+ * User: Wajdi Jurry
  * Date: 11/08/18
  * Time: 09:37 م
  */
 
 namespace Shop_categories\Traits;
-
 
 use Phalcon\Mvc\Model;
 
