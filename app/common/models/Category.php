@@ -40,6 +40,12 @@ class Category extends \Phalcon\Mvc\Model
     protected $vendorId;
 
     /**
+     * @var integer $categoryOrder
+     * @Column(column="category_order", type="integer", length=3, nullable=false)
+     */
+    protected $categoryOrder;
+
+    /**
      *
      * @var string
      * @Column(column="category_name", type="string", length=255, nullable=false)
@@ -101,19 +107,6 @@ class Category extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Method to set the value of field vendor_id
-     *
-     * @param string $vendorId
-     * @return $this
-     */
-    public function setVendorId($vendorId)
-    {
-        $this->vendorId = $vendorId;
-
-        return $this;
-    }
-
-    /**
      * Method to set the value of field category_name
      *
      * @param string $categoryName
@@ -122,6 +115,27 @@ class Category extends \Phalcon\Mvc\Model
     public function setCategoryName($categoryName)
     {
         $this->categoryName = $categoryName;
+
+        return $this;
+    }
+
+    /**
+     * @param int $categoryOrder
+     */
+    public function setCategoryOrder(int $categoryOrder): void
+    {
+        $this->categoryOrder = $categoryOrder;
+    }
+
+    /**
+     * Method to set the value of field vendor_id
+     *
+     * @param string $vendorId
+     * @return $this
+     */
+    public function setVendorId($vendorId)
+    {
+        $this->vendorId = $vendorId;
 
         return $this;
     }
@@ -199,6 +213,14 @@ class Category extends \Phalcon\Mvc\Model
     }
 
     /**
+     * @return int
+     */
+    public function getCategoryOrder(): int
+    {
+        return $this->categoryOrder;
+    }
+
+    /**
      * Returns the value of field vendorId
      *
      * @return string
@@ -272,6 +294,9 @@ class Category extends \Phalcon\Mvc\Model
         $this->addBehavior(new AdjacencyListModelBehavior([
             'itemIdAttribute' => 'categoryId',
             'parentIdAttribute' => 'categoryParentId',
+            'orderByAttribute' => 'category_order',
+            'isDeletedAttribute' => 'is_deleted',
+            'isDeletedValue' => 0,
             'subItemsSlug' => 'children',
             'noParentValue' => null
         ]));
@@ -322,13 +347,13 @@ class Category extends \Phalcon\Mvc\Model
         return [
             'category_id' => 'categoryId',
             'category_parent_id' => 'categoryParentId',
-            'vendor_id' => 'vendorId',
             'category_name' => 'categoryName',
+            'category_order' => 'categoryOrder',
+            'vendor_id' => 'vendorId',
             'created_at' => 'createdAt',
             'updated_at' => 'updatedAt',
             'deleted_at' => 'deletedAt',
             'is_deleted' => 'isDeleted'
         ];
     }
-
 }

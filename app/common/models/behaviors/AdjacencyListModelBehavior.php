@@ -25,8 +25,11 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
     private $adapter;
 
     private $params;
-    private $itemIdAttribute = 'itemId';
-    private $parentIdAttribute = 'parentId';
+    private $itemIdAttribute = 'item_id';
+    private $parentIdAttribute = 'parent_id';
+    private $orderByAttribute = null;
+    private $isDeletedAttribute = null;
+    private $isDeletedValue = null;
     private $subItemsSlug = 'children';
     private $noParentValue = null;
 
@@ -43,6 +46,15 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         }
         if (isset($params['parentIdAttribute'])) {
             $this->parentIdAttribute = $params['parentIdAttribute'];
+        }
+        if (isset($params['orderByAttribute'])) {
+            $this->orderByAttribute = $params['orderByAttribute'];
+        }
+        if (isset($params['isDeletedAttribute'])) {
+            $this->isDeletedAttribute  = $params['isDeletedAttribute'];
+        }
+        if (isset($params['isDeletedValue'])) {
+            $this->isDeletedValue = $params['isDeletedValue'];
         }
         if (isset($params['subItemsSlug'])) {
             $this->subItemsSlug = $params['subItemsSlug'];
@@ -122,123 +134,189 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
     }
 
     /**
-     * @param ModelInterface $model
      * @return MetaData
      * @throws \Exception
      */
-    private function getAttributes(ModelInterface $model)
+    private function getAttributes()
     {
-        if ($model->getDi()->has('modelsMetadata')) {
-            return $model->getDi()->getShared('modelsMetadata')->readColumnMap($model);
+        if ($this->getOwner()->getDi()->has('modelsMetadata')) {
+            return $this->getOwner()->getDi()->getShared('modelsMetadata')->readColumnMap($this->getOwner());
         }
 
         throw new \Exception('Model missing columnMap method');
     }
 
-    public function roots()
+    /**
+     * Get roots
+     * @param bool $toArray
+     * @return array|\Phalcon\Mvc\Model\ResultsetInterface
+     * @throws \Exception
+     */
+    public function roots(bool $toArray = true)
     {
-        return $this->getOwner()::find([
-            'conditions' => $this->parentIdAttribute . ' = :noParentValue:',
-            'bind' => ['noParentValue' => $this->noParentValue]
+        $conditions = $this->parentIdAttribute . ' = :noParentValue:';
+        $bind['noParentValue'] = $this->noParentValue;
+        if (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) {
+            $conditions .= ' AND ' . $this->isDeletedAttribute . ' = :isDeletedValue:';
+            $bind['isDeletedValue'] = $this->isDeletedValue;
+        }
+
+        $result = $this->getOwner()::find([
+            'conditions' => $conditions,
+            'bind' => $bind
         ]);
+
+        if ($result) {
+            return ($toArray) ? $result->toArray() : $result;
+        }
+
+        throw new \Exception("No roots found", 404);
     }
 
     /**
      * Get item parent(s)
-     * @param null $itemId
+     * @param string $itemId
+     * @param bool $recursive
+     * @param bool $toArray
      * @param bool $oneParent
-     * @return array
+     * @param bool $addSelf
+     * @return array|bool
      * @throws \Exception
      */
-    public function parents($itemId = null, bool $oneParent = false)
+    public function parents(string $itemId, bool $toArray = true, $recursive = true, bool $oneParent = false, bool $addSelf = false)
     {
-        $columns = $this->getAttributes($this->getOwner())[1];
+        $columns = $this->getAttributes()[1];
         $query = sprintf(
             'WITH RECURSIVE category_path (%s)
                 AS (SELECT %s FROM %s
-                    WHERE %s = :itemId
+                    WHERE %s = :itemId %s
                     UNION ALL SELECT %s
                         FROM category_path AS cp
-                    JOIN category AS c ON cp.%s = c.%s)
+                    JOIN category AS c ON cp.%s = c.%s %s)
                     SELECT *
-                    FROM category_path %s OFFSET 1;',
+                    FROM category_path %s;',
             implode(',', $columns),
             implode(',', $columns),
             $this->getOwner()->getSource(),
             $columns[$this->itemIdAttribute],
+            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND ' . $this->isDeletedAttribute . ' = :isDeletedValue' : '',
             implode(',', array_map(function($column){return 'c.'.$column;}, $columns)),
             $columns[$this->parentIdAttribute],
             $columns[$this->itemIdAttribute],
-            ($oneParent) ? 'LIMIT 2' : 'LIMIT 10'
+            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND c.' . $this->isDeletedAttribute . ' = :isDeletedValue' : '',
+            ($oneParent) ? 'LIMIT 1' : 'LIMIT 10'
         );
-        $result = $this->getOwner()->getReadConnection()->fetchAll(
-            $query,
-            \PDO::FETCH_ASSOC,
-            [
-                'itemId' => $itemId
-            ]
-        );
-        if ($result) {
-            $result = array_map(function($row) use ($columns) {
-                return array_combine(array_keys($columns), array_values($row));
-            }, $result);
+        $query = $this->getOwner()->getReadConnection()->query($query, ['itemId' => $itemId, 'isDeletedValue' => $this->isDeletedValue]);
+        if (!$addSelf && $query->numRows() > 1) {
+            $query->dataSeek(1);
+        }
+        $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
+        if ($result = $query->fetchAll()) {
+            if ($toArray) {
+                $result = array_map(function ($row) use ($columns) {
+                    return $row->toArray();
+                }, $result);
 
-            $result = (new AdjacencyListModelHelper($result, $this->params))->parents();
+                $result = ($recursive) ? (new AdjacencyListModelHelper($result, $this->params))->prepare() : $result;
+            }
+            return $result;
         }
 
-        return $result;
+        throw new \Exception("Item not found or may be deleted", 404);
     }
 
     /**
-     * Get item parent(s)
+     * Get item descendants
      * @param null $itemId
-     * @return array
+     * @param bool $recursive
+     * @param bool $toArray
+     * @return array|bool
      * @throws \Exception
      */
-    public function descendants($itemId = null)
+    public function descendants($itemId = null, bool $toArray = true, $recursive = true)
     {
-        $columns = $this->getAttributes($this->getOwner())[1];
+        $columns = $this->getAttributes()[1];
         $query = sprintf(
             'WITH RECURSIVE category_path (%s)
                 AS (SELECT %s FROM %s
-                    WHERE %s = :itemId
+                    WHERE %s = :itemId %s
                     UNION ALL SELECT %s
                         FROM category_path AS cp
-                    JOIN category AS c ON cp.%s = c.%s)
+                    JOIN category AS c ON cp.%s = c.%s %s)
                     SELECT *
-                    FROM category_path;',
+                    FROM category_path ORDER BY %s ASC;',
             implode(',', $columns),
             implode(',', $columns),
             $this->getOwner()->getSource(),
             $columns[$this->itemIdAttribute],
+            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND ' . $this->isDeletedAttribute . ' = :isDeletedValue' : '',
             implode(',', array_map(function($column){return 'c.'.$column;}, $columns)),
             $columns[$this->itemIdAttribute],
-            $columns[$this->parentIdAttribute]
+            $columns[$this->parentIdAttribute],
+            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND c.' . $this->isDeletedAttribute . ' = :isDeletedValue' : '',
+            $this->orderByAttribute
         );
-        $result = $this->getOwner()->getReadConnection()->fetchAll(
-            $query,
-            \PDO::FETCH_ASSOC,
-            [
-                'itemId' => $itemId
-            ]
-        );
-        if ($result) {
-            $result = array_map(function($row) use ($columns) {
-                return array_combine(array_keys($columns), array_values($row));
-            }, $result);
+        $query = $this->getOwner()->getReadConnection()->query($query, ['itemId' => $itemId, 'isDeletedValue' => $this->isDeletedValue]);
+        $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
+        if ($result = $query->fetchAll()) {
+            if ($toArray) {
+                $result = array_map(function ($row) use ($columns) {
+                    return $row->toArray();
+                }, $result);
 
-            $result = (new AdjacencyListModelHelper($result, $this->params))->parents();
+                $result = ($recursive) ? (new AdjacencyListModelHelper($result, $this->params))->prepare() : $result;
+            }
+            return $result;
         }
 
-        return $result;
+        throw new \Exception("Item not found or maybe deleted", 404);
     }
 
-    public function children(string $itemId)
+    /**
+     * Get item children
+     * @param string $itemId
+     * @param bool $toArray
+     * @return array|\Phalcon\Mvc\Model\ResultsetInterface
+     * @throws \Exception
+     */
+    public function children(string $itemId, bool $toArray = true)
     {
-        return $this->getOwner()::find([
-            'conditions' => $this->parentIdAttribute . ' = :parentId:',
-            'bind' => ['parentId' => $itemId]
-        ])->toArray();
+        $conditions = $this->parentIdAttribute . ' = :parentId:';
+        $bind['parentId'] = $itemId;
+        if (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) {
+            $isDeletedAttribute = $this->getAttributes()[0][$this->isDeletedAttribute];
+            $conditions .= ' AND '. $isDeletedAttribute . ' = :isDeletedValue:';
+            $bind['isDeletedValue'] = $this->isDeletedValue;
+        }
+        $result = $this->getOwner()::find([
+            'conditions' => $conditions,
+            'bind' => $bind
+        ]);
+
+        if ($result) {
+            return ($toArray) ? $result->toArray() : $result;
+        }
+
+        throw new \Exception("Item not found or maybe deleted", 404);
+    }
+
+    /**
+     * @param string $itemId
+     * @return bool
+     * @throws \Exception
+     */
+    public function cascadeDelete(string $itemId)
+    {
+        $descendants = $this->descendants($itemId, false, false);
+        if ($descendants) {
+            foreach ($descendants as $item) {
+                if (!$item->delete()) {
+                    throw new \Exception("Item {$item->get{ucfirst($this->itemIdAttribute)}()} could not be deleted");
+                }
+            }
+            return true;
+        }
+        throw new \Exception("Item not found or maybe deleted", 404);
     }
 
     /**
@@ -248,7 +326,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
      */
     public function recursive(array $array)
     {
-        return (new AdjacencyListModelHelper($array, $this->params))->all();
+        return (new AdjacencyListModelHelper($array, $this->params))->prepare();
     }
 
     /**

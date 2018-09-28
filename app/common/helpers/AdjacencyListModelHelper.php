@@ -81,23 +81,22 @@ class AdjacencyListModelHelper
         $subParents = array_unique(array_column($this->unordered, $this->parentIdAttribute));
         $subIds = array_unique(array_column($this->unordered, $this->itemIdAttribute));
         $existsParents = array_intersect($subParents, $subIds);
-        return array_values(array_filter(array_map(function($item, $key) use ($existsParents) {
+        foreach ($this->unordered as $key => $item) {
             if (in_array($item[$this->itemIdAttribute], $existsParents)) {
                 unset($this->unordered[$key]);
-                return $item;
             }
-            return false;
-        }, $this->unordered, array_keys($this->unordered))));
+        }
+        return $this->unordered;
     }
 
     /**
      * Creating recursive from one dimension array
-     * @param array $array
      * @return array
      * @throws \Exception
      */
-    private function prepare(array $array)
+    public function prepare()
     {
+        $array = $this->array;
         if (count($array) <= 1) {
             return $array;
         }
@@ -135,102 +134,5 @@ class AdjacencyListModelHelper
         } while (count($this->unordered));
 
         return $tree;
-    }
-
-    /**
-     * Get first sub level items of a node
-     * @param $itemId
-     * @return array
-     * @throws \Exception
-     */
-    public function children($itemId)
-    {
-        $item = null;
-        $this->prepare($this->array);
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->array));
-        while ($iterator->valid()) {
-            if ($iterator->key() == $this->itemIdAttribute && $iterator->current() == $itemId) {
-                $item = (array) $iterator->getInnerIterator();
-                break;
-            }
-            $iterator->next();
-        }
-
-        if (array_key_exists($this->subItemsSlug, $item)) {
-            $keyToRemove = array_flip([$this->subItemsSlug]);
-            if ($item[$this->subItemsSlug]) {
-                $item[$this->subItemsSlug] = array_map(function ($item) use($keyToRemove) {
-                    // This will remove children from subset items
-                    return array_diff_key($item, $keyToRemove);
-                }, $item[$this->subItemsSlug]);
-            }
-        }
-
-        return $item;
-    }
-
-    /**
-     * Get all sub level items of node
-     * @param $itemId
-     * @return array|null
-     * @throws \Exception
-     */
-    public function descendants($itemId)
-    {
-        $this->prepare($this->array);
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->array));
-        while ($iterator->valid()) {
-            if ($iterator->key() == $this->itemIdAttribute && $iterator->current() == $itemId) {
-                return (array) $iterator->getInnerIterator();
-            }
-
-            $iterator->next();
-        }
-
-        return null;
-    }
-
-    /**
-     * Get all parents of an item
-     * @return array
-     * @throws \Exception
-     */
-    public function parents()
-    {
-        return $this->prepare($this->array);
-    }
-
-    /**
-     * Get first parent of an item
-     * @return array
-     * @throws \Exception
-     */
-    public function parent()
-    {
-        return $this->parents();
-    }
-
-    /**
-     * Get all roots
-     * @return array
-     * @throws \Exception
-     */
-    public function roots(): array
-    {
-        $this->prepare($this->array);
-        foreach ($this->array as &$item) {
-            $item = array_slice($item, 0, count($item) - 1);
-        }
-        return $this->array;
-    }
-
-    /**
-     * Get all items
-     * @return array
-     * @throws \Exception
-     */
-    public function all()
-    {
-        return $this->prepare($this->array);
     }
 }

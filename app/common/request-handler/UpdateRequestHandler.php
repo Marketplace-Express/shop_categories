@@ -133,7 +133,7 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
                 'status' => 404,
                 'message' => $message
             ])->send();
-        exit;
+        die();
     }
 
     public function invalidRequest($message = null)
@@ -146,7 +146,7 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
                 'status' => 400,
                 'message' => $message
             ])->send();
-        exit;
+        die();
     }
 
     public function successRequest($message = null)
@@ -156,7 +156,7 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
                 'status' => 200,
                 'message' => $message
             ])->send();
-        exit;
+        die();
     }
 
     public function toArray(): array

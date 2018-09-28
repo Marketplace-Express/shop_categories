@@ -113,6 +113,7 @@ class CategoryRepository extends Category
     {
         $roots = self::find([
             'conditions' => 'vendorId = :vendorId: AND isDeleted = false',
+            'order' => 'categoryOrder ASC',
             'bind' => ['vendorId' => $vendorId]
         ]);
 

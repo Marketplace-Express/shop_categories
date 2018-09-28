@@ -47,6 +47,16 @@ class CategoryMigration_100 extends Migration
                         ]
                     ),
                     new Column(
+                        'category_order',
+                        [
+                            'type' => Column::TYPE_INTEGER,
+                            'notNull' => true,
+                            'default' => "0",
+                            'size' => 3,
+                            'after' => 'category_name'
+                        ]
+                    ),
+                    new Column(
                         'vendor_id',
                         [
                             'type' => Column::TYPE_VARCHAR,

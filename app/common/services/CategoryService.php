@@ -7,8 +7,6 @@
 
 namespace Shop_categories\Services;
 
-use Phalcon\Mvc\Model\Behavior\NestedSet;
-use Phalcon\Mvc\ModelInterface;
 use Shop_categories\Repositories\CategoryRepository;
 
 class CategoryService extends BaseService
@@ -27,6 +25,7 @@ class CategoryService extends BaseService
     }
 
     /**
+     * @param string $vendorId
      * @return array
      * @throws \Exception
      */
@@ -63,7 +62,6 @@ class CategoryService extends BaseService
      */
     public function getDescendants($categoryId): array
     {
-        return self::getRepository()->descendants($categoryId);
         self::setCategoryId($categoryId);
 
         if ($descendants = self::getCacheService()->getDescendants()) {
@@ -181,13 +179,10 @@ class CategoryService extends BaseService
      */
     public function delete($categoryId): bool
     {
-        $category = self::getRepository()::findById($categoryId, self::getVendorId());
-        if ($category) {
-            $this->invalidateCache();
-            return $category->delete();
+        if (!self::getRepository()->cascadeDelete($categoryId)) {
+            return false;
         }
-
-        throw new \Exception('Category not found or maybe deleted', 404);
+        return true;
     }
 
     public function invalidateCache()

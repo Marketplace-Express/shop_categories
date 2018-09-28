@@ -30,7 +30,7 @@ class IndexController extends ControllerBase
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage());
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
@@ -48,7 +48,7 @@ class IndexController extends ControllerBase
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), 500);
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
@@ -68,7 +68,7 @@ class IndexController extends ControllerBase
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode());
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
@@ -87,7 +87,7 @@ class IndexController extends ControllerBase
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode());
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
@@ -106,7 +106,7 @@ class IndexController extends ControllerBase
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), 500);
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
@@ -125,7 +125,7 @@ class IndexController extends ControllerBase
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), 500);
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
@@ -144,7 +144,7 @@ class IndexController extends ControllerBase
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage());
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
@@ -169,7 +169,7 @@ class IndexController extends ControllerBase
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage());
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
@@ -185,7 +185,7 @@ class IndexController extends ControllerBase
             $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateRequestHandler());
 
             if (!$request->isValid()) {
-                return $request->invalidRequest();
+                $request->invalidRequest();
             }
 
             if ($category = $this->getService()->getCategoryFromRepository($categoryId)) {
@@ -196,7 +196,7 @@ class IndexController extends ControllerBase
         } catch (JsonMapper_Exception $exception) {
             $request->invalidRequest($exception->getMessage());
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage());
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
@@ -211,12 +211,11 @@ class IndexController extends ControllerBase
             /** @var DeleteRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new DeleteRequestHandler());
             $this->getService()->delete($categoryId);
-            $this->getService()->invalidateCache();
             $request->successRequest('Deleted');
         } catch (JsonMapper_Exception $exception) {
             $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), 500);
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 }
