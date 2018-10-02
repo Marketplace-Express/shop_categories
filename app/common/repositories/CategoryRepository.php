@@ -8,14 +8,10 @@
 namespace Shop_categories\Repositories;
 
 use Phalcon\Mvc\Model\ResultInterface;
-use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
 use Shop_categories\Models\Category;
 
 class CategoryRepository extends Category
 {
-
-    private static $resultSet;
-
     /**
      * Find category by ID
      * @param string $categoryId
@@ -33,16 +29,15 @@ class CategoryRepository extends Category
     /**
      * Find multiple categories
      * @param array $categoriesIds
+     * @param string $vendorId
      * @return \Phalcon\Mvc\Model\ResultsetInterface
      */
-    public static function findAllByIds(array $categoriesIds)
+    public static function findAllByIds(array $categoriesIds, string $vendorId)
     {
         $result = self::find([
-            'conditions' => 'categoryId IN ({categoriesIds:array})',
-            'bind' => ['categoriesIds' => $categoriesIds]
+            'conditions' => 'categoryId IN ({categoriesIds:array}) AND vendorId = :vendorId:',
+            'bind' => ['categoriesIds' => $categoriesIds, 'vendorId' => $vendorId]
         ]);
-
-        self::$resultSet = $result;
 
         return $result;
     }
@@ -52,14 +47,12 @@ class CategoryRepository extends Category
      * @param string $vendorId
      * @return bool|\Phalcon\Mvc\Model\Resultset|\Phalcon\Mvc\Model\ResultSetInterface|CategoryRepository|CategoryRepository[]
      */
-    public static function getRoots(string $vendorId)
+    public function getRoots(string $vendorId)
     {
-        $result = self::find([
+        return self::find([
             'conditions' => 'categoryParentId IS NULL AND vendorId = :vendorId: AND isDeleted = 0',
             'bind' => ['vendorId' => $vendorId]
-        ]);
-
-        return $result;
+        ])->toArray();
     }
 
     /**
@@ -74,8 +67,6 @@ class CategoryRepository extends Category
             'conditions' => 'categoryParentId = :id: AND vendorID = :vendorId: AND isDeleted = 0',
             'bind' => ['id' => $categoryId, 'vendorId' => $vendorId]
         ]);
-
-        self::$resultSet = $children;
 
         return $children;
     }
@@ -95,7 +86,6 @@ class CategoryRepository extends Category
      * Get ancestor of node
      * @param string $categoryId
      * @param string $vendorId
-     * @param null $depth
      * @return array|bool
      */
     public function getParents(string $categoryId, string $vendorId)
@@ -104,19 +94,23 @@ class CategoryRepository extends Category
     }
 
     /**
-     * Gett all categories related to vendor
+     * Get all categories related to vendor
      * @param string $vendorId
      * @return array
      * @throws \Exception
      */
     public function getAll(string $vendorId)
     {
-        $roots = self::find([
+        $categories = self::find([
             'conditions' => 'vendorId = :vendorId: AND isDeleted = false',
             'order' => 'categoryOrder ASC',
             'bind' => ['vendorId' => $vendorId]
         ]);
 
-        return $this->recursive($roots->toArray());
+        if ($categories) {
+            return $this->recursive($categories->toArray());
+        }
+
+        throw new \Exception('No categories found');
     }
 }

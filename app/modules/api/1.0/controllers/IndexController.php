@@ -12,9 +12,19 @@ use JsonMapper_Exception;
  */
 class IndexController extends ControllerBase
 {
+    /**
+     * @throws \Exception
+     */
     public function initialize()
     {
-        $this->getService()::setVendorId('00492bc1-d22d-47b1-9372-8bc2ebf3c12d');
+        /**
+         * TODO: CHECK EXISTENCE OF VENDOR
+         * TODO: CHECK ACCESSIBILITY OF USER ON THIS VENDOR
+         */
+        if (empty($vendorId = $this->request->getQuery('vendorId'))) {
+            $this->sendResponse('Please provide a valid vendor Id', 400);
+        }
+        $this->getService()::setVendorId($vendorId);
     }
 
     /**
@@ -27,8 +37,6 @@ class IndexController extends ControllerBase
             /** @var GetRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->showPublicColumns($this->getService()->getRoots()));
-        } catch (JsonMapper_Exception $exception) {
-            $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -41,12 +49,9 @@ class IndexController extends ControllerBase
     public function getAllAction()
     {
         try {
-            //phpinfo(); exit;
             /** @var GetRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->showPublicColumns($this->getService()->getAll()));
-        } catch (JsonMapper_Exception $exception) {
-            $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -65,8 +70,6 @@ class IndexController extends ControllerBase
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $category = $this->getService()->getCategory($categoryId);
             $request->successRequest($this->showPublicColumns($category));
-        } catch (JsonMapper_Exception $exception) {
-            $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -84,8 +87,6 @@ class IndexController extends ControllerBase
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $descendants = $this->getService()->getDescendants($categoryId);
             $request->successRequest($this->showPublicColumns($descendants));
-        } catch (JsonMapper_Exception $exception) {
-            $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -103,8 +104,6 @@ class IndexController extends ControllerBase
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $children = $this->getService()->getChildren($categoryId);
             $request->successRequest($this->showPublicColumns($children));
-        } catch (JsonMapper_Exception $exception) {
-            $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -122,8 +121,6 @@ class IndexController extends ControllerBase
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $parents = $this->getService()->getParents($categoryId);
             $request->successRequest($this->showPublicColumns($parents));
-        } catch (JsonMapper_Exception $exception) {
-            $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -141,8 +138,6 @@ class IndexController extends ControllerBase
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $parent = $this->getService()->getParent($categoryId);
             $request->successRequest($this->showPublicColumns($parent));
-        } catch (JsonMapper_Exception $exception) {
-            $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -153,21 +148,18 @@ class IndexController extends ControllerBase
      * Send response on success/fail
      * @Post('/')
      */
-    public function createAction(): void
+    public function createAction()
     {
         try {
             /** @var CreateRequestHandler $request */
             $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateRequestHandler());
 
             if (!$request->isValid()) {
-                $request->invalidRequest();
+                die($request->invalidRequest()->send());
             }
 
-            $category = $this->getService()->save($request->toArray());
-
+            $category = $this->getService()->create($request->toArray());
             $request->successRequest($this->showPublicColumns($category->toArray()));
-        } catch (JsonMapper_Exception $exception) {
-            $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -185,16 +177,11 @@ class IndexController extends ControllerBase
             $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateRequestHandler());
 
             if (!$request->isValid()) {
-                $request->invalidRequest();
+                die($request->invalidRequest()->send());
             }
 
-            if ($category = $this->getService()->getCategoryFromRepository($categoryId)) {
-                $category = $this->getService()->save($request->toArray(), $category);
-            }
-
+            $category = $this->getService()->update($categoryId, $request->toArray());
             $request->successRequest($this->showPublicColumns($category->toArray()));
-        } catch (JsonMapper_Exception $exception) {
-            $request->invalidRequest($exception->getMessage());
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -212,8 +199,6 @@ class IndexController extends ControllerBase
             $request = $this->getJsonMapper()->map(new \stdClass(), new DeleteRequestHandler());
             $this->getService()->delete($categoryId);
             $request->successRequest('Deleted');
-        } catch (JsonMapper_Exception $exception) {
-            $this->handleError($exception->getMessage(), 400);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }

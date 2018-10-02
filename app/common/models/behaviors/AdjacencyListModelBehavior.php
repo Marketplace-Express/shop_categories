@@ -15,7 +15,7 @@ use Phalcon\Mvc\ModelInterface;
 use Shop_categories\Traits\AdjacencyModelEventManagerTrait;
 use Shop_categories\Helpers\AdjacencyListModelHelper;
 
-class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
+class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, BaseBehavior
 {
     use AdjacencyModelEventManagerTrait;
 
@@ -72,30 +72,6 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
     }
 
     /**
-     * Gets DB handler.
-     *
-     * @param ModelInterface $model
-     * @return AdapterInterface
-     * @throws \Exception
-     */
-    private function getDbHandler(ModelInterface $model)
-    {
-        if (!$this->adapter instanceof AdapterInterface) {
-            if ($model->getDi()->has('db')) {
-                $db = $model->getDi()->getShared('db');
-                if (!$db instanceof AdapterInterface) {
-                    throw new \Exception('The "db" service which was obtained from DI is invalid adapter.');
-                }
-                $this->adapter = $db;
-            } else {
-                throw new \Exception('Undefined database handler.');
-            }
-        }
-
-        return $this->adapter;
-    }
-
-    /**
      * Calls a method when it's missing in the model
      *
      * @param ModelInterface $model
@@ -109,10 +85,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         if (!method_exists($this, $method)) {
             return null;
         }
-
-        $this->getDbHandler($model);
         $this->setOwner($model);
-
         return call_user_func_array([$this, $method], $arguments);
     }
 
@@ -194,22 +167,19 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
                         FROM category_path AS cp
                     JOIN category AS c ON cp.%s = c.%s %s)
                     SELECT *
-                    FROM category_path %s;',
+                    FROM category_path ORDER BY %s ASC;',
             implode(',', $columns),
             implode(',', $columns),
             $this->getOwner()->getSource(),
             $columns[$this->itemIdAttribute],
-            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND ' . $this->isDeletedAttribute . ' = :isDeletedValue' : '',
+            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND ' . $columns[$this->isDeletedAttribute] . ' = :isDeletedValue' : '',
             implode(',', array_map(function($column){return 'c.'.$column;}, $columns)),
             $columns[$this->parentIdAttribute],
             $columns[$this->itemIdAttribute],
-            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND c.' . $this->isDeletedAttribute . ' = :isDeletedValue' : '',
-            ($oneParent) ? 'LIMIT 1' : 'LIMIT 10'
+            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND c.' . $columns[$this->isDeletedAttribute] . ' = :isDeletedValue' : '',
+            $columns[$this->orderByAttribute]
         );
         $query = $this->getOwner()->getReadConnection()->query($query, ['itemId' => $itemId, 'isDeletedValue' => $this->isDeletedValue]);
-        if (!$addSelf && $query->numRows() > 1) {
-            $query->dataSeek(1);
-        }
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
         if ($result = $query->fetchAll()) {
             if ($toArray) {
@@ -249,12 +219,12 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
             implode(',', $columns),
             $this->getOwner()->getSource(),
             $columns[$this->itemIdAttribute],
-            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND ' . $this->isDeletedAttribute . ' = :isDeletedValue' : '',
+            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND ' . $columns[$this->isDeletedAttribute] . ' = :isDeletedValue' : '',
             implode(',', array_map(function($column){return 'c.'.$column;}, $columns)),
             $columns[$this->itemIdAttribute],
             $columns[$this->parentIdAttribute],
-            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND c.' . $this->isDeletedAttribute . ' = :isDeletedValue' : '',
-            $this->orderByAttribute
+            (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) ? 'AND c.' . $columns[$this->isDeletedAttribute] . ' = :isDeletedValue' : '',
+            $columns[$this->orderByAttribute]
         );
         $query = $this->getOwner()->getReadConnection()->query($query, ['itemId' => $itemId, 'isDeletedValue' => $this->isDeletedValue]);
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
@@ -307,7 +277,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
      */
     public function cascadeDelete(string $itemId)
     {
-        $descendants = $this->descendants($itemId, false, false);
+        $descendants = $this->descendants($itemId, false);
         if ($descendants) {
             foreach ($descendants as $item) {
                 if (!$item->delete()) {

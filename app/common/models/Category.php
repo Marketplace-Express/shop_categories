@@ -294,8 +294,8 @@ class Category extends \Phalcon\Mvc\Model
         $this->addBehavior(new AdjacencyListModelBehavior([
             'itemIdAttribute' => 'categoryId',
             'parentIdAttribute' => 'categoryParentId',
-            'orderByAttribute' => 'category_order',
-            'isDeletedAttribute' => 'is_deleted',
+            'orderByAttribute' => 'categoryOrder',
+            'isDeletedAttribute' => 'isDeleted',
             'isDeletedValue' => 0,
             'subItemsSlug' => 'children',
             'noParentValue' => null
