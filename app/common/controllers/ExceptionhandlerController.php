@@ -1,16 +1,16 @@
 <?php
 /**
-
  * User: Wajdi Jurry
  * Date: 29/07/18
  * Time: 10:41 م
  */
 
-namespace Shop_categories\Modules\Api\Controllers;
+namespace Shop_categories\Controllers;
 
 use Phalcon\Logger\Adapter\File;
+use Phalcon\Mvc\Controller;
 
-class ExceptionhandlerController extends ControllerBase
+class ExceptionhandlerController extends Controller
 {
     /**
      * Logging file name
@@ -20,14 +20,17 @@ class ExceptionhandlerController extends ControllerBase
     /**
      * @param $errors
      * @param int $code
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      */
     public function raiseErrorAction($errors, $code)
     {
         // Log error
         $this->logError($errors);
 
-        $this->response
-            ->setStatusCode($code)
+        // response->setStatusCode slows down the performance
+        // replacing it with http_response_code
+        http_response_code($code);
+        return $this->response
             ->setJsonContent([
                 'status' => $code,
                 'message' => $errors

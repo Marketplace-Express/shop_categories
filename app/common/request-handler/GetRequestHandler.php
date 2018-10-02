@@ -29,32 +29,32 @@ class GetRequestHandler extends ControllerBase implements RequestHandlerInterfac
 
     public function notFound($message = 'Not Found')
     {
-        $this->response->setStatusCode(404)
+        http_response_code(404);
+        return $this->response
             ->setJsonContent([
                 'status' => 404,
                 'message' => $message
-            ])->send();
-        die();
+            ]);
     }
 
     public function invalidRequest($message = null)
     {
-        $this->response->setStatusCode(400)
+        http_response_code(400);
+        return $this->response
             ->setJsonContent([
                 'status' => 400,
                 'message' => $message
-            ])->send();
-        die();
+            ]);
     }
 
     public function successRequest($message = null)
     {
-        $this->response->setStatusCode(200)
+        http_response_code(200);
+        return $this->response
             ->setJsonContent([
                 'status' => 200,
                 'message' => $message
-            ])->send();
-        die();
+            ]);
     }
 
     public function toArray(): array

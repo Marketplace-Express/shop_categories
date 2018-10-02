@@ -6,15 +6,15 @@
  * Time: 11:51 م
  */
 
-namespace Shop_categories\Modules\Api\Controllers;
+namespace Shop_categories\Controllers;
+
+use Phalcon\Mvc\Controller;
 
 /**
  * Class NotfoundController
- * @package Shop_categories\Modules\Api\Controllers
- * @RoutePrefix('/api/1.0')
  */
 
-class NotfoundController extends ControllerBase
+class NotfoundController extends Controller
 {
     public function indexAction()
     {

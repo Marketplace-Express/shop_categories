@@ -77,7 +77,21 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
      */
     public function validate() : Validation\Message\Group
     {
+        $fields = [];
         $validator = new Validation();
+
+        $validator->add(
+            'parentId',
+            new Validation\Validator\Callback([
+                'callback' => function ($data) {
+                    if (!is_null($data['parentId'])) {
+                        return $this->getUuidUtil()->isValid($data['parentId']);
+                    }
+                    return true;
+                },
+                'message' => 'Invalid category parent Id'
+            ])
+        );
 
         if (isset($this->name)) {
             $validator->add(
@@ -85,30 +99,21 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
                 new Validation\Validator\AlphaNumericValidator([
                     'whiteSpace' => true,
                     'underscore' => true,
+                    "min" => 3,
                     'max' => 100,
-                    'message' => 'Invalid input',
-                    'messageMinimum' => 'Category name should be at least 5 characters',
-                    'messageMaximum' => 'Category name should not exceed 100 characters'
+                    'message' => 'Invalid category name',
+                    'messageMinimum' => 'Category name should be at least 3 characters',
+                    'messageMaximum' => 'Category name should not exceed 100 characters',
+                    'allowEmpty' => false
                 ])
             );
             $fields['name'] = $this->getName();
         }
-
-        if (!empty($this->parentId)) {
-            $validator->add(
-                'parentId',
-                new Validation\Validator\Callback([
-                    'callback' => function ($data) {
-                        return $this->getUuidUtil()->isValid($data['parentId']);
-                    },
-                    'message' => 'Invalid parent category Id',
-                    'allowEmpty' => true
-                ])
-            );
+        if (!is_null($this->parentId)) {
             $fields['parentId'] = $this->getParentId();
         }
 
-        return $validator->validate($fields ?? []);
+        return $validator->validate($fields);
     }
 
     public function isValid() : bool
@@ -128,12 +133,12 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
 
     public function notFound($message = 'Not Found!')
     {
-        $this->response->setStatusCode(404)
+        http_response_code(404);
+        return $this->response
             ->setJsonContent([
                 'status' => 404,
                 'message' => $message
-            ])->send();
-        die();
+            ]);
     }
 
     public function invalidRequest($message = null)
@@ -141,22 +146,23 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
         if (is_null($message)) {
             $message = $this->errorMessages;
         }
-        $this->response->setStatusCode(400)
+
+        http_response_code(400);
+        return $this->response
             ->setJsonContent([
                 'status' => 400,
                 'message' => $message
-            ])->send();
-        die();
+            ]);
     }
 
     public function successRequest($message = null)
     {
-        $this->response->setStatusCode(200)
+        http_response_code(200);
+        return $this->response
             ->setJsonContent([
                 'status' => 200,
                 'message' => $message
-            ])->send();
-        die();
+            ]);
     }
 
     public function toArray(): array
@@ -167,7 +173,7 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
             $result['categoryName'] = $this->getName();
         }
 
-        if (isset($this->parentId)) {
+        if (array_key_exists('parentId', $this->request->getJsonRawBody(true))) {
             $result['categoryParentId'] = $this->getParentId();
         }
 

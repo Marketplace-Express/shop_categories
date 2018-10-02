@@ -12,6 +12,32 @@ use Shop_categories\Repositories\CategoryRepository;
 class CategoryService extends BaseService
 {
     /**
+     * Create category object from array
+     * @param array $data
+     * @return CategoryRepository
+     * @throws \Exception
+     */
+    private function categoryObject(array $data)
+    {
+        $category = new CategoryRepository();
+        foreach ($data as $column => $value) {
+            $category->{$column} = $value;
+        }
+        return $category;
+    }
+
+    /**
+     * Check if vendor has a specific category
+     * @param string $categoryId
+     * @return \Phalcon\Mvc\Model\ResultInterface|CategoryRepository
+     * @throws \Exception
+     */
+    private function categoryVendorCheck(string $categoryId)
+    {
+        return $this->getCategoryFromRepository($categoryId);
+    }
+
+    /**
      * @return array
      * @throws \Exception
      */
@@ -25,7 +51,6 @@ class CategoryService extends BaseService
     }
 
     /**
-     * @param string $vendorId
      * @return array
      * @throws \Exception
      */
@@ -68,7 +93,7 @@ class CategoryService extends BaseService
             return $descendants;
         }
 
-        throw new \Exception('Category not found', 404);
+        throw new \Exception('Category not found or maybe deleted', 404);
     }
 
     /**
@@ -120,21 +145,6 @@ class CategoryService extends BaseService
     }
 
     /**
-     * Create category object from array
-     * @param array $data
-     * @return CategoryRepository
-     * @throws \Exception
-     */
-    private function categoryObject(array $data)
-    {
-        $category = new CategoryRepository();
-        foreach ($data as $column => $value) {
-            $category->{$column} = $value;
-        }
-        return $category;
-    }
-
-    /**
      * @param $categoryId
      * @return \Phalcon\Mvc\Model\ResultInterface|CategoryRepository
      * @throws \Exception
@@ -145,24 +155,24 @@ class CategoryService extends BaseService
             return $category;
         }
 
-        throw new \Exception('Category not found', 404);
+        throw new \Exception('Category not found or maybe deleted', 404);
     }
 
     /**
-     * Create/Update category
+     * Create category
      * @param array $data
-     * @param CategoryRepository $category
      * @return CategoryRepository
      * @throws \Exception
      */
-    public function save(array $data, $category = null): CategoryRepository
+    public function create(array $data): CategoryRepository
     {
-        if (!$category instanceof CategoryRepository) {
-            if (!$data) {
-                throw new \Exception('No data to be saved', 400);
-            }
-            $category = $this->categoryObject($data);
+        if (!empty($data['categoryParentId'])) {
+            $this->categoryVendorCheck($data['categoryParentId']);
         }
+
+        $category = $this->categoryObject($data);
+
+        $data['vendorId'] = self::getVendorId();
 
         if ($category->save($data)) {
             $this->invalidateCache();
@@ -173,12 +183,34 @@ class CategoryService extends BaseService
     }
 
     /**
+     * Update category
+     * @param string $categoryId
+     * @param array $data
+     * @return CategoryRepository
+     * @throws \Exception
+     */
+    public function update(string $categoryId, array $data)
+    {
+        $category = $this->getCategoryFromRepository($categoryId);
+
+        if (!empty($data['categoryParentId'])) {
+            $this->categoryVendorCheck($data['categoryParentId']);
+        }
+        if ($category->save($data)) {
+            $this->invalidateCache();
+            return $category;
+        }
+        throw new \Exception('Category could not be updated', 500);
+    }
+
+    /**
      * @param $categoryId
      * @return bool
      * @throws \Exception
      */
     public function delete($categoryId): bool
     {
+        $this->categoryVendorCheck($categoryId);
         if (!self::getRepository()->cascadeDelete($categoryId)) {
             return false;
         }

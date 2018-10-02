@@ -61,7 +61,7 @@ class CategoryCache extends BaseService
      */
     public static function set($key, $value)
     {
-        self::getCacheInstance()->save($key, $value, -1);
+        self::getCacheInstance()->save($key, $value, 1800);
     }
 
     public static function has($key)

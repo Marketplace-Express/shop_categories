@@ -11,13 +11,9 @@ use Phalcon\Flash\Direct as Flash;
  * Registering a router
  */
 $di->setShared('router', function () {
-
     $config = $this->getConfig();
-
     $router = new Router\Annotations(false);
     $router->addModuleResource('api', 'Shop_categories\Modules\Api\Controllers\Index', '/api/' . $config->api->version);
-    $router->addModuleResource('frontend', 'Shop_categories\Modules\Frontend\Controllers\Index', '/ui');
-
     return $router;
 });
 
@@ -75,7 +71,7 @@ $di->setShared('dispatcher', function() {
                 case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
                     $dispatcher->forward(
                         [
-                            'controller' => '\Shop_categories\Modules\Api\Controllers\Notfound',
+                            'controller' => '\Shop_categories\Controllers\Notfound',
                             'action'     => 'index'
                         ]
                     );
@@ -87,7 +83,7 @@ $di->setShared('dispatcher', function() {
                 case $exception instanceof \Phalcon\Mvc\Model\Exception:
                 case $exception instanceof PDOException:
                     $dispatcher->forward([
-                        'controller' => 'Shop_categories\Modules\Api\Controllers\exceptionHandler',
+                        'controller' => '\Shop_categories\Controllers\exceptionHandler',
                         'action' => 'serverError',
                         'params' => [$exception->getMessage()]
                     ]);

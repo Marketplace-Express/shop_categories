@@ -28,12 +28,6 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
      */
     private $parentId;
 
-    /**
-     * @var string $vendorId
-     * @required
-     */
-    private $vendorId;
-
     public $uuidUtil;
     public $validator;
     public $errorMessages = [];
@@ -66,14 +60,6 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     }
 
     /**
-     * @return string
-     */
-    public function getVendorId(): ?string
-    {
-        return $this->vendorId;
-    }
-
-    /**
      * @param string $name
      */
     public function setName(string $name): void
@@ -87,14 +73,6 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     public function setParentId(string $parentId): void
     {
         $this->parentId = $parentId;
-    }
-
-    /**
-     * @param string $vendorId
-     */
-    public function setVendorId(string $vendorId): void
-    {
-        $this->vendorId = $vendorId;
     }
 
     /**
@@ -139,20 +117,8 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
             ])
         );
 
-        $validator->add(
-            'vendorId',
-            new Validation\Validator\Callback([
-                'callback' => function ($data) {
-                    return $this->getUuidUtil()->isValid($data['vendorId']);
-                },
-                'message' => 'Provide a valid vendor Id',
-                'allowEmpty' => false
-            ])
-        );
-
         // Fields to be validated
         $fields['name'] = $this->getName();
-        $fields['vendorId'] = $this->getVendorId();
 
         if ($this->getParentId()) {
             $fields['parentId'] = $this->getParentId();
@@ -182,32 +148,32 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
             $message = $this->errorMessages;
         }
 
-        $this->response->setStatusCode(400)
+        http_response_code(400);
+        return $this->response
             ->setJsonContent([
                 'status' => 400,
                 'message' => $message
-            ])->send();
-        die();
+            ]);
     }
 
     public function successRequest($message = null)
     {
-        $this->response->setStatusCode(200)
+        http_response_code(200);
+        return $this->response
             ->setJsonContent([
                 'status' => 200,
                 'message' => $message
-            ])->send();
-        die();
+            ]);
     }
 
     public function notFound($message = 'Not Found')
     {
-        $this->response->setStatusCode(404)
+        http_response_code(404);
+        return $this->response
             ->setJsonContent([
                 'status' => 404,
                 'message' => $message
-            ])->send();
-        die();
+            ]);
     }
 
     public function toArray(): array
@@ -215,8 +181,7 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         $result = [
             'categoryId' => $this->getCategoryId(),
             'categoryParentId' => $this->getParentId(),
-            'categoryName' => $this->getName(),
-            'vendorId' => $this->getVendorId(),
+            'categoryName' => $this->getName()
         ];
 
         return $result;

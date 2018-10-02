@@ -67,17 +67,30 @@ class ControllerBase extends Controller
     }
 
     /**
-     * Forward client error response to ExceptionhandlerController
+     * Forward error response to ExceptionhandlerController
      * @param $errors
      * @param int $code
      */
     public function handleError($errors, $code = 500)
     {
         $this->dispatcher->forward([
-            'controller' => 'exceptionHandler',
+            'namespace' => 'Shop_categories\Controllers',
+            'controller' => 'exceptionhandler',
             'action' => 'raiseError',
             'params' => [$errors, $code]
         ]);
+    }
+
+    public function sendResponse($message, int $code = 400)
+    {
+        // response->setStatusCode slows down the performance
+        // replacing it with http_response_code
+        http_response_code($code);
+        return $this->response
+            ->setJsonContent([
+                'status' => $code,
+                'message' => $message
+            ]);
     }
 
     /**
