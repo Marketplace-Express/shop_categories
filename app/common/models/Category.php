@@ -122,7 +122,7 @@ class Category extends \Phalcon\Mvc\Model
     /**
      * @param int $categoryOrder
      */
-    public function setCategoryOrder(int $categoryOrder): void
+    public function setCategoryOrder(?int $categoryOrder): void
     {
         $this->categoryOrder = $categoryOrder;
     }
@@ -213,9 +213,9 @@ class Category extends \Phalcon\Mvc\Model
     }
 
     /**
-     * @return int
+     * @return null|int
      */
-    public function getCategoryOrder(): int
+    public function getCategoryOrder(): ?int
     {
         return $this->categoryOrder;
     }

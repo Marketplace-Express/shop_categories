@@ -17,6 +17,27 @@ class ExceptionhandlerController extends Controller
      */
     const LOG_FILE = 'app.log';
 
+    private $file;
+
+    /**
+     * @return File
+     */
+    public function getFile()
+    {
+        if (!$this->file) {
+            $this->file = new File($this->getDI()->get('config')->application->logsDir . self::LOG_FILE);
+        }
+        return $this->file;
+    }
+
+    /**
+     * @param mixed $file
+     */
+    public function setFile($file): void
+    {
+        $this->file = $file;
+    }
+
     /**
      * @param $errors
      * @param int $code
@@ -24,6 +45,9 @@ class ExceptionhandlerController extends Controller
      */
     public function raiseErrorAction($errors, $code)
     {
+        if (!is_array($errors) && !is_object($errors) && ($jsonError = json_decode($errors, true)) != null) {
+            $errors = $jsonError;
+        }
         // Log error
         $this->logError($errors);
 
@@ -40,7 +64,6 @@ class ExceptionhandlerController extends Controller
     public function logError($errors)
     {
         $errors = (is_array($errors)) ? implode('\n', $errors) : $errors;
-        (new File($this->getDI()->get('config')->application->logsDir . self::LOG_FILE))
-            ->log(\Phalcon\Logger::ERROR, $errors);
+        $this->getFile()->log(\Phalcon\Logger::ERROR, $errors);
     }
 }

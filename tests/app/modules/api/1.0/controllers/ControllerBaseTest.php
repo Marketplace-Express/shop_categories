@@ -7,29 +7,30 @@
 
 namespace Shop_categories\Tests\Modules\Api\Controllers;
 
-
+use PHPUnit\Framework\MockObject\MockObject;
 use Shop_categories\Modules\Api\Controllers\ControllerBase;
 
 class ControllerBaseTest extends \UnitTestCase
 {
-    /**
-     * @var ControllerBase $class
-     */
-    public $class;
 
     public function setUp()
     {
         parent::setUp();
-        $this->class = new ControllerBase();
+    }
+
+    public function getControllerMock(...$methods)
+    {
+        return $this->getMockBuilder(ControllerBase::class)
+            ->setMethods($methods)
+            ->getMock();
     }
 
     public function showPublicColumnsData()
     {
-        $this->setUp();
         return [
             [
-                ['invalidColumn' => 'value1', 'anotherInvalidColumn' => 'value2', 'notPublicColumn' => 'value3'],
-                []
+                ['invalidColumn' => 'value1', 'anotherInvalidColumn' => 'value2', 'notPublicColumn' => 'value3', 'categoryOrder' => 3],
+                ['categoryOrder' => 3]
             ],
             [
                 ['xColumn' => 'value1', 'categoryName' => 'value2', 'notValidColumn' => 'value3'],
@@ -44,8 +45,53 @@ class ControllerBaseTest extends \UnitTestCase
                 ['categoryName' => 'value1', 'categoryParentId' => 'value2']
             ],
             [
-                ['notPublicColumn' => 'value1', 'tokenSecret' => 'value2', 'categoryId' => 'value3'],
+                ['notPublicColumn' => 'value1', 'tokenSecret' => 'value2', 'categoryId' => 'value3', 'order' => 22],
                 ['categoryId' => 'value3']
+            ],
+            [
+                [
+                    'children' => [
+                        'column1' => 'value1',
+                        'column2' => 'value2',
+                        'categoryId' => '1234'
+                    ]
+                ],
+                [
+                    'children' => [
+                        'categoryId' => '1234'
+                    ]
+                ]
+            ],
+            [
+                [
+                    'children' => [
+                        'categoryId' => '1234',
+                        'children' => [
+                            'categoryName' => 'my category'
+                        ]
+                    ]
+                ],
+                [
+                    'children' => [
+                        'categoryId' => '1234',
+                        'children' => [
+                            'categoryName' => 'my category'
+                        ]
+                    ]
+                ]
+            ],
+            [
+                [
+                    'category1' => [
+                        'categoryId' => 'category1',
+                        'children' => null
+                    ]
+                ],
+                [
+                    'category1' => [
+                        'categoryId' => 'category1'
+                    ]
+                ]
             ]
         ];
     }
@@ -57,6 +103,9 @@ class ControllerBaseTest extends \UnitTestCase
      */
     public function testShowPublicColumns($actual, $expected)
     {
-        $this->assertEquals($expected, $this->class->showPublicColumns($actual));
+        /** @var ControllerBase|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('nothing');
+
+        $this->assertEquals($expected, $controllerMock->showPublicColumns($actual));
     }
 }

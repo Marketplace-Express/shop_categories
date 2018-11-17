@@ -1,15 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./TestHelper.php"
+<phpunit bootstrap="TestHelper.php"
          backupGlobals="false"
          backupStaticAttributes="false"
-         verbose="false"
+         verbose="true"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false">
-    <testsuite name="Shop_categories - TestSuite">
-        <directory>./tests/</directory>
+    <testsuite name="shop_categories">
+        <directory>./</directory>
+        <exclude>../app/common/library</exclude>
     </testsuite>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true"
+                   processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../app</directory>
+            <exclude>
+                <directory suffix=".php">../app/modules/cli</directory>
+                <directory suffix=".php">../app/migrations</directory>
+                <directory suffix=".php">../app/config</directory>
+                <directory suffix=".php">../app/common/library</directory>
+                <file>../app/bootstrap_cli.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

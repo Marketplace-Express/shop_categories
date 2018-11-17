@@ -4,7 +4,8 @@
         "ext-pdo": "*",
         "ramsey/uuid": "3.8.0",
         "phalcon/incubator": "^3.4",
-        "netresearch/jsonmapper": "^1.4"
+        "netresearch/jsonmapper": "^1.4",
+        "ext-json": "*"
     },
     "require-dev": {
         "phalcon/ide-stubs": "^3.4",
