@@ -9,6 +9,7 @@
 namespace Shop_categories\RequestHandler;
 
 use Phalcon\Validation;
+use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\Modules\Api\Controllers\ControllerBase;
 use Shop_categories\Utils\UuidUtil;
 
@@ -23,6 +24,9 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
      * @var string|null $parentId
      */
     private $parentId;
+
+    /** @var int $order */
+    private $order;
 
 
     public $validator;
@@ -45,6 +49,11 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
         return $this->parentId;
     }
 
+    public function getOrder(): ?int
+    {
+        return $this->order;
+    }
+
     /**
      * @param string $name
      */
@@ -59,6 +68,11 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
     public function setParentId(?string $parentId): void
     {
         $this->parentId = $parentId;
+    }
+
+    public function setOrder(?int $order): void
+    {
+        $this->order = $order;
     }
 
     /**
@@ -93,6 +107,13 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
             ])
         );
 
+        $validator->add(
+            'order',
+            new Validation\Validator\Numericality([
+                'allowEmpty' => true
+            ])
+        );
+
         if (isset($this->name)) {
             $validator->add(
                 'name',
@@ -112,10 +133,16 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
         if (!is_null($this->parentId)) {
             $fields['parentId'] = $this->getParentId();
         }
+        if ($this->getOrder()) {
+            $fields['order'] = $this->getOrder();
+        }
 
         return $validator->validate($fields);
     }
 
+    /**
+     * @return bool
+     */
     public function isValid() : bool
     {
         $messages = $this->validate();
@@ -131,16 +158,20 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
         return true;
     }
 
+    /**
+     * @param string $message
+     * @throws \Exception
+     */
     public function notFound($message = 'Not Found!')
     {
         http_response_code(404);
-        return $this->response
-            ->setJsonContent([
-                'status' => 404,
-                'message' => $message
-            ]);
+        throw new \Exception($message, 404);
     }
 
+    /**
+     * @param null $message
+     * @throws ArrayOfStringsException
+     */
     public function invalidRequest($message = null)
     {
         if (is_null($message)) {
@@ -148,23 +179,25 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
         }
 
         http_response_code(400);
-        return $this->response
-            ->setJsonContent([
-                'status' => 400,
-                'message' => $message
-            ]);
+        throw new ArrayOfStringsException($message, 400);
     }
 
+    /**
+     * @param null $message
+     */
     public function successRequest($message = null)
     {
         http_response_code(200);
-        return $this->response
+        $this->response
             ->setJsonContent([
                 'status' => 200,
                 'message' => $message
             ]);
     }
 
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
         $result = [];
@@ -175,6 +208,10 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
 
         if (array_key_exists('parentId', $this->request->getJsonRawBody(true))) {
             $result['categoryParentId'] = $this->getParentId();
+        }
+
+        if (!empty($this->getOrder())) {
+            $result['categoryOrder'] = $this->getOrder();
         }
 
         return $result;

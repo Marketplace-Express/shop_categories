@@ -31,9 +31,24 @@ $loader->registerDirs(
 );
 
 $loader->registerNamespaces([
-    'Shop_categories\Modules\Api\Controllers' => ROOT_PATH . '/../app/modules/api/1.0/controllers',
+    'Shop_categories\Models' => ROOT_PATH . '/../app/common/models',
+    'Shop_categories\Controllers' => ROOT_PATH . '/../app/common/controllers',
+    'Shop_categories\Helpers' => ROOT_PATH . '/../app/common/helpers',
+    'Shop_categories\Repositories' => ROOT_PATH . '/../app/common/repositories',
+    'Shop_categories\Models\Behaviors' => ROOT_PATH . '/../app/common/models/behaviors',
+    'Shop_categories\Traits' => ROOT_PATH . '/../app/common/traits',
     'Shop_categories\Services' => ROOT_PATH . '/../app/common/services',
+    'Shop_categories\Services\Cache' => ROOT_PATH . '/../app/common/services/cache',
+    'Shop_categories\Services\Cache\Utils' => ROOT_PATH . '/../app/common/services/cache/utils',
     'Shop_categories\RequestHandler' => ROOT_PATH . '/../app/common/request-handler',
+    'Shop_categories\Modules\Api\Controllers' => ROOT_PATH . '/../app/modules/api/1.0/controllers',
+    'Shop_categories\Utils' => ROOT_PATH . '/../app/common/utils'
+]);
+
+$loader->registerClasses([
+    'Shop_categories\Tests\Mocks\RequestMock' => ROOT_PATH . '/mocks/RequestMock.php',
+    'Shop_categories\Tests\Mocks\ResponseMock' => ROOT_PATH . '/mocks/ResponseMock.php',
+    'Shop_categories\Exceptions\ArrayOfStringsException' => ROOT_PATH . '/../app/common/exceptions/ArrayOfStringsException.php'
 ]);
 
 $loader->register();

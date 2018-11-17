@@ -5,7 +5,6 @@ use Shop_categories\RequestHandler\CreateRequestHandler;
 use Shop_categories\RequestHandler\DeleteRequestHandler;
 use Shop_categories\RequestHandler\GetRequestHandler;
 use Shop_categories\RequestHandler\UpdateRequestHandler;
-use JsonMapper_Exception;
 
 /**
  * @RoutePrefix("/api/1.0/")
@@ -14,6 +13,7 @@ class IndexController extends ControllerBase
 {
     /**
      * @throws \Exception
+     * @codeCoverageIgnore
      */
     public function initialize()
     {
@@ -24,7 +24,7 @@ class IndexController extends ControllerBase
         if (empty($vendorId = $this->request->getQuery('vendorId'))) {
             $this->sendResponse('Please provide a valid vendor Id', 400);
         }
-        $this->getService()::setVendorId($vendorId);
+        $this->getService()->setVendorId($vendorId);
     }
 
     /**
@@ -155,11 +155,11 @@ class IndexController extends ControllerBase
             $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateRequestHandler());
 
             if (!$request->isValid()) {
-                die($request->invalidRequest()->send());
+                $request->invalidRequest();
             }
 
             $category = $this->getService()->create($request->toArray());
-            $request->successRequest($this->showPublicColumns($category->toArray()));
+            $request->successRequest($this->showPublicColumns($category));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -177,11 +177,11 @@ class IndexController extends ControllerBase
             $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateRequestHandler());
 
             if (!$request->isValid()) {
-                die($request->invalidRequest()->send());
+                $request->invalidRequest();
             }
 
             $category = $this->getService()->update($categoryId, $request->toArray());
-            $request->successRequest($this->showPublicColumns($category->toArray()));
+            $request->successRequest($this->showPublicColumns($category));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }

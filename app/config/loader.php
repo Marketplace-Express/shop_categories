@@ -14,6 +14,7 @@ $loader->registerNamespaces([
     'Shop_categories\Helpers' => APP_PATH . '/common/helpers/',
     'Shop_categories\Traits' => APP_PATH . '/common/traits/',
     'Shop_categories\Utils' => APP_PATH . '/common/utils/',
+    'Shop_categories\Exceptions' => APP_PATH . '/common/exceptions/',
     'Shop_categories\Repositories' => APP_PATH . '/common/repositories/',
     'Shop_categories\RequestHandler' => APP_PATH . '/common/request-handler/',
     'Shop_categories\Services' => APP_PATH . '/common/services/',

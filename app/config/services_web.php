@@ -4,7 +4,6 @@ use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Router;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
-use Phalcon\Logger\Adapter\File;
 use Phalcon\Flash\Direct as Flash;
 
 /**

@@ -4,7 +4,7 @@
  * Date: 28/09/18
  * Time: 05:57 م
  */
-namespace Shop_categories\models\behaviors;
+namespace Shop_categories\Models\Behaviors;
 
 interface BaseBehavior
 {

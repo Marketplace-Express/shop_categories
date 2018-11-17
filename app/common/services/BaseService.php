@@ -87,7 +87,7 @@ class BaseService
     /**
      * @param string $vendorId
      */
-    public static function setVendorId(string $vendorId): void
+    public function setVendorId(string $vendorId): void
     {
         self::$vendorId = $vendorId;
     }

@@ -15,7 +15,7 @@ class ControllerBase extends Controller
     /**
      * Columns to be returned
      */
-    const PUBLIC_COLUMNS = ['categoryId', 'categoryName', 'categoryParentId'];
+    const PUBLIC_COLUMNS = ['categoryId', 'categoryName', 'categoryParentId', 'categoryOrder'];
 
     /**
      * @var \JsonMapper $jsonMapper
@@ -29,26 +29,29 @@ class ControllerBase extends Controller
 
     /**
      * @return \JsonMapper
+     * @codeCoverageIgnore
      */
     public function getJsonMapper(): \JsonMapper
     {
         if (!$this->jsonMapper) {
-            $this->setJsonMapper(new \JsonMapper());
+            $this->jsonMapper = new \JsonMapper();
         }
+        $this->jsonMapper->bExceptionOnUndefinedProperty = true;
         return $this->jsonMapper;
     }
 
     /**
      * @param \JsonMapper $jsonMapper
+     * @codeCoverageIgnore
      */
     public function setJsonMapper(\JsonMapper $jsonMapper): void
     {
         $this->jsonMapper = $jsonMapper;
-        $this->jsonMapper->bExceptionOnUndefinedProperty = true;
     }
 
     /**
      * @return CategoryService
+     * @codeCoverageIgnore
      */
     public function getService(): CategoryService
     {
@@ -60,6 +63,7 @@ class ControllerBase extends Controller
 
     /**
      * @param CategoryService $service
+     * @codeCoverageIgnore
      */
     public function setService(CategoryService $service): void
     {
@@ -70,6 +74,7 @@ class ControllerBase extends Controller
      * Forward error response to ExceptionhandlerController
      * @param $errors
      * @param int $code
+     * @codeCoverageIgnore
      */
     public function handleError($errors, $code = 500)
     {
@@ -81,6 +86,12 @@ class ControllerBase extends Controller
         ]);
     }
 
+    /**
+     * @param $message
+     * @param int $code
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     * @codeCoverageIgnore
+     */
     public function sendResponse($message, int $code = 400)
     {
         // response->setStatusCode slows down the performance
@@ -101,10 +112,9 @@ class ControllerBase extends Controller
     public function showPublicColumns(array $rows)
     {
         $result = [];
-
-        // Multi-dimensional array
         foreach ($rows as $key => $row) {
             if (is_array($row)) {
+                // Multi-dimensional array
                 foreach ($row as $index => $item) {
                     if (is_array($item)) {
                         $result[$key][$index] = $this->showPublicColumns($item);
@@ -117,7 +127,6 @@ class ControllerBase extends Controller
                 $result = array_intersect_key($rows, array_flip(self::PUBLIC_COLUMNS));
             }
         }
-
         return $result;
     }
 }

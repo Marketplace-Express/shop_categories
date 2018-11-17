@@ -22,7 +22,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
     /**
      * @var AdapterInterface|null
      */
-    private $adapter;
+    private $db;
 
     private $params;
     private $itemIdAttribute = 'item_id';
@@ -33,6 +33,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
     private $subItemsSlug = 'children';
     private $noParentValue = null;
 
+    /** @var ModelInterface $owner */
     private $owner;
 
     /**
@@ -72,6 +73,30 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
     }
 
     /**
+     * Gets DB handler.
+     *
+     * @param ModelInterface $model
+     * @return AdapterInterface
+     * @throws \Exception
+     */
+    private function getDbHandler(ModelInterface $model)
+    {
+        if (!$this->db instanceof AdapterInterface) {
+            if ($model->getDi()->has('db')) {
+                $db = $model->getDi()->getShared('db');
+                if (!$db instanceof AdapterInterface) {
+                    throw new \Exception('The "db" service which was obtained from DI is invalid adapter.');
+                }
+                $this->db = $db;
+            } else {
+                throw new \Exception('Undefined database handler.');
+            }
+        }
+
+        return $this->db;
+    }
+
+    /**
      * Calls a method when it's missing in the model
      *
      * @param ModelInterface $model
@@ -85,6 +110,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
         if (!method_exists($this, $method)) {
             return null;
         }
+        $this->getDbHandler($model);
         $this->setOwner($model);
         return call_user_func_array([$this, $method], $arguments);
     }
@@ -117,6 +143,22 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
         }
 
         throw new \Exception('Model missing columnMap method');
+    }
+
+    /**
+     * Check if target is descendant of item
+     * @param $itemId
+     * @param $targetId
+     * @return bool
+     * @throws \Exception
+     */
+    public function isDescendant($itemId, $targetId)
+    {
+        $descendants = array_column($this->descendants($itemId, true, false), $this->itemIdAttribute);
+        if (in_array($targetId, $descendants)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -278,12 +320,15 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
     public function cascadeDelete(string $itemId)
     {
         $descendants = $this->descendants($itemId, false);
+        $this->db->begin();
         if ($descendants) {
             foreach ($descendants as $item) {
                 if (!$item->delete()) {
+                    $this->db->rollback();
                     throw new \Exception("Item {$item->get{ucfirst($this->itemIdAttribute)}()} could not be deleted");
                 }
             }
+            $this->db->commit();
             return true;
         }
         throw new \Exception("Item not found or maybe deleted", 404);
@@ -304,9 +349,23 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
      *
      * @param string $type
      * @param \Phalcon\Mvc\ModelInterface $model
+     * @throws \Exception
      */
     public function notify($type, ModelInterface $model)
     {
-        // TODO: Implement notify() method.
+        $this->setOwner($model);
+        $this->owner = $model;
+        switch ($type) {
+            case 'beforeValidationOnUpdate':
+                $categoryId = $model->{"get".ucfirst($this->itemIdAttribute)}();
+                $parentId = $model->{"get".ucfirst($this->parentIdAttribute)}();
+                $isDeleted = $model->{"get".ucfirst($this->isDeletedAttribute)}();
+                if (!empty($parentId) && !boolval($isDeleted)) {
+                    if ($this->isDescendant($categoryId, $parentId)) {
+                        throw new \Exception('Target parent should not be descendant of this category', 400);
+                    }
+                }
+                break;
+        }
     }
 }

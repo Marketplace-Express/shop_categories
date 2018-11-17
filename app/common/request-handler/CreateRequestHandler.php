@@ -8,6 +8,7 @@
 namespace Shop_categories\RequestHandler;
 
 use Phalcon\Validation;
+use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\Modules\Api\Controllers\ControllerBase;
 use Shop_categories\Utils\UuidUtil;
 
@@ -22,6 +23,9 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
      * @var string $name
      */
     private $name;
+
+    /** @var int $order */
+    private $order;
 
     /**
      * @var string $parentId
@@ -59,6 +63,11 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         return $this->parentId;
     }
 
+    public function getOrder(): ?int
+    {
+        return $this->order;
+    }
+
     /**
      * @param string $name
      */
@@ -73,6 +82,11 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     public function setParentId(string $parentId): void
     {
         $this->parentId = $parentId;
+    }
+
+    public function setOrder(?int $order): void
+    {
+        $this->order = $order;
     }
 
     /**
@@ -101,7 +115,7 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
                 'min' => 3,
                 'max' => 100,
                 'message' => 'Invalid category name',
-                'messageMinimum' => 'Category name should be at least 5 characters',
+                'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters'
             ])
         );
@@ -117,6 +131,13 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
             ])
         );
 
+        $validator->add(
+            'order',
+            new Validation\Validator\Numericality([
+                'allowEmpty' => true
+            ])
+        );
+
         // Fields to be validated
         $fields['name'] = $this->getName();
 
@@ -124,9 +145,16 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
             $fields['parentId'] = $this->getParentId();
         }
 
+        if ($this->getOrder()) {
+            $fields['order'] = $this->getOrder();
+        }
+
         return $validator->validate($fields);
     }
 
+    /**
+     * @return bool
+     */
     public function isValid() : bool
     {
         $messages = $this->validate();
@@ -142,6 +170,10 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         return true;
     }
 
+    /**
+     * @param null $message
+     * @throws ArrayOfStringsException
+     */
     public function invalidRequest($message = null)
     {
         if (is_null($message)) {
@@ -149,13 +181,13 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         }
 
         http_response_code(400);
-        return $this->response
-            ->setJsonContent([
-                'status' => 400,
-                'message' => $message
-            ]);
+        throw new ArrayOfStringsException($message, 400);
     }
 
+    /**
+     * @param null $message
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     */
     public function successRequest($message = null)
     {
         http_response_code(200);
@@ -166,22 +198,26 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
             ]);
     }
 
+    /**
+     * @param string $message
+     * @throws \Exception
+     */
     public function notFound($message = 'Not Found')
     {
         http_response_code(404);
-        return $this->response
-            ->setJsonContent([
-                'status' => 404,
-                'message' => $message
-            ]);
+        throw new \Exception($message, 404);
     }
 
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
         $result = [
             'categoryId' => $this->getCategoryId(),
             'categoryParentId' => $this->getParentId(),
-            'categoryName' => $this->getName()
+            'categoryName' => $this->getName(),
+            'categoryOrder' => $this->getOrder()
         ];
 
         return $result;

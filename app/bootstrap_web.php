@@ -63,6 +63,7 @@ try {
     echo ($application->handle()->getContent());
 
 } catch (\Exception $e) {
-    echo $e->getMessage() . '<br>';
-    echo '<pre>' . $e->getTraceAsString() . '</pre>';
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 500, 'message' => $e->getMessage()]);
 }

@@ -18,8 +18,8 @@ class NotfoundController extends Controller
 {
     public function indexAction()
     {
+        http_response_code(404);
         return $this->response
-            ->setStatusCode(404)
             ->setJsonContent([
                 'status' => 404,
                 'message' => 'API not found'

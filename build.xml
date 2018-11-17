@@ -21,7 +21,7 @@
     </target>
 
     <target name="phpunit" unless="phpunit.done" description="Run unit tests with PHPUnit.">
-        <exec executable="${phpunit}" resultproperty="result.phpunit" taskname="phpunit">
+        <exec executable="${phpunit}" resultproperty="result.phpunit" taskname="phpunit" dir="${basedir}/tests/" failonerror="true">
             <arg value="--configuration"/>
             <arg path="${basedir}/tests/phpunit.xml"/>
             <arg path="tests"/>
@@ -30,9 +30,9 @@
     </target>
 
     <target name="phpunit-coverage" depends="chmod-build">
-        <exec executable="${basedir}/protected/vendor/bin/phpunit" dir="${basedir}/protected/tests/" failonerror="true">
+        <exec executable="${phpunit}" dir="${basedir}/tests/" failonerror="true">
             <arg line="--coverage-html" />
-            <arg line="${basedir}/build/phpunit-reports" />
+            <arg line="${basedir}/../phpunit-reports/shop_categories" />
         </exec>
     </target>
 

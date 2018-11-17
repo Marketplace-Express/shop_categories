@@ -1,185 +1,532 @@
 <?php
 /**
  * User: Wajdi Jurry
- * Date: 20/08/18
- * Time: 05:19 م
+ * Date: 19/10/18
+ * Time: 12:21 م
  */
 
 namespace Shop_categories\Tests\Modules\Api\Controllers;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\Modules\Api\Controllers\IndexController;
-use Shop_categories\Repositories\CategoryRepository;
+use Shop_categories\RequestHandler\CreateRequestHandler;
+use Shop_categories\RequestHandler\DeleteRequestHandler;
+use Shop_categories\RequestHandler\GetRequestHandler;
+use Shop_categories\RequestHandler\UpdateRequestHandler;
 use Shop_categories\Services\CategoryService;
-use Shop_categories\RequestHandlers\GetRequestValidator;
 
 class IndexControllerTest extends \UnitTestCase
 {
+    const VENDOR_ID = 'd9423ce9-bf98-432b-bb00-1c31d4e50e14';
+    const CATEGORY_ID = '92aaf1e3-ed52-44ad-ac2a-f7c8d2b08a6d';
 
-    /**
-     * @var IndexController $class
-     */
-    public $class;
-
-    public $repoMock;
-
-    const VENDOR_ID = '00492bc1-d22d-47b1-9372-8bc2ebf3c12d';
-
-    public $categories;
-
+    public $jsonRawBody;
     public function setUp()
     {
         parent::setUp();
-        $this->class = new IndexController();
-        $this->class->initialize();
-
-        $this->categories = json_decode('[
-            {
-                "categoryId": "0b644e0a-754d-4b8c-b095-7a35a49abc16",
-                "categoryName": "Sub parent",
-                "categoryParentId": "0b644e0a-754d-4b8c-b095-7a35a49abc16"
-            },
-            {
-                "categoryId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45",
-                "categoryName": "Parent Category",
-                "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45",
-                "children": [
-                    {
-                        "categoryId": "cd6df4dc-a117-45c6-9a41-8a4293556042",
-                        "categoryName": "Sub Category 1",
-                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45",
-                        "children": [
-                            {
-                                "categoryId": "1d96fd93-dbfa-45cb-8a22-e05f47eca1ff",
-                                "categoryName": "Sub Category 1_1",
-                                "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45"
-                            }
-                        ]
-                    },
-                    {
-                        "categoryId": "4422b64e-b6e3-4d42-8cee-50c5b57e5f3d",
-                        "categoryName": "Sub Category 2",
-                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45",
-                        "children": [
-                            {
-                                "categoryId": "bae56c0e-ad41-4c95-97ed-bece419794b5",
-                                "categoryName": "Sub Category 2_1",
-                                "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45"
-                            },
-                            {
-                                "categoryId": "3b02a7d8-3776-46eb-9872-b10c01f43962",
-                                "categoryName": "Sub Category 2_2",
-                                "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45",
-                                "children": [
-                                    {
-                                        "categoryId": "d123c7c7-535e-445b-87a4-a53f675e1aa6",
-                                        "categoryName": "Sub Category 2_2_1",
-                                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45"
-                                    },
-                                    {
-                                        "categoryId": "60e46489-a4df-4461-b38b-9685f20db9c8",
-                                        "categoryName": "Test 1",
-                                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45"
-                                    },
-                                    {
-                                        "categoryId": "10d8ccf4-493e-4cdf-b2b9-fbcdded9220b",
-                                        "categoryName": "Test 2",
-                                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45"
-                                    },
-                                    {
-                                        "categoryId": "8de77fd2-ae32-432e-b752-2da2776b049a",
-                                        "categoryName": "Test 3",
-                                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45",
-                                        "children": [
-                                            {
-                                                "categoryId": "a11d8f14-0cda-487f-a9fe-015b141bceb7",
-                                                "categoryName": "Sub Test 3",
-                                                "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "categoryId": "86ec623d-47fe-43cc-bdb5-dd834d4bd0a2",
-                        "categoryName": "Sub Category 3",
-                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45",
-                        "children": [
-                            {
-                                "categoryId": "a82dc6ef-72f8-46d8-ac1e-738b7145b1ce",
-                                "categoryName": "Sub Category 3_1",
-                                "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45",
-                                "children": [
-                                    {
-                                        "categoryId": "592fbff7-33ea-41ce-b082-3862fe92ef49",
-                                        "categoryName": "Sub Category 3_1_1",
-                                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45"
-                                    }
-                                ]
-                            },
-                            {
-                                "categoryId": "6c9e263f-ef3f-4eb3-8d5b-c07bba4459a7",
-                                "categoryName": "Sub Category 3_2",
-                                "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45",
-                                "children": [
-                                    {
-                                        "categoryId": "ee68f439-b863-43a4-8df4-c347b575218a",
-                                        "categoryName": "Sub Category 3_2_1",
-                                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "categoryId": "7b18a6c7-a4c9-41cc-aadc-e0abde15662d",
-                        "categoryName": "Sub parent",
-                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45"
-                    },
-                    {
-                        "categoryId": "a527966a-0f1d-41f1-a8e8-bd0552687f03",
-                        "categoryName": "Sub parent",
-                        "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45",
-                        "children": [
-                            {
-                                "categoryId": "2e3cc01a-5a1d-48ea-a450-6cceab691133",
-                                "categoryName": "Test test",
-                                "categoryParentId": "44eec2a3-7ca5-4e27-ab0f-3294a4fdad45"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]', true);
+        $this->jsonRawBody = new \stdClass();
+        $this->jsonRawBody->name = 'sample category';
+        $this->jsonRawBody->parentId = 'a06c62f3-9398-438f-a563-f188f509b577';
     }
 
-    public function getServiceMock(string ...$methods)
+    public function getControllerMock(...$methods)
+    {
+        return $this->getMockBuilder(IndexController::class)
+            ->disableOriginalConstructor()
+            ->setMethods($methods)
+            ->getMock();
+    }
+
+    public function getJsonMapperMock(...$methods)
+    {
+        return $this->getMockBuilder(\JsonMapper::class)
+            ->setMethods($methods)
+            ->getMock();
+    }
+
+    public function getGetRequestHandlerMock(...$methods)
+    {
+        return $this->getMockBuilder(GetRequestHandler::class)
+            ->setMethods($methods)
+            ->getMock();
+    }
+
+    public function getCreateRequestHandlerMock(...$methods)
+    {
+        return $this->getMockBuilder(CreateRequestHandler::class)
+            ->setMethods($methods)
+            ->getMock();
+    }
+
+    public function getUpdateRequestHandlerMock(...$methods)
+    {
+        return $this->getMockBuilder(CreateRequestHandler::class)
+            ->setMethods($methods)
+            ->getMock();
+    }
+
+    public function getDeleteRequestHandlerMock(...$methods)
+    {
+        return $this->getMockBuilder(DeleteRequestHandler::class)
+            ->setMethods($methods)
+            ->getMock();
+    }
+
+    public function getServiceMock(...$methods)
     {
         return $this->getMockBuilder(CategoryService::class)
             ->setMethods($methods)
             ->getMock();
     }
 
-    public function getRepoMock(string ...$methods)
+    public function testRootsAction()
     {
-        return $this->getMockBuilder(CategoryRepository::class)
-            ->setMethods($methods)
-            ->getMock();
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('showPublicColumns');
+
+        /** @var GetRequestHandler|MockObject $getGetRequestHandlerMock */
+        $getGetRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
+        $getGetRequestHandlerMock->expects(self::once())->method('successRequest');
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects($this->once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getGetRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getRoots');
+        $serviceMock->expects(self::once())->method('getRoots')->willReturn([]);
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
+        $controllerMock->rootsAction();
     }
 
-    public function getJsonMapperMock(string ...$methods)
+    public function testRootsActionWithException()
     {
-        return$this->getMockBuilder(\JsonMapper::class)
-            ->disableOriginalConstructor()
-            ->setMethods($methods)
-            ->getMock();
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('handleError');
+
+        /** @var GetRequestHandler|MockObject $getGetRequestHandlerMock */
+        $getGetRequestHandlerMock = $this->getGetRequestHandlerMock();
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getGetRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getRoots');
+        $serviceMock->expects(self::once())->method('getRoots')->willThrowException(new \Exception('No categories found', 404));
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('handleError')->with('No categories found', 404);
+        $controllerMock->rootsAction();
     }
 
-    public function getGetRequestValidatorMock(string ...$methods)
+    public function testDefendantsAction()
     {
-        return $this->getMockBuilder(GetRequestValidator::class)
-            ->setMethods($methods)
-            ->getMock();
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('showPublicColumns');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
+        $getRequestHandlerMock->expects(self::once())->method('successRequest');
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getDescendants');
+        $serviceMock->expects(self::once())->method('getDescendants')->with(self::CATEGORY_ID)->willReturn([]);
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
+        $controllerMock->descendantsAction(self::CATEGORY_ID);
+    }
+
+    public function testDefendantsActionWithException()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('handleError');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock();
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getDescendants');
+        $serviceMock->expects(self::once())->method('getDescendants')->willThrowException(new \Exception('Category not found or maybe deleted', 404));
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('handleError')->with('Category not found or maybe deleted', 404);
+        $controllerMock->descendantsAction(self::CATEGORY_ID);
+    }
+
+    public function testGetAction()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('showPublicColumns');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
+        $getRequestHandlerMock->expects(self::once())->method('successRequest');
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getCategory');
+        $serviceMock->expects(self::once())->method('getCategory')->with(self::CATEGORY_ID)->willReturn([]);
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
+        $controllerMock->getAction(self::CATEGORY_ID);
+    }
+
+    public function testGetActionWithException()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('handleError');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock();
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getCategory');
+        $serviceMock->expects(self::once())->method('getCategory')->willThrowException(new \Exception('Category not found or maybe deleted', 404));
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('handleError')->with('Category not found or maybe deleted', 404);
+        $controllerMock->getAction(self::CATEGORY_ID);
+    }
+
+    public function testParentAction()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('showPublicColumns');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
+        $getRequestHandlerMock->expects(self::once())->method('successRequest');
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getParent');
+        $serviceMock->expects(self::once())->method('getParent')->with(self::CATEGORY_ID)->willReturn([]);
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
+        $controllerMock->parentAction(self::CATEGORY_ID);
+    }
+
+    public function testParentActionWithException()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('handleError');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock();
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getParent');
+        $serviceMock->expects(self::once())->method('getParent')->willThrowException(new \Exception('Category not found or maybe deleted', 404));
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('handleError')->with('Category not found or maybe deleted', 404);
+        $controllerMock->parentAction(self::CATEGORY_ID);
+    }
+
+    public function testParentsAction()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('showPublicColumns');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
+        $getRequestHandlerMock->expects(self::once())->method('successRequest');
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getParents');
+        $serviceMock->expects(self::once())->method('getParents')->with(self::CATEGORY_ID)->willReturn([]);
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
+        $controllerMock->parentsAction(self::CATEGORY_ID);
+    }
+
+    public function testParentsActionWithException()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('handleError');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock();
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getParents');
+        $serviceMock->expects(self::once())->method('getParents')->willThrowException(new \Exception('Category not found or maybe deleted', 404));
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('handleError')->with('Category not found or maybe deleted', 404);
+        $controllerMock->parentsAction(self::CATEGORY_ID);
+    }
+
+    public function testGetAllAction()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('showPublicColumns');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
+        $getRequestHandlerMock->expects(self::once())->method('successRequest');
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getAll');
+        $serviceMock->expects(self::once())->method('getAll')->willReturn([]);
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
+        $controllerMock->getAllAction();
+    }
+
+    public function testGetAllActionWithException()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('handleError');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock();
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getAll');
+        $serviceMock->expects(self::once())->method('getAll')->willThrowException(new \Exception('No categories found', 404));
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('handleError')->with('No categories found', 404);
+        $controllerMock->getAllAction();
+    }
+
+    public function testChildrenAction()
+    {
+
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('showPublicColumns');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
+        $getRequestHandlerMock->expects(self::once())->method('successRequest');
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getChildren');
+        $serviceMock->expects(self::once())->method('getChildren')->with(self::CATEGORY_ID)->willReturn([]);
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
+        $controllerMock->childrenAction(self::CATEGORY_ID);
+    }
+
+    public function testChildrenActionWithException()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('handleError');
+
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock();
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('getChildren');
+        $serviceMock->expects(self::once())->method('getChildren')->with(self::CATEGORY_ID)->willThrowException(new \Exception('Category not found or maybe deleted', 404));
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('handleError')->with('Category not found or maybe deleted', 404);
+        $controllerMock->childrenAction(self::CATEGORY_ID);
+    }
+
+    public function testCreateAction()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('showPublicColumns');
+
+        $request = $this->di->get('request');
+        $request->setJsonRawBody($this->jsonRawBody);
+
+        /** @var CreateRequestHandler|MockObject $createRequestHandlerMock */
+        $createRequestHandlerMock = $this->getCreateRequestHandlerMock('isValid', 'toArray', 'successRequest');
+        $createRequestHandlerMock->expects(self::once())->method('isValid')->willReturn(true);
+        $createRequestHandlerMock->expects(self::once())->method('toArray')->willReturn((array) $request->getJsonRawBody());
+        $createRequestHandlerMock->expects(self::once())->method('successRequest');
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new CreateRequestHandler())->willReturn($createRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('create');
+        $serviceMock->expects(self::once())->method('create')->with((array) $request->getJsonRawBody())->willReturn((array) $request->getJsonRawBody());
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('showPublicColumns')->with((array) $this->jsonRawBody)->willReturn((array)$this->jsonRawBody);
+        $controllerMock->createAction();
+    }
+
+    public function testCreateActionWithInvalidRequest()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('handleError');
+
+        $request = $this->di->get('request');
+        $request->setJsonRawBody($this->jsonRawBody);
+
+        /** @var CreateRequestHandler|MockObject $createRequestHandlerMock */
+        $createRequestHandlerMock = $this->getCreateRequestHandlerMock('isValid', 'invalidRequest');
+        $createRequestHandlerMock->expects(self::once())->method('isValid')->willReturn(false);
+        $createRequestHandlerMock->expects(self::once())->method('invalidRequest')->willThrowException(new ArrayOfStringsException(['Invalid request'], 400));
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new CreateRequestHandler())->willReturn($createRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        $controllerMock->expects(self::once())->method('handleError')->with(json_encode(['Invalid request']), 400);
+        $controllerMock->createAction();
+    }
+
+    public function testUpdateAction()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('showPublicColumns');
+
+        $request = $this->di->get('request');
+        $request->setJsonRawBody($this->jsonRawBody);
+
+        /** @var UpdateRequestHandler|MockObject $updateRequestHandlerMock */
+        $updateRequestHandlerMock = $this->getUpdateRequestHandlerMock('isValid', 'toArray', 'successRequest');
+        $updateRequestHandlerMock->expects(self::once())->method('isValid')->willReturn(true);
+        $updateRequestHandlerMock->expects(self::once())->method('toArray')->willReturn((array) $request->getJsonRawBody());
+        $updateRequestHandlerMock->expects(self::once())->method('successRequest');
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new UpdateRequestHandler())->willReturn($updateRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('update');
+        $serviceMock->expects(self::once())->method('update')->with(self::CATEGORY_ID, (array) $request->getJsonRawBody())->willReturn((array) $request->getJsonRawBody());
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('showPublicColumns')->with((array) $request->getJsonRawBody())->willReturn((array) $request->getJsonRawBody());
+        $controllerMock->updateAction(self::CATEGORY_ID);
+    }
+
+    public function testUpdateActionWithInvalidRequest()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('handleError');
+
+        $request = $this->di->get('request');
+        $request->setJsonRawBody($this->jsonRawBody);
+
+        $updateRequestHandlerMock = $this->getUpdateRequestHandlerMock('isValid', 'invalidRequest');
+        $updateRequestHandlerMock->expects(self::once())->method('isValid')->willReturn(false);
+        $updateRequestHandlerMock->expects(self::once())->method('invalidRequest')->willThrowException(new ArrayOfStringsException(['Invalid request'], 400));
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new UpdateRequestHandler())->willReturn($updateRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        $controllerMock->expects(self::once())->method('handleError')->with(json_encode(['Invalid request']), 400);
+        $controllerMock->updateAction(self::CATEGORY_ID);
+    }
+
+    public function testDeleteAction()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('nothing');
+
+        $deleteRequestHandlerMock = $this->getDeleteRequestHandlerMock('successRequest');
+        $deleteRequestHandlerMock->expects(self::once())->method('successRequest');
+
+        /** @var \JsonMapper|MockObject $jsonMapperMock */
+        $jsonMapperMock = $this->getJsonMapperMock('map');
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new DeleteRequestHandler())->willReturn($deleteRequestHandlerMock);
+        $controllerMock->setJsonMapper($jsonMapperMock);
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('delete');
+        $serviceMock->expects(self::once())->method('delete')->with(self::CATEGORY_ID);
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->deleteAction(self::CATEGORY_ID);
+    }
+
+    public function testDeleteActionWithException()
+    {
+        /** @var IndexController|MockObject $controllerMock */
+        $controllerMock = $this->getControllerMock('handleError');
+
+        /** @var CategoryService|MockObject $serviceMock */
+        $serviceMock = $this->getServiceMock('delete');
+        $serviceMock->expects(self::once())->method('delete')->with(self::CATEGORY_ID)->willThrowException(new \Exception('Category not found or maybe deleted', 404));
+        $controllerMock->setService($serviceMock);
+
+        $controllerMock->expects(self::once())->method('handleError')->with('Category not found or maybe deleted', 404);
+        $controllerMock->deleteAction(self::CATEGORY_ID);
     }
 }

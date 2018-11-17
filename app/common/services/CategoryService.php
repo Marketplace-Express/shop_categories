@@ -161,10 +161,10 @@ class CategoryService extends BaseService
     /**
      * Create category
      * @param array $data
-     * @return CategoryRepository
+     * @return array
      * @throws \Exception
      */
-    public function create(array $data): CategoryRepository
+    public function create(array $data): array
     {
         if (!empty($data['categoryParentId'])) {
             $this->categoryVendorCheck($data['categoryParentId']);
@@ -176,7 +176,7 @@ class CategoryService extends BaseService
 
         if ($category->save($data)) {
             $this->invalidateCache();
-            return self::getCategoryFromRepository($category->getCategoryId());
+            return self::getCategoryFromRepository($category->getCategoryId())->toArray();
         }
 
         throw new \Exception(implode($category->getMessages()), 500);
@@ -186,10 +186,10 @@ class CategoryService extends BaseService
      * Update category
      * @param string $categoryId
      * @param array $data
-     * @return CategoryRepository
+     * @return array
      * @throws \Exception
      */
-    public function update(string $categoryId, array $data)
+    public function update(string $categoryId, array $data): array
     {
         $category = $this->getCategoryFromRepository($categoryId);
 
@@ -198,7 +198,7 @@ class CategoryService extends BaseService
         }
         if ($category->save($data)) {
             $this->invalidateCache();
-            return $category;
+            return $category->toArray();
         }
         throw new \Exception('Category could not be updated', 500);
     }
@@ -214,6 +214,7 @@ class CategoryService extends BaseService
         if (!self::getRepository()->cascadeDelete($categoryId)) {
             return false;
         }
+        $this->invalidateCache();
         return true;
     }
 
