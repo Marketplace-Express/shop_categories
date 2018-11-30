@@ -38,10 +38,10 @@ class AdjacencyListModelHelperTest extends \UnitTestCase
             [
                 [
                     // Actual
-                    ['itemId' => 'item1', 'parentId' => null, 'children' => null],
-                    ['itemId' => 'item3', 'parentId' => 'item1', 'children' => null],
+                    ['itemId' => 'item1', 'parentId' => null],
+                    ['itemId' => 'item3', 'parentId' => 'item1'],
                     ['itemId' => 'item5', 'parentId' => 'item3'],
-                    ['itemId' => 'item2', 'parentId' => null, 'children' => null],
+                    ['itemId' => 'item2', 'parentId' => null],
                     ['itemId' => 'item4', 'parentId' => 'item2']
                 ],
                 [
@@ -79,11 +79,10 @@ class AdjacencyListModelHelperTest extends \UnitTestCase
 
     /**
      * @param $actual
-     * @param $reordered
      * @param $expected
      *
-     * @dataProvider itemsSamples
      * @throws \Exception
+     * @dataProvider itemsSamples
      */
     public function testPrepare($actual, $expected)
     {

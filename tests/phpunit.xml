@@ -19,10 +19,12 @@
             <directory suffix=".php">../app</directory>
             <exclude>
                 <directory suffix=".php">../app/modules/cli</directory>
+                <directory suffix=".php">../app/modules/api/*/config</directory>
                 <directory suffix=".php">../app/migrations</directory>
                 <directory suffix=".php">../app/config</directory>
                 <directory suffix=".php">../app/common/library</directory>
                 <file>../app/bootstrap_cli.php</file>
+                <file>../app/bootstrap_web.php</file>
             </exclude>
         </whitelist>
     </filter>

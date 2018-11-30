@@ -12,7 +12,7 @@ interface BaseBehavior
 
     public function parents(string $itemId, bool $toArray = true, $recursive = true, bool $oneParent = false, bool $addSelf = false);
 
-    public function descendants($itemId = null, bool $toArray = true, $recursive = true);
+    public function descendants(string $itemId, bool $toArray = true, $recursive = true);
 
     public function children(string $itemId, bool $toArray = true);
 

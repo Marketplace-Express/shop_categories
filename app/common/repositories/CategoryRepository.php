@@ -107,7 +107,7 @@ class CategoryRepository extends Category
             'bind' => ['vendorId' => $vendorId]
         ]);
 
-        if ($categories) {
+        if (count($categories)) {
             return $this->recursive($categories->toArray());
         }
 

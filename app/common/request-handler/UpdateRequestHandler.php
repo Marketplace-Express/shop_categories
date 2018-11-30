@@ -164,7 +164,6 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
      */
     public function notFound($message = 'Not Found!')
     {
-        http_response_code(404);
         throw new \Exception($message, 404);
     }
 
@@ -177,8 +176,6 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
         if (is_null($message)) {
             $message = $this->errorMessages;
         }
-
-        http_response_code(400);
         throw new ArrayOfStringsException($message, 400);
     }
 
@@ -187,7 +184,6 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
      */
     public function successRequest($message = null)
     {
-        http_response_code(200);
         $this->response
             ->setJsonContent([
                 'status' => 200,

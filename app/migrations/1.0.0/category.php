@@ -14,7 +14,6 @@ class CategoryMigration_100 extends Migration
      * Define the table structure
      *
      * @return void
-     * @throws \Phalcon\Db\Exception
      */
     public function morph()
     {
@@ -50,9 +49,9 @@ class CategoryMigration_100 extends Migration
                         'category_order',
                         [
                             'type' => Column::TYPE_INTEGER,
-                            'notNull' => true,
                             'default' => "0",
-                            'size' => 3,
+                            'notNull' => true,
+                            'size' => 11,
                             'after' => 'category_name'
                         ]
                     ),
@@ -61,7 +60,7 @@ class CategoryMigration_100 extends Migration
                         [
                             'type' => Column::TYPE_VARCHAR,
                             'size' => 36,
-                            'after' => 'category_name'
+                            'after' => 'category_order'
                         ]
                     ),
                     new Column(

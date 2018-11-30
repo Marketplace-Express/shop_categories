@@ -12,13 +12,13 @@ use Shop_categories\Services\BaseService;
 use Shop_categories\Services\Cache\Utils\CategoryCacheUtils;
 
 /**
- * @method static array getRoots()
- * @method static array getCategory()
- * @method static array getDescendants()
- * @method static array getChildren()
- * @method static array getParents()
- * @method static array getParent()
- * @method static array getAll()
+ * @method array getRoots()
+ * @method array getCategory()
+ * @method array getDescendants()
+ * @method array getChildren()
+ * @method array getParents()
+ * @method array getParent()
+ * @method array getAll()
  */
 class CategoryCache extends BaseService
 {
