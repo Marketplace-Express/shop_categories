@@ -39,7 +39,11 @@ class AdjacencyListModelHelper
                 $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->array), \RecursiveIteratorIterator::CHILD_FIRST);
                 while ($iterator->valid()) {
                     if ($iterator->key() == $this->itemIdAttribute && $iterator->current() == $value[$this->parentIdAttribute]) {
-                        $iterator->offsetSet($this->subItemsSlug, array_merge((array)$iterator->offsetGet($this->subItemsSlug), [$value]));
+                        if (array_key_exists($this->subItemsSlug, (array) $iterator->getInnerIterator())) {
+                            $iterator->offsetSet($this->subItemsSlug, array_merge((array)$iterator->offsetGet($this->subItemsSlug), [$value]));
+                        } else {
+                            $iterator->offsetSet($this->subItemsSlug, [$value]);
+                        }
                         $current = (array) $iterator->getSubIterator($iterator->getDepth());
                         for ($i = $iterator->getDepth()-1; $i > 0; $i--) {
                             $parents = (array) $iterator->getSubIterator($i);

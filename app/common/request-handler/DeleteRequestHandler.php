@@ -33,9 +33,6 @@ class DeleteRequestHandler extends ControllerBase implements RequestHandlerInter
      */
     public function notFound($message = 'Not Found')
     {
-        // response->setStatusCode slows down the performance
-        // replacing it with http_response_code
-        http_response_code(404);
         throw new \Exception($message, 404);
     }
 
@@ -45,9 +42,6 @@ class DeleteRequestHandler extends ControllerBase implements RequestHandlerInter
      */
     public function invalidRequest($message = null)
     {
-        // response->setStatusCode slows down the performance
-        // replacing it with http_response_code
-        http_response_code(400);
         throw new ArrayOfStringsException($message, 400);
     }
 
@@ -57,9 +51,6 @@ class DeleteRequestHandler extends ControllerBase implements RequestHandlerInter
      */
     public function successRequest($message = null)
     {
-        // response->setStatusCode slows down the performance
-        // replacing it with http_response_code
-        http_response_code(200);
         return $this->response
             ->setJsonContent([
                 'status' => 200,

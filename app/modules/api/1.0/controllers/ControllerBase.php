@@ -89,7 +89,7 @@ class ControllerBase extends Controller
     /**
      * @param $message
      * @param int $code
-     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     * @return void
      * @codeCoverageIgnore
      */
     public function sendResponse($message, int $code = 400)
@@ -97,11 +97,12 @@ class ControllerBase extends Controller
         // response->setStatusCode slows down the performance
         // replacing it with http_response_code
         http_response_code($code);
-        return $this->response
+        $this->response
             ->setJsonContent([
                 'status' => $code,
                 'message' => $message
-            ]);
+            ])->send();
+        exit;
     }
 
     /**

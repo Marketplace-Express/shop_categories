@@ -90,9 +90,9 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     }
 
     /**
-     * @return mixed
+     * @return UuidUtil
      */
-    private function getUuidUtil()
+    private function getUuidUtil(): UuidUtil
     {
         if (!$this->uuidUtil) {
             $this->uuidUtil = new UuidUtil();
@@ -179,8 +179,6 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         if (is_null($message)) {
             $message = $this->errorMessages;
         }
-
-        http_response_code(400);
         throw new ArrayOfStringsException($message, 400);
     }
 
@@ -204,7 +202,6 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
      */
     public function notFound($message = 'Not Found')
     {
-        http_response_code(404);
         throw new \Exception($message, 404);
     }
 

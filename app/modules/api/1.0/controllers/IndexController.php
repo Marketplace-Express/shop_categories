@@ -5,12 +5,24 @@ use Shop_categories\RequestHandler\CreateRequestHandler;
 use Shop_categories\RequestHandler\DeleteRequestHandler;
 use Shop_categories\RequestHandler\GetRequestHandler;
 use Shop_categories\RequestHandler\UpdateRequestHandler;
+use Shop_categories\Utils\UuidUtil;
 
 /**
  * @RoutePrefix("/api/1.0/")
  */
 class IndexController extends ControllerBase
 {
+    /** @var UuidUtil $uuidUtil */
+    private $uuidUtil;
+
+    /**
+     * @param mixed $uuidUtil
+     */
+    public function setUuidUtil($uuidUtil): void
+    {
+        $this->uuidUtil = $uuidUtil;
+    }
+
     /**
      * @throws \Exception
      * @codeCoverageIgnore
@@ -21,7 +33,10 @@ class IndexController extends ControllerBase
          * TODO: CHECK EXISTENCE OF VENDOR
          * TODO: CHECK ACCESSIBILITY OF USER ON THIS VENDOR
          */
-        if (empty($vendorId = $this->request->getQuery('vendorId'))) {
+
+        $this->setUuidUtil(new UuidUtil());
+
+        if (empty($vendorId = $this->request->getQuery('vendorId')) || !$this->uuidUtil->isValid($vendorId)) {
             $this->sendResponse('Please provide a valid vendor Id', 400);
         }
         $this->getService()->setVendorId($vendorId);

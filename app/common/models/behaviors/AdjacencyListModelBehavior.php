@@ -77,6 +77,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
      *
      * @param ModelInterface $model
      * @return AdapterInterface
+     *
+     * @codeCoverageIgnore
      * @throws \Exception
      */
     private function getDbHandler(ModelInterface $model)
@@ -103,6 +105,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
      * @param string $method
      * @param null $arguments
      * @return mixed|null|string
+     *
+     * @codeCoverageIgnore
      * @throws \Exception
      */
     public function missingMethod(ModelInterface $model, $method, $arguments = null)
@@ -117,6 +121,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
 
     /**
      * @return ModelInterface
+     * @codeCoverageIgnore
      */
     private function getOwner()
     {
@@ -127,6 +132,11 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
         return $this->owner;
     }
 
+    /**
+     * @param ModelInterface $owner
+     *
+     * @codeCoverageIgnore
+     */
     private function setOwner(ModelInterface $owner)
     {
         $this->owner = $owner;
@@ -134,6 +144,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
 
     /**
      * @return MetaData
+     *
+     * @codeCoverageIgnore
      * @throws \Exception
      */
     private function getAttributes()
@@ -143,6 +155,21 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
         }
 
         throw new \Exception('Model missing columnMap method');
+    }
+
+    /**
+     * @param string $conditions
+     * @param array $bind
+     * @return \Phalcon\Mvc\Model\ResultsetInterface
+     *
+     * @codeCoverageIgnore
+     */
+    public function find(string $conditions, array $bind)
+    {
+        return $this->getOwner()::find([
+            'conditions' => $conditions,
+            'bind' => $bind
+        ]);
     }
 
     /**
@@ -172,16 +199,13 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
         $conditions = $this->parentIdAttribute . ' = :noParentValue:';
         $bind['noParentValue'] = $this->noParentValue;
         if (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) {
-            $conditions .= ' AND ' . $this->isDeletedAttribute . ' = :isDeletedValue:';
+            $conditions .= ' AND ' . $this->isDeletedAttribute . ' <> :isDeletedValue:';
             $bind['isDeletedValue'] = $this->isDeletedValue;
         }
 
-        $result = $this->getOwner()::find([
-            'conditions' => $conditions,
-            'bind' => $bind
-        ]);
+        $result = $this->find($conditions, $bind);
 
-        if ($result) {
+        if (count($result)) {
             return ($toArray) ? $result->toArray() : $result;
         }
 
@@ -239,13 +263,13 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
 
     /**
      * Get item descendants
-     * @param null $itemId
-     * @param bool $recursive
+     * @param string $itemId
      * @param bool $toArray
+     * @param bool $recursive
      * @return array|bool
      * @throws \Exception
      */
-    public function descendants($itemId = null, bool $toArray = true, $recursive = true)
+    public function descendants(string $itemId, bool $toArray = true, $recursive = true)
     {
         $columns = $this->getAttributes()[1];
         $query = sprintf(
@@ -296,16 +320,13 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
         $conditions = $this->parentIdAttribute . ' = :parentId:';
         $bind['parentId'] = $itemId;
         if (isset($this->isDeletedAttribute) && isset($this->isDeletedValue)) {
-            $isDeletedAttribute = $this->getAttributes()[0][$this->isDeletedAttribute];
-            $conditions .= ' AND '. $isDeletedAttribute . ' = :isDeletedValue:';
+            $conditions .= ' AND '. $this->isDeletedAttribute . ' <> :isDeletedValue:';
             $bind['isDeletedValue'] = $this->isDeletedValue;
         }
-        $result = $this->getOwner()::find([
-            'conditions' => $conditions,
-            'bind' => $bind
-        ]);
 
-        if ($result) {
+        $result = $this->find($conditions, $bind);
+
+        if (count($result)) {
             return ($toArray) ? $result->toArray() : $result;
         }
 
@@ -325,7 +346,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
             foreach ($descendants as $item) {
                 if (!$item->delete()) {
                     $this->db->rollback();
-                    throw new \Exception("Item {$item->get{ucfirst($this->itemIdAttribute)}()} could not be deleted");
+                    throw new \Exception("Item {$item->{"get".ucfirst($this->itemIdAttribute)}()} could not be deleted");
                 }
             }
             $this->db->commit();
@@ -337,6 +358,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
     /**
      * @param array $array
      * @return array
+     *
+     * @codeCoverageIgnore
      * @throws \Exception
      */
     public function recursive(array $array)
@@ -349,6 +372,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
      *
      * @param string $type
      * @param \Phalcon\Mvc\ModelInterface $model
+     *
+     * @codeCoverageIgnore
      * @throws \Exception
      */
     public function notify($type, ModelInterface $model)

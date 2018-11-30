@@ -27,26 +27,19 @@ class GetRequestHandler extends ControllerBase implements RequestHandlerInterfac
         return true;
     }
 
-    public function notFound($message = 'Not Found')
-    {
-        http_response_code(404);
-        return $this->response
-            ->setJsonContent([
-                'status' => 404,
-                'message' => $message
-            ]);
-    }
 
+    /**
+     * @param null $message
+     */
     public function invalidRequest($message = null)
     {
-        http_response_code(400);
-        return $this->response
-            ->setJsonContent([
-                'status' => 400,
-                'message' => $message
-            ]);
+        // TODO: Implement invalidRequest method.
     }
 
+    /**
+     * @param null $message
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     */
     public function successRequest($message = null)
     {
         http_response_code(200);
@@ -55,6 +48,15 @@ class GetRequestHandler extends ControllerBase implements RequestHandlerInterfac
                 'status' => 200,
                 'message' => $message
             ]);
+    }
+
+    /**
+     * @param string $message
+     * @throws \Exception
+     */
+    public function notFound($message = 'Not Found')
+    {
+        // TODO: Implement notFound method.
     }
 
     public function toArray(): array

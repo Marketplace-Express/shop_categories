@@ -136,7 +136,8 @@ class CategoryCacheUtils
         $category = [];
         while ($iterator->valid()) {
             if ($iterator->key() == 'categoryId' && $iterator->current() == $categoryId) {
-                return (array) $iterator->getInnerIterator();
+                $category = (array) $iterator->getInnerIterator();
+                break;
             }
 
             $iterator->next();
