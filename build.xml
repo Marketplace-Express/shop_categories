@@ -2,7 +2,7 @@
 <project name="Shop_categories" default="build">
     <property name="basedir" value="." />
     <property name="phpunit" value="${basedir}/app/common/library/vendor/bin/phpunit"/>
-    <target name="build" depends="chmod-assets, chmod-build, chmod-runtime, composer-install, swagger" />
+    <target name="build" depends="composer-install, swagger" />
     <target name="composer-update">
         <echo>Running composer update</echo>
         <exec executable="php" dir="${basedir}/protected/" failonerror="true">
@@ -14,8 +14,7 @@
     </target>
     <target name="composer-install">
         <echo>Running composer install</echo>
-        <exec executable="php" dir="${basedir}/protected/" failonerror="true">
-            <arg line="composer.phar" />
+        <exec executable="composer" dir="${basedir}/app/common/library/" failonerror="true">
             <arg line="install" />
         </exec>
     </target>
@@ -29,36 +28,12 @@
         <property name="phpunit.done" value="true"/>
     </target>
 
-    <target name="phpunit-coverage" depends="chmod-build">
+    <target name="phpunit-coverage">
         <exec executable="${phpunit}" dir="${basedir}/tests/" failonerror="true">
             <arg value="--configuration"/>
             <arg path="${basedir}/tests/phpunit.xml"/>
             <arg line="--coverage-html" />
             <arg line="${basedir}/../phpunit-reports/shop_categories" />
-        </exec>
-    </target>
-
-    <target name="chmod-assets">
-        <exec executable="chmod" dir="${basedir}" failonerror="true">
-            <arg value="777" />
-            <arg value="-R" />
-            <arg value="assets" />
-        </exec>
-    </target>
-
-    <target name="chmod-runtime">
-        <exec executable="chmod" dir="${basedir}" failonerror="true">
-            <arg value="777" />
-            <arg value="-R" />
-            <arg value="protected/runtime" />
-        </exec>
-    </target>
-
-    <target name="chmod-build">
-        <exec executable="chmod" dir="${basedir}" failonerror="true">
-            <arg value="777" />
-            <arg value="-R" />
-            <arg value="build" />
         </exec>
     </target>
 
@@ -71,18 +46,10 @@
     </target>
 
     <target name="migrate">
-        <echo>Running mongo migrations</echo>
-        <exec executable="php" failonerror="true">
-            <arg line="migrations.php" />
-            <arg line="--interactive=0" />
-        </exec>
-    </target>
-
-    <target name="verify_migrations">
-        <echo>Verify mongo migrations</echo>
-        <exec executable="php" failonerror="true">
-            <arg line="migrations.php verify" />
-            <arg line="--interactive=0" />
+        <echo>Running migrations</echo>
+        <exec executable="phalcon" failonerror="true">
+            <arg line="migration" />
+            <arg line="--action=run" />
         </exec>
     </target>
 
