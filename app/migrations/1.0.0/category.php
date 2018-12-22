@@ -56,11 +56,20 @@ class CategoryMigration_100 extends Migration
                         ]
                     ),
                     new Column(
-                        'vendor_id',
+                        'category_vendor_id',
                         [
                             'type' => Column::TYPE_VARCHAR,
                             'size' => 36,
                             'after' => 'category_order'
+                        ]
+                    ),
+                    new Column(
+                        'category_user_id',
+                        [
+                            'type' => Column::TYPE_VARCHAR,
+                            'notNull' => true,
+                            'size' => 36,
+                            'after' => 'category_vendor_id'
                         ]
                     ),
                     new Column(
@@ -69,7 +78,7 @@ class CategoryMigration_100 extends Migration
                             'type' => Column::TYPE_DATETIME,
                             'notNull' => true,
                             'size' => 1,
-                            'after' => 'vendor_id'
+                            'after' => 'category_user_id'
                         ]
                     ),
                     new Column(

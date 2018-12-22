@@ -51,7 +51,7 @@ class IndexController extends ControllerBase
         try {
             /** @var GetRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $request->successRequest($this->showPublicColumns($this->getService()->getRoots()));
+            $request->successRequest($this->getService()->getRoots());
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -66,7 +66,7 @@ class IndexController extends ControllerBase
         try {
             /** @var GetRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $request->successRequest($this->showPublicColumns($this->getService()->getAll()));
+            $request->successRequest($this->toTree($this->getService()->getAll()));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -84,7 +84,7 @@ class IndexController extends ControllerBase
             /** @var GetRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $category = $this->getService()->getCategory($categoryId);
-            $request->successRequest($this->showPublicColumns($category));
+            $request->successRequest($category);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -101,7 +101,7 @@ class IndexController extends ControllerBase
             /** @var GetRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $descendants = $this->getService()->getDescendants($categoryId);
-            $request->successRequest($this->showPublicColumns($descendants));
+            $request->successRequest($this->toTree($descendants));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -117,8 +117,7 @@ class IndexController extends ControllerBase
         try {
             /** @var GetRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $children = $this->getService()->getChildren($categoryId);
-            $request->successRequest($this->showPublicColumns($children));
+            $request->successRequest($this->getService()->getChildren($categoryId));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -135,7 +134,7 @@ class IndexController extends ControllerBase
             /** @var GetRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $parents = $this->getService()->getParents($categoryId);
-            $request->successRequest($this->showPublicColumns($parents));
+            $request->successRequest($this->toTree($parents));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -151,8 +150,7 @@ class IndexController extends ControllerBase
         try {
             /** @var GetRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $parent = $this->getService()->getParent($categoryId);
-            $request->successRequest($this->showPublicColumns($parent));
+            $request->successRequest($this->getService()->getParent($categoryId));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -173,8 +171,7 @@ class IndexController extends ControllerBase
                 $request->invalidRequest();
             }
 
-            $category = $this->getService()->create($request->toArray());
-            $request->successRequest($this->showPublicColumns($category));
+            $request->successRequest($this->getService()->create($request->toArray()));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -195,8 +192,7 @@ class IndexController extends ControllerBase
                 $request->invalidRequest();
             }
 
-            $category = $this->getService()->update($categoryId, $request->toArray());
-            $request->successRequest($this->showPublicColumns($category));
+            $request->successRequest($this->getService()->update($categoryId, $request->toArray()));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }

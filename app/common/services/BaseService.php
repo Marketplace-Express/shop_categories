@@ -8,7 +8,6 @@
 namespace Shop_categories\Services;
 
 use Phalcon\Cache\Backend\Redis;
-use Phalcon\Mvc\Model\Behavior\NestedSet;
 use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
 use Shop_categories\Repositories\CategoryRepository;
 use Shop_categories\Services\Cache\CategoryCache;
@@ -26,7 +25,7 @@ class BaseService
     public static $cacheService;
 
     /**
-     * @var CategoryRepository|NestedSet $repository
+     * @var CategoryRepository $repository
      */
     public static $repository;
 
@@ -60,13 +59,14 @@ class BaseService
         if (!self::$cacheInstance) {
             self::$cacheInstance = \Phalcon\Di::getDefault()->getShared('cache');
         }
-
+        self::$cacheInstance->_connect();
         return self::$cacheInstance;
     }
 
 
     /**
      * @return CategoryCache
+     * @throws \RedisException
      */
     public static function getCacheService(): CategoryCache
     {

@@ -78,9 +78,9 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
 
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('descendants');
-        $behaviorMock->expects(self::once())->method('descendants')->with(self::ITEM_ID, false)->willReturn([$sampleModel]);
+        $behaviorMock->expects(self::once())->method('descendants')->with(self::ITEM_ID)->willReturn([$sampleModel]);
 
-        $behaviorMock->missingMethod($sampleModel, 'cascadeDelete', [self::ITEM_ID]);
+        $behaviorMock->missingMethod($sampleModel, 'deleteCascade', [self::ITEM_ID]);
     }
 
     /**
@@ -98,11 +98,11 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
 
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('descendants');
-        $behaviorMock->expects(self::once())->method('descendants')->with(self::ITEM_ID, false)->willReturn([$sampleModel]);
+        $behaviorMock->expects(self::once())->method('descendants')->with(self::ITEM_ID)->willReturn([$sampleModel]);
 
         $this->expectExceptionMessage("Item ".self::ITEM_ID." could not be deleted");
 
-        $behaviorMock->missingMethod($sampleModel, 'cascadeDelete', [self::ITEM_ID]);
+        $behaviorMock->missingMethod($sampleModel, 'deleteCascade', [self::ITEM_ID]);
     }
 
     /**
@@ -110,27 +110,92 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
      */
     public function testChildren()
     {
+        /** @var Category|MockObject $modelMock */
+        $modelMock = $this->getModelMock('getSource', 'getReadConnection', 'columnMap');
+
+        /** @var ResultInterface|MockObject $simpleResultMock */
+        $simpleResultMock = $this->getMockBuilder(\Phalcon\Mvc\Model\Resultset\Simple::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setFetchMode', 'fetchAll'])
+            ->getMock();
+        $simpleResultMock->expects(self::once())->method('setFetchMode')->with(\PDO::FETCH_CLASS, get_class($modelMock));
+        $simpleResultMock->expects(self::once())->method('fetchAll')->willReturn(['some result']);
+
+        /** @var AdapterInterface|MockObject $pdoAdapterMock */
+        $pdoAdapterMock = $this->getMockBuilder(Pdo::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['query'])
+            ->getMock();
+        $pdoAdapterMock->expects(self::once())->method('query')->withAnyParameters()->willReturn($simpleResultMock);
+
         $di = $this->servicesProvider([
             [
-                'name' => 'modelsManager',
-                'class' => Manager::class,
-                'methods' => ['find'],
+                'name' => 'modelsMetadata',
+                'class' => Memory::class,
+                'methods' => ['readColumnMap'],
                 'shared' => false
             ]
         ]);
 
-        /** @var Category|MockObject $modelMock */
-        $modelMock = $this->getModelMock('nothing');
+        $modelMock->expects(self::once())->method('getSource')->willReturn('shop_categories');
+        $modelMock->expects(self::once())->method('getReadConnection')->willReturn($pdoAdapterMock);
+        $modelMock->expects(self::any())->method('columnMap')->willReturn([
+            'item_id' => 'itemId',
+            'parent_id' => 'parentId',
+            'is_deleted' => 'isDeleted',
+            'item_order' => 'itemOrder'
+        ]);
         $modelMock->setDI($di);
 
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
-        $behaviorMock = $this->getBehaviorMock('find');
-        $behaviorMock->expects(self::once())->method('find')->with(
-            'parentId = :parentId: AND isDeleted <> :isDeletedValue:',
-            ['parentId' => self::ITEM_ID, 'isDeletedValue' => true]
-        )->willReturn(['some result']);
+        $behaviorMock = $this->getBehaviorMock('nothing');
 
-        $behaviorMock->missingMethod($modelMock, 'children', [self::ITEM_ID, false]);
+        $behaviorMock->missingMethod($modelMock, 'children', [self::ITEM_ID, []]);
+    }
+
+    public function testGetItems()
+    {
+        /** @var Category|MockObject $modelMock */
+        $modelMock = $this->getModelMock('getSource', 'getReadConnection', 'columnMap');
+
+        /** @var ResultInterface|MockObject $simpleResultMock */
+        $simpleResultMock = $this->getMockBuilder(\Phalcon\Mvc\Model\Resultset\Simple::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setFetchMode', 'fetchAll'])
+            ->getMock();
+        $simpleResultMock->expects(self::once())->method('setFetchMode')->with(\PDO::FETCH_CLASS, get_class($modelMock));
+        $simpleResultMock->expects(self::once())->method('fetchAll')->willReturn(['some result']);
+
+        /** @var AdapterInterface|MockObject $pdoAdapterMock */
+        $pdoAdapterMock = $this->getMockBuilder(Pdo::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['query'])
+            ->getMock();
+        $pdoAdapterMock->expects(self::once())->method('query')->withAnyParameters()->willReturn($simpleResultMock);
+
+        $di = $this->servicesProvider([
+            [
+                'name' => 'modelsMetadata',
+                'class' => Memory::class,
+                'methods' => ['readColumnMap'],
+                'shared' => false
+            ]
+        ]);
+
+        $modelMock->expects(self::once())->method('getSource')->willReturn('shop_categories');
+        $modelMock->expects(self::once())->method('getReadConnection')->willReturn($pdoAdapterMock);
+        $modelMock->expects(self::any())->method('columnMap')->willReturn([
+            'item_id' => 'itemId',
+            'parent_id' => 'parentId',
+            'is_deleted' => 'isDeleted',
+            'item_order' => 'itemOrder'
+        ]);
+        $modelMock->setDI($di);
+
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
+        $behaviorMock = $this->getBehaviorMock('nothing');
+
+        $behaviorMock->missingMethod($modelMock, 'getItems', []);
     }
 
     /**
@@ -138,23 +203,50 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
      */
     public function testChildrenWithException()
     {
-        $di = $this->servicesProvider();
-
         /** @var Category|MockObject $modelMock */
-        $modelMock = $this->getModelMock('nothing');
+        $modelMock = $this->getModelMock('getSource', 'getReadConnection', 'columnMap');
+
+        /** @var ResultInterface|MockObject $simpleResultMock */
+        $simpleResultMock = $this->getMockBuilder(\Phalcon\Mvc\Model\Resultset\Simple::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setFetchMode', 'fetchAll'])
+            ->getMock();
+        $simpleResultMock->expects(self::once())->method('setFetchMode')->with(\PDO::FETCH_CLASS, get_class($modelMock));
+        $simpleResultMock->expects(self::once())->method('fetchAll')->willReturn([]);
+
+        /** @var AdapterInterface|MockObject $pdoAdapterMock */
+        $pdoAdapterMock = $this->getMockBuilder(Pdo::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['query'])
+            ->getMock();
+        $pdoAdapterMock->expects(self::once())->method('query')->withAnyParameters()->willReturn($simpleResultMock);
+
+        $di = $this->servicesProvider([
+            [
+                'name' => 'modelsMetadata',
+                'class' => Memory::class,
+                'methods' => ['readColumnMap'],
+                'shared' => false
+            ]
+        ]);
+
+        $modelMock->expects(self::once())->method('getSource')->willReturn('shop_categories');
+        $modelMock->expects(self::once())->method('getReadConnection')->willReturn($pdoAdapterMock);
+        $modelMock->expects(self::any())->method('columnMap')->willReturn([
+            'item_id' => 'itemId',
+            'parent_id' => 'parentId',
+            'is_deleted' => 'isDeleted',
+            'item_order' => 'itemOrder'
+        ]);
         $modelMock->setDI($di);
 
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
-        $behaviorMock = $this->getBehaviorMock('find');
-        $behaviorMock->expects(self::once())->method('find')->with(
-            'parentId = :parentId: AND isDeleted <> :isDeletedValue:',
-            ['parentId' => self::ITEM_ID, 'isDeletedValue' => true]
-        )->willReturn([]);
+        $behaviorMock = $this->getBehaviorMock('nothing');
 
         $this->expectExceptionMessage('Item not found or maybe deleted');
         $this->expectExceptionCode(404);
 
-        $behaviorMock->missingMethod($modelMock, 'children', [self::ITEM_ID, false]);
+        $behaviorMock->missingMethod($modelMock, 'children', [self::ITEM_ID, [], false]);
     }
 
     /**
@@ -162,15 +254,33 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
      */
     public function testIsDescendant()
     {
+        $dummyModel = new class {
+            public $itemId;
+            public $parentId;
+            public function toArray()
+            {
+                return [
+                    'itemId' => $this->itemId,
+                    'parentId' => $this->parentId
+                ];
+            }
+            public function setAttributes(array $data)
+            {
+                foreach ($data as $attribute => $value) {
+                    $this->$attribute = $value;
+                }
+                return $this;
+            }
+        };
         $sampleItems = [
-            ['itemId' => self::ITEM_ID, 'parentId' => '5533ce37-2693-4abc-9209-e9c21cb6ac17'],
-            ['itemId' => 'b91b11e8-909a-4691-b550-0bf5fae29e66', 'parentId' => self::ITEM_ID],
-            ['itemId' => '380a92c3-f8bb-4980-845a-d61e7a403355', 'parentId' => 'b91b11e8-909a-4691-b550-0bf5fae29e66']
+            (new $dummyModel())->setAttributes(['itemId' => self::ITEM_ID, 'parentId' => '5533ce37-2693-4abc-9209-e9c21cb6ac17']),
+            (new $dummyModel())->setAttributes(['itemId' => 'b91b11e8-909a-4691-b550-0bf5fae29e66', 'parentId' => self::ITEM_ID]),
+            (new $dummyModel())->setAttributes(['itemId' => '380a92c3-f8bb-4980-845a-d61e7a403355', 'parentId' => 'b91b11e8-909a-4691-b550-0bf5fae29e66'])
         ];
 
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('descendants');
-        $behaviorMock->expects(self::any())->method('descendants')->with(self::ITEM_ID, true, false)->willReturn($sampleItems);
+        $behaviorMock->expects(self::any())->method('descendants')->with(self::ITEM_ID)->willReturn($sampleItems);
 
         $this->assertFalse($behaviorMock->isDescendant(self::ITEM_ID, 'c7e26cfb-2c52-40f6-ba4e-56b5c2ca5d12'));
         $this->assertTrue($behaviorMock->isDescendant(self::ITEM_ID, 'b91b11e8-909a-4691-b550-0bf5fae29e66'));
@@ -181,20 +291,47 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
      */
     public function testRoots()
     {
-        $di = $this->servicesProvider();
-
         /** @var Category|MockObject $modelMock */
-        $modelMock = $this->getModelMock('nothing');
+        $modelMock = $this->getModelMock('getSource', 'getReadConnection', 'columnMap');
+
+        /** @var ResultInterface|MockObject $simpleResultMock */
+        $simpleResultMock = $this->getMockBuilder(\Phalcon\Mvc\Model\Resultset\Simple::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setFetchMode', 'fetchAll'])
+            ->getMock();
+        $simpleResultMock->expects(self::once())->method('setFetchMode')->with(\PDO::FETCH_CLASS, get_class($modelMock));
+        $simpleResultMock->expects(self::once())->method('fetchAll')->willReturn(['some result']);
+
+        /** @var AdapterInterface|MockObject $pdoAdapterMock */
+        $pdoAdapterMock = $this->getMockBuilder(Pdo::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['query'])
+            ->getMock();
+        $pdoAdapterMock->expects(self::once())->method('query')->withAnyParameters()->willReturn($simpleResultMock);
+
+        $di = $this->servicesProvider([
+            [
+                'name' => 'modelsMetadata',
+                'class' => Memory::class,
+                'methods' => ['readColumnMap'],
+                'shared' => false
+            ]
+        ]);
+
+        $modelMock->expects(self::once())->method('getSource')->willReturn('shop_categories');
+        $modelMock->expects(self::once())->method('getReadConnection')->willReturn($pdoAdapterMock);
+        $modelMock->expects(self::any())->method('columnMap')->willReturn([
+            'item_id' => 'itemId',
+            'parent_id' => 'parentId',
+            'is_deleted' => 'isDeleted',
+            'item_order' => 'itemOrder'
+        ]);
         $modelMock->setDI($di);
 
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
-        $behaviorMock = $this->getBehaviorMock('find');
-        $behaviorMock->expects(self::once())->method('find')->with(
-            'parentId = :noParentValue: AND isDeleted <> :isDeletedValue:',
-            ['noParentValue' => null, 'isDeletedValue' => true]
-        )->willReturn(['some result']);
+        $behaviorMock = $this->getBehaviorMock('nothing');
 
-        $behaviorMock->missingMethod($modelMock, 'roots', [false]);
+        $behaviorMock->missingMethod($modelMock, 'roots', []);
     }
 
     /**
@@ -202,23 +339,50 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
      */
     public function testRootsWithException()
     {
-        $di = $this->servicesProvider();
-
         /** @var Category|MockObject $modelMock */
-        $modelMock = $this->getModelMock('nothing');
+        $modelMock = $this->getModelMock('getSource', 'getReadConnection', 'columnMap');
+
+        /** @var ResultInterface|MockObject $simpleResultMock */
+        $simpleResultMock = $this->getMockBuilder(\Phalcon\Mvc\Model\Resultset\Simple::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setFetchMode', 'fetchAll'])
+            ->getMock();
+        $simpleResultMock->expects(self::once())->method('setFetchMode')->with(\PDO::FETCH_CLASS, get_class($modelMock));
+        $simpleResultMock->expects(self::once())->method('fetchAll')->willReturn([]);
+
+        /** @var AdapterInterface|MockObject $pdoAdapterMock */
+        $pdoAdapterMock = $this->getMockBuilder(Pdo::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['query'])
+            ->getMock();
+        $pdoAdapterMock->expects(self::once())->method('query')->withAnyParameters()->willReturn($simpleResultMock);
+
+        $di = $this->servicesProvider([
+            [
+                'name' => 'modelsMetadata',
+                'class' => Memory::class,
+                'methods' => ['readColumnMap'],
+                'shared' => false
+            ]
+        ]);
+
+        $modelMock->expects(self::once())->method('getSource')->willReturn('shop_categories');
+        $modelMock->expects(self::once())->method('getReadConnection')->willReturn($pdoAdapterMock);
+        $modelMock->expects(self::any())->method('columnMap')->willReturn([
+            'item_id' => 'itemId',
+            'parent_id' => 'parentId',
+            'is_deleted' => 'isDeleted',
+            'item_order' => 'itemOrder'
+        ]);
         $modelMock->setDI($di);
 
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
-        $behaviorMock = $this->getBehaviorMock('find');
-        $behaviorMock->expects(self::once())->method('find')->with(
-            'parentId = :noParentValue: AND isDeleted <> :isDeletedValue:',
-            ['noParentValue' => null, 'isDeletedValue' => true]
-        )->willReturn([]);
+        $behaviorMock = $this->getBehaviorMock('nothing');
 
         $this->expectExceptionMessage('No roots found');
         $this->expectExceptionCode(404);
 
-        $behaviorMock->missingMethod($modelMock, 'roots', [false]);
+        $behaviorMock->missingMethod($modelMock, 'roots', []);
     }
 
     /**
@@ -266,7 +430,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
 
-        $behaviorMock->missingMethod($modelMock, 'parents', [self::ITEM_ID, false]);
+        $behaviorMock->missingMethod($modelMock, 'parents', [self::ITEM_ID, [], false]);
     }
 
     /**
@@ -314,6 +478,6 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
 
-        $behaviorMock->missingMethod($modelMock, 'descendants', [self::ITEM_ID, false]);
+        $behaviorMock->missingMethod($modelMock, 'descendants', [self::ITEM_ID, [], false]);
     }
 }

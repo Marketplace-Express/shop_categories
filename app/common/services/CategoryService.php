@@ -7,43 +7,36 @@
 
 namespace Shop_categories\Services;
 
+use RedisException;
+use Shop_categories\Logger\ApplicationLogger;
+use Shop_categories\Exceptions\ArrayOfStringsException;
+use Shop_categories\Models\Category;
 use Shop_categories\Repositories\CategoryRepository;
 
 class CategoryService extends BaseService
 {
     /**
-     * Create category object from array
-     * @param array $data
-     * @return CategoryRepository
+     * @return CategoryRepository|Cache\CategoryCache
      * @throws \Exception
      */
-    private function categoryObject(array $data)
+    protected function getDataSource()
     {
-        $category = new CategoryRepository();
-        foreach ($data as $column => $value) {
-            $category->{$column} = $value;
+        try {
+            return self::getCacheService();
+        } catch (RedisException $exception) {
+            return self::getRepository();
+        } catch (\Throwable $exception) {
+            throw new \Exception('No data source available');
         }
-        return $category;
     }
 
     /**
-     * Check if vendor has a specific category
-     * @param string $categoryId
-     * @return \Phalcon\Mvc\Model\ResultInterface|CategoryRepository
+     * @return Category[]
      * @throws \Exception
      */
-    private function categoryVendorCheck(string $categoryId)
+    public function getRoots()
     {
-        return $this->getCategoryFromRepository($categoryId);
-    }
-
-    /**
-     * @return array
-     * @throws \Exception
-     */
-    public function getRoots(): array
-    {
-        if ($roots = self::getCacheService()->getRoots()) {
+        if ($roots = self::getDataSource()->getRoots(self::getVendorId())) {
             return $roots;
         }
 
@@ -56,7 +49,7 @@ class CategoryService extends BaseService
      */
     public function getAll(): array
     {
-        if ($allCategories = self::getCacheService()->getAll()) {
+        if ($allCategories = self::getDataSource()->getAll(self::getVendorId())) {
             return $allCategories;
         }
 
@@ -73,7 +66,7 @@ class CategoryService extends BaseService
     {
         self::setCategoryId($categoryId);
 
-        if ($category = self::getCacheService()->getCategory()) {
+        if ($category = self::getDataSource()->getCategory($categoryId, self::getVendorId())) {
             return $category;
         }
 
@@ -88,12 +81,7 @@ class CategoryService extends BaseService
     public function getDescendants($categoryId): array
     {
         self::setCategoryId($categoryId);
-
-        if ($descendants = self::getCacheService()->getDescendants()) {
-            return $descendants;
-        }
-
-        throw new \Exception('Category not found or maybe deleted', 404);
+        return self::getDataSource()->getDescendants($categoryId, self::getVendorId());
     }
 
     /**
@@ -104,12 +92,7 @@ class CategoryService extends BaseService
     public function getChildren($categoryId): array
     {
         self::setCategoryId($categoryId);
-
-        if ($children = self::getCacheService()->getChildren()) {
-            return $children;
-        }
-
-        throw new \Exception('Category not found', 404);
+        return self::getDataSource()->getChildren($categoryId, self::getVendorId());
     }
 
     /**
@@ -120,12 +103,7 @@ class CategoryService extends BaseService
     public function getParent($categoryId): array
     {
         self::setCategoryId($categoryId);
-
-        if ($parent = self::getCacheService()->getParent()) {
-            return $parent;
-        }
-
-        throw new \Exception('Category not found', 404);
+        return self::getDataSource()->getParent($categoryId, self::getVendorId());
     }
 
     /**
@@ -136,26 +114,7 @@ class CategoryService extends BaseService
     public function getParents($categoryId): array
     {
         self::setCategoryId($categoryId);
-
-        if ($parents = self::getCacheService()->getParents()) {
-            return $parents;
-        }
-
-        throw new \Exception('Category not found', 404);
-    }
-
-    /**
-     * @param $categoryId
-     * @return \Phalcon\Mvc\Model\ResultInterface|CategoryRepository
-     * @throws \Exception
-     */
-    public function getCategoryFromRepository($categoryId)
-    {
-        if ($category = self::getRepository()::findById($categoryId, self::getVendorId())) {
-            return $category;
-        }
-
-        throw new \Exception('Category not found or maybe deleted', 404);
+        return self::getDataSource()->getParents($categoryId, self::getVendorId());
     }
 
     /**
@@ -166,20 +125,12 @@ class CategoryService extends BaseService
      */
     public function create(array $data): array
     {
-        if (!empty($data['categoryParentId'])) {
-            $this->categoryVendorCheck($data['categoryParentId']);
-        }
-
-        $category = $this->categoryObject($data);
-
-        $data['vendorId'] = self::getVendorId();
-
-        if ($category->save($data)) {
+        if ($category = self::getRepository()->create($data)) {
             $this->invalidateCache();
-            return self::getCategoryFromRepository($category->getCategoryId())->toArray();
+            return $category->toApiArray();
         }
 
-        throw new \Exception(implode($category->getMessages()), 500);
+        throw new ArrayOfStringsException($category->getMessages(), 400);
     }
 
     /**
@@ -191,35 +142,36 @@ class CategoryService extends BaseService
      */
     public function update(string $categoryId, array $data): array
     {
-        $category = $this->getCategoryFromRepository($categoryId);
-
-        if (!empty($data['categoryParentId'])) {
-            $this->categoryVendorCheck($data['categoryParentId']);
-        }
-        if ($category->save($data)) {
+        if ($category = self::getRepository()->update($categoryId, self::getVendorId(), $data)) {
             $this->invalidateCache();
-            return $category->toArray();
+            return $category->toApiArray();
         }
-        throw new \Exception('Category could not be updated', 500);
+
+        throw new ArrayOfStringsException($category->getMessages(), 400);
     }
 
     /**
      * @param $categoryId
-     * @return bool
      * @throws \Exception
      */
-    public function delete($categoryId): bool
+    public function delete($categoryId): void
     {
-        $this->categoryVendorCheck($categoryId);
-        if (!self::getRepository()->cascadeDelete($categoryId)) {
-            return false;
+        if (self::getRepository()->delete($categoryId, self::getVendorId())) {
+            $this->invalidateCache();
+        } else {
+            throw new \Exception('Category not found or maybe deleted', 404);
         }
-        $this->invalidateCache();
-        return true;
     }
 
-    public function invalidateCache()
+    /**
+     * Invalidate cache after any DB operation (insert, update or delete)
+     */
+    private function invalidateCache()
     {
-        self::getCacheService()->invalidateCache();
+        try {
+            self::getCacheService()->invalidateCache();
+        } catch (\RedisException $exception) {
+            (new ApplicationLogger())->logError('Invalidate cache: ' . $exception->getMessage());
+        }
     }
 }

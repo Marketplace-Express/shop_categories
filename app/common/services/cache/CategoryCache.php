@@ -7,7 +7,7 @@
 
 namespace Shop_categories\Services\Cache;
 
-use Prophecy\Exception\Doubler\MethodNotFoundException;
+use Shop_categories\Helpers\ArrayHelper;
 use Shop_categories\Services\BaseService;
 use Shop_categories\Services\Cache\Utils\CategoryCacheUtils;
 
@@ -25,6 +25,14 @@ class CategoryCache extends BaseService
     private static $cacheKey = 'categories:vendor:%s';
 
     /**
+     * CategoryCache constructor.
+     */
+    public function __construct()
+    {
+        self::$cacheInstance = self::getCacheInstance();
+    }
+
+    /**
      * @param $name
      * @param $arguments
      * @return mixed
@@ -37,7 +45,12 @@ class CategoryCache extends BaseService
 
         if (!self::has($cacheKey)) {
             // Get all categories from repository and set in cache
-            self::set($cacheKey, self::getRepository()->getAll(self::getVendorId()));
+            $categories = self::getRepository()->getAll(self::getVendorId());
+            $categories = (new ArrayHelper($categories, [
+                'itemIdAttribute' => 'categoryId',
+                'parentIdAttribute' => 'categoryParentId'
+            ]))->tree();
+            self::set($cacheKey, $categories);
         }
 
         // Process data from cache
@@ -51,7 +64,7 @@ class CategoryCache extends BaseService
      */
     public static function get($key)
     {
-        return self::getCacheInstance()->get($key);
+        return self::$cacheInstance->get($key);
     }
 
     /**
@@ -61,19 +74,19 @@ class CategoryCache extends BaseService
      */
     public static function set($key, $value)
     {
-        self::getCacheInstance()->save($key, $value, 1800);
+        self::$cacheInstance->save($key, $value, 1800);
     }
 
     public static function has($key)
     {
-        return self::getCacheInstance()->exists($key);
+        return self::$cacheInstance->exists($key);
     }
 
     /**
      * @param $operation
      * @param $value
      * @return array|bool
-     * @throws MethodNotFoundException
+     * @throws \Exception
      */
     public static function processData($operation, $value)
     {
@@ -93,7 +106,7 @@ class CategoryCache extends BaseService
                 return $cacheUtils->getCategory(self::getCategoryId(), $operation);
                 break;
             default:
-                throw new MethodNotFoundException('Method is not callable', self::class, $operation);
+                throw new \Exception('Method is not callable');
         }
     }
 
@@ -105,7 +118,7 @@ class CategoryCache extends BaseService
     {
         $cacheKey = sprintf(self::$cacheKey, self::getVendorId());
         if (self::has($cacheKey)) {
-            return self::getCacheInstance()->delete($cacheKey);
+            return self::$cacheInstance->delete($cacheKey);
         }
         return false;
     }

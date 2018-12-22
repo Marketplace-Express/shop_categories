@@ -83,7 +83,7 @@ class IndexControllerTest extends \UnitTestCase
     public function testRootsAction()
     {
         /** @var IndexController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('showPublicColumns');
+        $controllerMock = $this->getControllerMock('nothing');
 
         /** @var GetRequestHandler|MockObject $getGetRequestHandlerMock */
         $getGetRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
@@ -99,7 +99,6 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('getRoots')->willReturn([]);
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
         $controllerMock->rootsAction();
     }
 
@@ -125,10 +124,10 @@ class IndexControllerTest extends \UnitTestCase
         $controllerMock->rootsAction();
     }
 
-    public function testDefendantsAction()
+    public function testDescendantsAction()
     {
         /** @var IndexController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('showPublicColumns');
+        $controllerMock = $this->getControllerMock('toTree');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
@@ -144,11 +143,11 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('getDescendants')->with(self::CATEGORY_ID)->willReturn([]);
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
+        $controllerMock->expects(self::once())->method('toTree')->with([])->willReturn([]);
         $controllerMock->descendantsAction(self::CATEGORY_ID);
     }
 
-    public function testDefendantsActionWithException()
+    public function testDescendantsActionWithException()
     {
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
@@ -173,7 +172,7 @@ class IndexControllerTest extends \UnitTestCase
     public function testGetAction()
     {
         /** @var IndexController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('showPublicColumns');
+        $controllerMock = $this->getControllerMock('nothing');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
@@ -189,7 +188,6 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('getCategory')->with(self::CATEGORY_ID)->willReturn([]);
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
         $controllerMock->getAction(self::CATEGORY_ID);
     }
 
@@ -218,7 +216,7 @@ class IndexControllerTest extends \UnitTestCase
     public function testParentAction()
     {
         /** @var IndexController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('showPublicColumns');
+        $controllerMock = $this->getControllerMock('nothing');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
@@ -234,7 +232,6 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('getParent')->with(self::CATEGORY_ID)->willReturn([]);
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
         $controllerMock->parentAction(self::CATEGORY_ID);
     }
 
@@ -263,7 +260,7 @@ class IndexControllerTest extends \UnitTestCase
     public function testParentsAction()
     {
         /** @var IndexController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('showPublicColumns');
+        $controllerMock = $this->getControllerMock('toTree');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
@@ -279,7 +276,7 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('getParents')->with(self::CATEGORY_ID)->willReturn([]);
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
+        $controllerMock->expects(self::once())->method('toTree')->with([])->willReturn([]);
         $controllerMock->parentsAction(self::CATEGORY_ID);
     }
 
@@ -308,7 +305,8 @@ class IndexControllerTest extends \UnitTestCase
     public function testGetAllAction()
     {
         /** @var IndexController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('showPublicColumns');
+        $controllerMock = $this->getControllerMock('toTree');
+        $controllerMock->expects(self::once())->method('toTree')->with([])->willReturn([]);
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
@@ -324,7 +322,6 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('getAll')->willReturn([]);
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
         $controllerMock->getAllAction();
     }
 
@@ -354,7 +351,7 @@ class IndexControllerTest extends \UnitTestCase
     {
 
         /** @var IndexController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('showPublicColumns');
+        $controllerMock = $this->getControllerMock('nothing');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
@@ -370,7 +367,6 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('getChildren')->with(self::CATEGORY_ID)->willReturn([]);
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('showPublicColumns')->with([])->willReturn([]);
         $controllerMock->childrenAction(self::CATEGORY_ID);
     }
 
@@ -399,7 +395,7 @@ class IndexControllerTest extends \UnitTestCase
     public function testCreateAction()
     {
         /** @var IndexController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('showPublicColumns');
+        $controllerMock = $this->getControllerMock('nothing');
 
         $request = $this->di->get('request');
         $request->setJsonRawBody($this->jsonRawBody);
@@ -420,7 +416,6 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('create')->with((array) $request->getJsonRawBody())->willReturn((array) $request->getJsonRawBody());
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('showPublicColumns')->with((array) $this->jsonRawBody)->willReturn((array)$this->jsonRawBody);
         $controllerMock->createAction();
     }
 
@@ -449,7 +444,7 @@ class IndexControllerTest extends \UnitTestCase
     public function testUpdateAction()
     {
         /** @var IndexController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('showPublicColumns');
+        $controllerMock = $this->getControllerMock('nothing');
 
         $request = $this->di->get('request');
         $request->setJsonRawBody($this->jsonRawBody);
@@ -470,7 +465,6 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('update')->with(self::CATEGORY_ID, (array) $request->getJsonRawBody())->willReturn((array) $request->getJsonRawBody());
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('showPublicColumns')->with((array) $request->getJsonRawBody())->willReturn((array) $request->getJsonRawBody());
         $controllerMock->updateAction(self::CATEGORY_ID);
     }
 

@@ -13,5 +13,6 @@ class ArrayOfStringsException extends \Exception
     {
         $this->message = json_encode($message);
         $this->code = $code;
+        parent::__construct($this->message, $this->code);
     }
 }

@@ -8,6 +8,7 @@
 namespace Shop_categories\Modules\Api\Controllers;
 
 use Phalcon\Mvc\Controller;
+use Shop_categories\Helpers\ArrayHelper;
 use Shop_categories\Services\CategoryService;
 
 class ControllerBase extends Controller
@@ -109,6 +110,7 @@ class ControllerBase extends Controller
      * Expose public columns from result set array
      * @param array $rows
      * @return array
+     * @deprecated
      */
     public function showPublicColumns(array $rows)
     {
@@ -129,5 +131,19 @@ class ControllerBase extends Controller
             }
         }
         return $result;
+    }
+
+    /**
+     * Represent items as tree
+     * @param array $data
+     * @return array
+     * @throws \Exception
+     */
+    public function toTree(array $data)
+    {
+        return (new ArrayHelper($data, [
+            'itemIdAttribute' => 'categoryId',
+            'parentIdAttribute' => 'categoryParentId'
+        ]))->tree();
     }
 }

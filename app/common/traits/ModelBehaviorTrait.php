@@ -8,6 +8,7 @@
 namespace Shop_categories\Traits;
 
 use Phalcon\Mvc\Model;
+use Phalcon\Validation;
 
 trait ModelBehaviorTrait
 {

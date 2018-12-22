@@ -7,7 +7,7 @@
 
 namespace Shop_categories\Helpers;
 
-class AdjacencyListModelHelper
+class ArrayHelper
 {
     private $parentIdAttribute;
     private $itemIdAttribute;
@@ -22,8 +22,8 @@ class AdjacencyListModelHelper
 
         $this->itemIdAttribute = $params['itemIdAttribute'];
         $this->parentIdAttribute = $params['parentIdAttribute'];
-        $this->subItemsSlug = $params['subItemsSlug'];
-        $this->noParentValue = $params['noParentValue'];
+        $this->subItemsSlug = $params['subItemsSlug'] ?: 'children';
+        $this->noParentValue = $params['noParentValue'] ?: null;
     }
 
     /**
@@ -31,7 +31,7 @@ class AdjacencyListModelHelper
      * @return array
      * @throws \Exception
      */
-    public function prepare()
+    public function tree()
     {
         $ids = array_column($this->array, $this->itemIdAttribute);
         foreach ($this->array as $key => &$value) {
