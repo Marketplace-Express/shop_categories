@@ -10,6 +10,7 @@ namespace Shop_categories\Tests\Controllers;
 use Phalcon\Logger\Adapter\File;
 use PHPUnit\Framework\MockObject\MockObject;
 use Shop_categories\Controllers\ExceptionhandlerController;
+use Shop_categories\Logger\ApplicationLogger;
 use Shop_categories\Tests\Mocks\ResponseMock;
 
 class ExceptionhandlerControllerTest extends \UnitTestCase
@@ -69,8 +70,15 @@ class ExceptionhandlerControllerTest extends \UnitTestCase
         $response = $this->di->get('response');
 
         /** @var ExceptionhandlerController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('logError');
-        $controllerMock->expects(self::once())->method('logError')->with($expectedResponse['message']);
+        $controllerMock = $this->getControllerMock('getLogger');
+
+        /** @var ApplicationLogger|MockObject */
+        $applicationLoggerMock = $this->getMockBuilder(ApplicationLogger::class)
+            ->setMethods(['logError'])
+            ->getMock();
+        $applicationLoggerMock->expects(self::once())->method('logError')->with($expectedResponse['message']);
+        $controllerMock->expects(self::once())->method('getLogger')->willReturn($applicationLoggerMock);
+
         $controllerMock->raiseErrorAction($expectedResponse['message'], $expectedResponse['status']);
 
         $this->assertEquals($response->jsonContent, $expectedResponse);
@@ -86,24 +94,5 @@ class ExceptionhandlerControllerTest extends \UnitTestCase
                 'error1'
             ]
         ];
-    }
-
-    /**
-     * @param $errors
-     *
-     * @dataProvider errorsSamples
-     */
-    public function testLogError($errors)
-    {
-        /** @var ExceptionhandlerController|MockObject $controllerMock */
-        $controllerMock = $this->getControllerMock('nothing');
-
-        /** @var File|MockObject $fileObjectMock */
-        $fileObjectMock = $this->getFileObjectMock('log');
-        $fileObjectMock->expects(self::once())->method('log')->with(\Phalcon\Logger::ERROR, $errors);
-        $controllerMock->setFile($fileObjectMock);
-
-        $controllerMock->logError($errors);
-
     }
 }

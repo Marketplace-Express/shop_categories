@@ -62,9 +62,9 @@ class CategoryCacheUtils
                 // This will remove children from subset categories
                 return array_diff_key($item, $keyToRemove);
             }, $category['children']);
+            return $category['children'];
         }
-
-        return $category;
+        return [];
     }
 
     private function toTree(array $array): array
@@ -98,7 +98,7 @@ class CategoryCacheUtils
                 $category = (array)$iterator->getInnerIterator();
 
                 // Check if category is root node
-                if ($category['lft'] == 1) {
+                if (array_key_exists('lft', $category) && $category['lft'] == 1) {
                     return [];
                 }
 
@@ -142,7 +142,7 @@ class CategoryCacheUtils
 
             $iterator->next();
         }
-        $category = array_slice($category, 0, count($category) - 1);
+        unset($category['children']);
         return $category;
     }
 

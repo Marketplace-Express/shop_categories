@@ -36,13 +36,17 @@ $loader->registerNamespaces([
     'Shop_categories\Helpers' => ROOT_PATH . '/../app/common/helpers',
     'Shop_categories\Repositories' => ROOT_PATH . '/../app/common/repositories',
     'Shop_categories\Models\Behaviors' => ROOT_PATH . '/../app/common/models/behaviors',
+    'Shop_categories\Interfaces' => ROOT_PATH . '/../app/common/interfaces/',
+    'Shop_categories\DBTools' => ROOT_PATH . '/../app/common/db-tools',
+    'Shop_categories\DBTools\Enums' => ROOT_PATH . '/../app/common/db-tools/enums',
     'Shop_categories\Traits' => ROOT_PATH . '/../app/common/traits',
     'Shop_categories\Services' => ROOT_PATH . '/../app/common/services',
     'Shop_categories\Services\Cache' => ROOT_PATH . '/../app/common/services/cache',
     'Shop_categories\Services\Cache\Utils' => ROOT_PATH . '/../app/common/services/cache/utils',
     'Shop_categories\RequestHandler' => ROOT_PATH . '/../app/common/request-handler',
     'Shop_categories\Modules\Api\Controllers' => ROOT_PATH . '/../app/modules/api/1.0/controllers',
-    'Shop_categories\Utils' => ROOT_PATH . '/../app/common/utils'
+    'Shop_categories\Utils' => ROOT_PATH . '/../app/common/utils',
+    'Shop_categories\Logger' => ROOT_PATH . '/common/logger/'
 ]);
 
 $loader->registerClasses([

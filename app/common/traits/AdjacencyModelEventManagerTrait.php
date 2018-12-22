@@ -4,6 +4,7 @@ namespace Shop_categories\Traits;
 
 use Phalcon\Di;
 use Phalcon\Events\Manager as EventsManager;
+use Phalcon\Mvc\ModelInterface;
 
 /**
  * Phalcon\Traits\EventManagerAwareTrait
@@ -63,6 +64,33 @@ trait AdjacencyModelEventManagerTrait
     {
         if ($manager = $this->getEventsManager()) {
             $manager->fire($event, $source, $data, $cancelable);
+        }
+    }
+
+    /**
+     * This method receives the notifications from the EventsManager
+     *
+     * @param string $type
+     * @param \Phalcon\Mvc\ModelInterface $model
+     *
+     * @codeCoverageIgnore
+     * @throws \Exception
+     */
+    public function notify($type, ModelInterface $model)
+    {
+        $this->setOwner($model);
+        $this->owner = $model;
+        switch ($type) {
+            case 'beforeValidationOnUpdate':
+                $categoryId = $model->{"get".ucfirst($this->itemIdAttribute)}();
+                $parentId = $model->{"get".ucfirst($this->parentIdAttribute)}();
+                $isDeleted = $model->{"get".ucfirst($this->isDeletedAttribute)}();
+                if (!empty($parentId) && !boolval($isDeleted)) {
+                    if ($this->isDescendant($categoryId, $parentId)) {
+                        throw new \Exception('Target parent should not be descendant of this category', 400);
+                    }
+                }
+                break;
         }
     }
 }

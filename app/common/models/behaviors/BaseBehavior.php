@@ -8,13 +8,13 @@ namespace Shop_categories\Models\Behaviors;
 
 interface BaseBehavior
 {
-    public function roots(bool $toArray = true);
+    public function roots(array $additionalConditions = []);
 
-    public function parents(string $itemId, bool $toArray = true, $recursive = true, bool $oneParent = false, bool $addSelf = false);
+    public function parents(string $itemId, array $additionalConditions = [], bool $oneParent = false, bool $addSelf = false);
 
-    public function descendants(string $itemId, bool $toArray = true, $recursive = true);
+    public function descendants(string $itemId, array $additionalConditions = []);
 
-    public function children(string $itemId, bool $toArray = true);
+    public function children(string $itemId, array $additionalConditions = []);
 
-    public function cascadeDelete(string $itemId);
+    public function deleteCascade(string $itemId, array $additionalConditions = []);
 }

@@ -38,6 +38,7 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function getCategoryId(): string
     {
@@ -100,6 +101,11 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         return $this->uuidUtil;
     }
 
+    private function getAppConfig()
+    {
+        return $this->di->getConfig()->application;
+    }
+
     /**
      * @return Validation\Message\Group
      */
@@ -110,10 +116,10 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         $validator->add(
             'name',
             new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => true,
-                'underscore' => true,
-                'min' => 3,
-                'max' => 100,
+                'whiteSpace' => $this->getAppConfig()->allowWhiteSpace,
+                'underscore' => $this->getAppConfig()->allowUnderscore,
+                'min' => $this->getAppConfig()->minCategoryNameLength,
+                'max' => $this->getAppConfig()->maxCategoryNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters'
@@ -207,6 +213,7 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
 
     /**
      * @return array
+     * @throws \Exception
      */
     public function toArray(): array
     {
@@ -214,7 +221,9 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
             'categoryId' => $this->getCategoryId(),
             'categoryParentId' => $this->getParentId(),
             'categoryName' => $this->getName(),
-            'categoryOrder' => $this->getOrder()
+            'categoryOrder' => $this->getOrder(),
+            'categoryVendorId' => $this->request->getQuery('vendorId'),
+            'categoryUserId' => 'fded67e4-9fcd-4a2d-ae2e-de15d70a8bb5'
         ];
 
         return $result;

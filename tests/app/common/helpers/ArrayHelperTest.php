@@ -8,9 +8,9 @@
 namespace Shop_categories\Tests\Helpers;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use Shop_categories\Helpers\AdjacencyListModelHelper;
+use Shop_categories\Helpers\ArrayHelper;
 
-class AdjacencyListModelHelperTest extends \UnitTestCase
+class ArrayHelperTest extends \UnitTestCase
 {
     public $params;
     public function setUp()
@@ -26,7 +26,7 @@ class AdjacencyListModelHelperTest extends \UnitTestCase
 
     public function getAdjacencyListModelHelperMock($array, ...$methods)
     {
-        return $this->getMockBuilder(AdjacencyListModelHelper::class)
+        return $this->getMockBuilder(ArrayHelper::class)
             ->setConstructorArgs([$array, $this->params])
             ->setMethods($methods)
             ->getMock();
@@ -84,11 +84,11 @@ class AdjacencyListModelHelperTest extends \UnitTestCase
      * @throws \Exception
      * @dataProvider itemsSamples
      */
-    public function testPrepare($actual, $expected)
+    public function testTree($actual, $expected)
     {
-        /** @var AdjacencyListModelHelper|MockObject $adjacencyListModelHelperMock */
+        /** @var ArrayHelper|MockObject $adjacencyListModelHelperMock */
         $adjacencyListModelHelperMock = $this->getAdjacencyListModelHelperMock($actual, 'nothing');
 
-        $this->assertEquals($expected, $adjacencyListModelHelperMock->prepare());
+        $this->assertEquals($expected, $adjacencyListModelHelperMock->tree());
     }
 }

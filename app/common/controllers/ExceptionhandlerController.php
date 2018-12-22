@@ -7,35 +7,20 @@
 
 namespace Shop_categories\Controllers;
 
-use Phalcon\Logger\Adapter\File;
 use Phalcon\Mvc\Controller;
+use Shop_categories\Logger\ApplicationLogger;
 
 class ExceptionhandlerController extends Controller
 {
     /**
-     * Logging file name
+     * Defined as protected for unit test
+     * Also, it is encapsulated for this class and its children
+     *
+     * @return ApplicationLogger
      */
-    const LOG_FILE = 'app.log';
-
-    private $file;
-
-    /**
-     * @return File
-     */
-    public function getFile()
+    protected function getLogger(): ApplicationLogger
     {
-        if (!$this->file) {
-            $this->file = new File($this->getDI()->get('config')->application->logsDir . self::LOG_FILE);
-        }
-        return $this->file;
-    }
-
-    /**
-     * @param mixed $file
-     */
-    public function setFile($file): void
-    {
-        $this->file = $file;
+        return new ApplicationLogger();
     }
 
     /**
@@ -48,8 +33,12 @@ class ExceptionhandlerController extends Controller
         if (!is_array($errors) && !is_object($errors) && ($jsonError = json_decode($errors, true)) != null) {
             $errors = $jsonError;
         }
-        // Log error
-        $this->logError($errors);
+
+        /**
+         * Log Error
+         * @ignore
+         */
+        $this->getLogger()->logError($errors);
 
         // response->setStatusCode slows down the performance
         // replacing it with http_response_code
@@ -59,11 +48,5 @@ class ExceptionhandlerController extends Controller
                 'status' => $code,
                 'message' => $errors
             ]);
-    }
-
-    public function logError($errors)
-    {
-        $errors = (is_array($errors)) ? implode('\n', $errors) : $errors;
-        $this->getFile()->log(\Phalcon\Logger::ERROR, $errors);
     }
 }
