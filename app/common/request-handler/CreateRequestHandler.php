@@ -14,22 +14,16 @@ use Shop_categories\Utils\UuidUtil;
 
 class CreateRequestHandler extends ControllerBase implements RequestHandlerInterface
 {
-    /**
-     * @var string $categoryId
-     */
+    /** @var string $categoryId */
     public $categoryId;
 
-    /**
-     * @var string $name
-     */
+    /** @var string $name */
     private $name;
 
     /** @var int $order */
-    private $order;
+    private $order = 0;
 
-    /**
-     * @var string $parentId
-     */
+    /** @var string $parentId */
     private $parentId;
 
     public $uuidUtil;
@@ -59,12 +53,15 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     /**
      * @return string|null
      */
-    public function getParentId() : ?string
+    public function getParentId()
     {
         return $this->parentId;
     }
 
-    public function getOrder(): ?int
+    /**
+     * @return int|null
+     */
+    public function getOrder()
     {
         return $this->order;
     }
@@ -72,7 +69,7 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     /**
      * @param string $name
      */
-    public function setName(string $name): void
+    public function setName($name): void
     {
         $this->name = $name;
     }
@@ -80,12 +77,12 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     /**
      * @param string $parentId
      */
-    public function setParentId(string $parentId): void
+    public function setParentId($parentId): void
     {
         $this->parentId = $parentId;
     }
 
-    public function setOrder(?int $order): void
+    public function setOrder($order): void
     {
         $this->order = $order;
     }
@@ -122,7 +119,8 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
                 'max' => $this->getAppConfig()->maxCategoryNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
-                'messageMaximum' => 'Category name should not exceed 100 characters'
+                'messageMaximum' => 'Category name should not exceed 100 characters',
+                'allowEmpty' => false
             ])
         );
 
@@ -130,30 +128,33 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
             'parentId',
             new Validation\Validator\Callback([
                 'callback' => function ($data) {
-                    return $this->getUuidUtil()->isValid($data['parentId']);
+                    if (!empty($data['parentId'])) {
+                        return $this->getUuidUtil()->isValid($data['parentId']);
+                    }
+                    return true;
                 },
-                'message' => 'Invalid parent category Id',
-                'allowEmpty' => true
+                'message' => 'Invalid parent category Id'
             ])
         );
 
         $validator->add(
             'order',
-            new Validation\Validator\Numericality([
+            new Validation\Validator\NumericValidator([
+                'min' => $this->getAppConfig()->minCategoryOrder,
+                'max' => $this->getAppConfig()->maxCategoryOrder,
+                'allowFloat' => $this->getAppConfig()->allowFloat,
+                'allowSign' => $this->getAppConfig()->allowSign,
+                'message' => 'Category order should be a number',
                 'allowEmpty' => true
             ])
         );
 
         // Fields to be validated
-        $fields['name'] = $this->getName();
-
-        if ($this->getParentId()) {
-            $fields['parentId'] = $this->getParentId();
-        }
-
-        if ($this->getOrder()) {
-            $fields['order'] = $this->getOrder();
-        }
+        $fields = [
+            'name'      => $this->getName(),
+            'parentId'  => $this->getParentId(),
+            'order'     => $this->getOrder()
+        ];
 
         return $validator->validate($fields);
     }

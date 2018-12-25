@@ -49,7 +49,7 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
         return $this->parentId;
     }
 
-    public function getOrder(): ?int
+    public function getOrder()
     {
         return $this->order;
     }
@@ -70,7 +70,7 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
         $this->parentId = $parentId;
     }
 
-    public function setOrder(?int $order): void
+    public function setOrder($order): void
     {
         $this->order = $order;
     }
@@ -86,19 +86,22 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
         return $this->uuidUtil;
     }
 
+    private function getAppConfig()
+    {
+        return $this->di->getConfig()->application;
+    }
+
     /**
      * @return Validation\Message\Group
      */
     public function validate() : Validation\Message\Group
     {
-        $fields = [];
         $validator = new Validation();
-
         $validator->add(
             'parentId',
             new Validation\Validator\Callback([
                 'callback' => function ($data) {
-                    if (!is_null($data['parentId'])) {
+                    if (!empty($data['parentId'])) {
                         return $this->getUuidUtil()->isValid($data['parentId']);
                     }
                     return true;
@@ -109,33 +112,36 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
 
         $validator->add(
             'order',
-            new Validation\Validator\Numericality([
+            new Validation\Validator\NumericValidator([
+                'min' => $this->getAppConfig()->minCategoryOrder,
+                'max' => $this->getAppConfig()->maxCategoryOrder,
+                'allowFloat' => $this->getAppConfig()->allowFloat,
+                'allowSign' => $this->getAppConfig()->allowSign,
+                'message' => 'Category order should be a number',
                 'allowEmpty' => true
             ])
         );
 
-        if (isset($this->name)) {
-            $validator->add(
-                'name',
-                new Validation\Validator\AlphaNumericValidator([
-                    'whiteSpace' => true,
-                    'underscore' => true,
-                    "min" => 3,
-                    'max' => 100,
-                    'message' => 'Invalid category name',
-                    'messageMinimum' => 'Category name should be at least 3 characters',
-                    'messageMaximum' => 'Category name should not exceed 100 characters',
-                    'allowEmpty' => false
-                ])
-            );
-            $fields['name'] = $this->getName();
-        }
-        if (!is_null($this->parentId)) {
-            $fields['parentId'] = $this->getParentId();
-        }
-        if ($this->getOrder()) {
-            $fields['order'] = $this->getOrder();
-        }
+        $validator->add(
+            'name',
+            new Validation\Validator\AlphaNumericValidator([
+                'whiteSpace' => $this->getAppConfig()->allowWhiteSpace,
+                'underscore' => $this->getAppConfig()->allowUnderscore,
+                'min' => $this->getAppConfig()->minCategoryNameLength,
+                'max' => $this->getAppConfig()->maxCategoryNameLength,
+                'message' => 'Invalid category name',
+                'messageMinimum' => 'Category name should be at least 3 characters',
+                'messageMaximum' => 'Category name should not exceed 100 characters',
+                'allowEmpty' => true
+            ])
+        );
+
+        // Fields to be validated
+        $fields = [
+            'name'      => $this->getName(),
+            'parentId'  => $this->getParentId(),
+            'order'     => $this->getOrder()
+        ];
 
         return $validator->validate($fields);
     }
@@ -202,7 +208,7 @@ class UpdateRequestHandler extends ControllerBase implements RequestHandlerInter
             $result['categoryName'] = $this->getName();
         }
 
-        if (array_key_exists('parentId', $this->request->getJsonRawBody(true))) {
+        if (!empty($this->getParentId())) {
             $result['categoryParentId'] = $this->getParentId();
         }
 

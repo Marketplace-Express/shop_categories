@@ -9,17 +9,18 @@ namespace Shop_categories\Repositories;
 
 use Phalcon\Mvc\Model\Resultset;
 use Shop_categories\DBTools\Enums\QueryOperatorsEnum;
-use Shop_categories\Helpers\ArrayHelper;
+use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\Models\Category;
 
 class CategoryRepository
 {
     /**
+     * @param bool $new
      * @return Category
      */
-    public static function getModel(): Category
+    public static function getModel(bool $new = false): Category
     {
-        return Category::model();
+        return Category::model($new);
     }
 
     /**
@@ -54,12 +55,6 @@ class CategoryRepository
     public static function findAllByIds(array $categoriesIds, string $vendorId)
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        $result = self::getModel()::query()
-            ->where('categoryId IN ({categoriesIds:array}) AND categoryVendorId = :vendorId:')
-            ->bind(['categoriesIds' => $categoriesIds, 'vendorId' => $vendorId])
-            ->execute()
-            ->setHydrateMode(Resultset::HYDRATE_RECORDS);
-
         $result = self::getModel()->getItems([
             'categoryId' => [QueryOperatorsEnum::OP_IN => [$categoriesIds]],
             'categoryVendorId' => [QueryOperatorsEnum::OP_EQUALS => $vendorId]
@@ -221,17 +216,14 @@ class CategoryRepository
     /**
      * @param array $data
      * @return Category
-     * @throws \Exception
+     * @throws ArrayOfStringsException
      */
     public function create(array $data): Category
     {
-        if (!empty($data['categoryParentId'])) {
-            // check if parent category related to vendor
-            self::findById($data['categoryParentId'], $data['vendorId']);
+        $category = self::getModel(true)->setAttributes($data);
+        if (!$category->save()) {
+            throw new ArrayOfStringsException($category->getMessages(), 400);
         }
-
-        $category = self::getModel()->setAttributes($data);
-        $category->save();
         return $category;
     }
 
@@ -245,14 +237,10 @@ class CategoryRepository
     public function update(string $categoryId, string $vendorId, array $data)
     {
         $category = self::findById($categoryId, $vendorId);
-
-        if (!empty($data['categoryParentId']) && $data['categoryParentId'] != $category->getCategoryParentId()) {
-            // check if parent category related to vendor
-            self::findById($data['categoryParentId'], $vendorId);
-        }
-
         $category->setAttributes($data);
-        $category->update();
+        if (!$category->update()) {
+            throw new ArrayOfStringsException($category->getMessages(), 400);
+        }
         return $category;
     }
 

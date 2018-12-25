@@ -20,7 +20,7 @@ return new \Phalcon\Config([
         'username' => 'phalcon',
         'password' => 'secret',
         'dbname'   => 'shop_categories',
-        'charset'  => 'utf8',
+        'charset'  => 'utf8'
     ],
 
     'cache' => [
@@ -49,6 +49,11 @@ return new \Phalcon\Config([
         'allowWhiteSpace' => true,
         'allowUnderscore' => true,
 
+        // Category order validation config
+        'minCategoryOrder' => 0,
+        'maxCategoryOrder' => 999,
+        'allowFloat' => false,
+        'allowSign' => false
     ],
 
     /**

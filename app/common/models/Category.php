@@ -6,6 +6,7 @@ use Phalcon\Validation;
 use Phalcon\Validation\Validator\AlphaNumericValidator;
 use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
 use Shop_categories\Traits\ModelBehaviorTrait;
+use Shop_categories\Utils\UuidUtil;
 use Shop_categories\Validators\ExistenceValidator;
 
 /**
@@ -51,7 +52,7 @@ class Category extends BaseModel
      * @var integer $categoryOrder
      * @Column(column="category_order", type="integer", length=3, nullable=false)
      */
-    protected $categoryOrder;
+    protected $categoryOrder = 0;
 
     /**
      *
@@ -199,7 +200,7 @@ class Category extends BaseModel
     /**
      * @return null|int
      */
-    public function getCategoryOrder(): ?int
+    public function getCategoryOrder(): int
     {
         return $this->categoryOrder;
     }
@@ -261,11 +262,12 @@ class Category extends BaseModel
     }
 
     /**
+     * @param bool $new
      * @return Category
      */
-    public static function model(): self
+    public static function model(bool $new = false): self
     {
-        return self::$instance ?? new self;
+        return !empty(self::$instance) && !$new ? self::$instance : new self;
     }
 
     public function initialize()
@@ -342,9 +344,10 @@ class Category extends BaseModel
     public function toApiArray()
     {
         return [
-            'categoryId' => $this->categoryId,
-            'categoryParentId' => $this->categoryParentId,
-            'categoryName' => $this->categoryName
+            'categoryId' => $this->getCategoryId(),
+            'categoryParentId' => $this->getCategoryParentId(),
+            'categoryName' => $this->getCategoryName(),
+            'categoryOrder' => $this->getCategoryOrder()
         ];
     }
 
@@ -356,13 +359,13 @@ class Category extends BaseModel
     public function toArray($columns = null)
     {
         return [
-            'categoryId' => $this->categoryId,
-            'categoryParentId' => $this->categoryParentId,
-            'categoryName' => $this->categoryName,
-            'categoryOrder' => $this->categoryOrder,
-            'categoryUserId' => $this->categoryUserId,
-            'categoryVendorId' => $this->categoryVendorId,
-            'updatedAt' => $this->updatedAt
+            'categoryId' => $this->getCategoryId(),
+            'categoryParentId' => $this->getCategoryParentId(),
+            'categoryName' => $this->getCategoryName(),
+            'categoryOrder' => $this->getCategoryOrder(),
+            'categoryUserId' => $this->getCategoryUserId(),
+            'categoryVendorId' => $this->getCategoryVendorId(),
+            'updatedAt' => $this->getUpdatedAt()
         ];
     }
 
@@ -380,6 +383,7 @@ class Category extends BaseModel
         if ($this->operation == self::DELETE_OPERATION) {
             return true;
         }
+
         $validator = new Validation();
         $validator->add(
             'categoryName',
@@ -396,6 +400,19 @@ class Category extends BaseModel
 
         $validator->add(
             'categoryParentId',
+            new Validation\Validator\Callback([
+                'callback' => function ($data) {
+                    if (!empty($data['parentId'])) {
+                        return (new UuidUtil())->isValid($data['parentId']);
+                    }
+                    return true;
+                },
+                'message' => 'Invalid parent category Id'
+            ])
+        );
+
+        $validator->add(
+            'categoryParentId',
             new ExistenceValidator([
                 'model' => self::class,
                 'column' => 'categoryId',
@@ -407,9 +424,21 @@ class Category extends BaseModel
             ])
         );
 
-        $messages = $validator->validate([
-            'categoryName' => $this->categoryName,
-            'categoryParentId' => $this->categoryParentId
+        $validator->add(
+            'categoryOrder',
+            new Validation\Validator\NumericValidator([
+                'min' => $this->di->getConfig()->application->minCategoryOrder,
+                'max' => $this->di->getConfig()->application->maxCategoryOrder,
+                'allowFloat' => $this->di->getConfig()->application->allowFloat,
+                'allowSign' => $this->di->getConfig()->application->allowSign,
+                'message' => 'Category order should be a number'
+            ])
+        );
+
+        $this->_errorMessages = $messages = $validator->validate([
+            'categoryName' => $this->getCategoryName(),
+            'categoryParentId' => $this->getCategoryParentId(),
+            'categoryOrder' => $this->getCategoryOrder()
         ]);
 
         return $messages->count() ? false : true;
