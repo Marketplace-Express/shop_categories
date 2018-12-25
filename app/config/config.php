@@ -23,6 +23,10 @@ return new \Phalcon\Config([
         'charset'  => 'utf8'
     ],
 
+    'mongodb' => [
+        'dbname' => 'shop_categories'
+    ],
+
     'cache' => [
         'host' => 'localhost',
         'port' => 6379,
