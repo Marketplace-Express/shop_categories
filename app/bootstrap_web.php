@@ -55,11 +55,6 @@ try {
      */
     $application->useImplicitView(false);
 
-    /**
-     * Include routes
-     */
-//    require APP_PATH . '/config/routes.php';
-
     echo ($application->handle()->getContent());
 
 } catch (\Exception $e) {
