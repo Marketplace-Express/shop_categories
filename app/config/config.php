@@ -43,6 +43,9 @@ return new \Phalcon\Config([
         // possibly if the web server rewrite rules are changed. This can also be set to a static path.
         'baseUri'        => preg_replace('/public([\/\\\\])index.php$/', '', $_SERVER["PHP_SELF"]),
 
+        // Category cache TTL
+        'categoryCacheTTL' => 86400,
+
         // Category name validation config
         'minCategoryNameLength' => 3,
         'maxCategoryNameLength' => 100,

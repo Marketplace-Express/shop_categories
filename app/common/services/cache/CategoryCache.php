@@ -7,6 +7,7 @@
 
 namespace Shop_categories\Services\Cache;
 
+use Phalcon\Config;
 use Shop_categories\Helpers\ArrayHelper;
 use Shop_categories\Services\BaseService;
 use Shop_categories\Services\Cache\Utils\CategoryCacheUtils;
@@ -58,6 +59,14 @@ class CategoryCache extends BaseService
     }
 
     /**
+     * @return Config
+     */
+    private static function getConfig(): Config
+    {
+        return \Phalcon\Di::getDefault()->getConfig()->application;
+    }
+
+    /**
      * Get value from cache
      * @param $key
      * @return mixed
@@ -74,7 +83,7 @@ class CategoryCache extends BaseService
      */
     public static function set($key, $value)
     {
-        self::$cacheInstance->save($key, $value, 1800);
+        self::$cacheInstance->save($key, $value, self::getConfig()->categoryCacheTTL);
     }
 
     public static function has($key)
