@@ -39,4 +39,18 @@ abstract class BaseModel extends Model implements BaseModelInterface
         $query->where('isDeleted = false');
         return $query;
     }
+
+    /**
+     * Returns model's error messages
+     * @param null $filter
+     * @return array
+     */
+    public function getMessages($filter = null): array
+    {
+        $messages = [];
+        foreach (parent::getMessages($filter) as $message) {
+            $messages[$message->getField()] = $message->getMessage();
+        }
+        return $messages;
+    }
 }
