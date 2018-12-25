@@ -18,4 +18,4 @@ chmod +x /usr/local/bin/phpunit
 docker-php-ext-install pdo_mysql
 
 # Install ant
-apt-get install ant
+apt-get install ant -yqq
