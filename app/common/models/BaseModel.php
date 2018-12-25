@@ -24,6 +24,7 @@ abstract class BaseModel extends Model implements BaseModelInterface
     public function onConstruct()
     {
         self::$instance = $this;
+        $this->setSchema("shop_categories");
     }
 
     public static function model(){}
@@ -37,5 +38,19 @@ abstract class BaseModel extends Model implements BaseModelInterface
         $query = parent::query($dependencyInjector);
         $query->where('isDeleted = false');
         return $query;
+    }
+
+    /**
+     * Returns model's error messages
+     * @param null $filter
+     * @return array
+     */
+    public function getMessages($filter = null): array
+    {
+        $messages = [];
+        foreach (parent::getMessages($filter) as $message) {
+            $messages[$message->getField()] = $message->getMessage();
+        }
+        return $messages;
     }
 }
