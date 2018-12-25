@@ -19,7 +19,7 @@ $di->setShared('profiler', function () {
 });
 
 /**
- * Database connection is created based in the parameters defined in the configuration file
+ * Register MySQL Database connection
  */
 $di->setShared('db', function () {
     $config = $this->getConfig();
@@ -69,6 +69,14 @@ $di->setShared('db', function () {
     $connection->setEventsManager($eventsManager);
 
     return $connection;
+});
+
+/**
+ * Register Mongo Database connection
+ */
+$di->setShared('mongo', function(){
+    $config = $this->getConfig();
+    return (new MongoClient())->selectDB($config->database->mongodb->dbname);
 });
 
 /**

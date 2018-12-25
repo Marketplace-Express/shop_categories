@@ -6,7 +6,8 @@
         "phalcon/incubator": "^3.4",
         "netresearch/jsonmapper": "^1.4",
         "ext-json": "*",
-        "ext-redis": "*"
+        "ext-redis": "*",
+        "ext-mongo": "*"
     },
     "require-dev": {
         "phalcon/ide-stubs": "^3.4",
