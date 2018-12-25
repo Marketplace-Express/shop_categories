@@ -1,0 +1,7 @@
+# php image version
+image: php:7.2
+before_script:
+  - bash ci/docker_install.sh > /dev/null
+phpunit:
+  script:
+    - ant phpunit
