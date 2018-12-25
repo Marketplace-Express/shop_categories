@@ -21,7 +21,6 @@ class Category extends BaseModel
     use ModelBehaviorTrait;
 
     /**
-     *
      * @var string
      * @Primary
      * @Column(column="category_id", type="string", length=36, nullable=false)
@@ -29,14 +28,12 @@ class Category extends BaseModel
     protected $categoryId;
 
     /**
-     *
      * @var string
      * @Column(column="category_parent_id", type="string", length=36, nullable=true)
      */
     protected $categoryParentId;
 
     /**
-     *
      * @var string
      * @Column(column="category_vendor_id", type="string", length=36, nullable=false)
      */
@@ -55,35 +52,30 @@ class Category extends BaseModel
     protected $categoryOrder = 0;
 
     /**
-     *
      * @var string
      * @Column(column="category_name", type="string", length=255, nullable=false)
      */
     protected $categoryName;
 
     /**
-     *
      * @var string
      * @Column(column="created_at", type="string", nullable=false)
      */
     protected $createdAt;
 
     /**
-     *
      * @var string
      * @Column(column="updated_at", type="string", nullable=true)
      */
     protected $updatedAt;
 
     /**
-     *
      * @var string
      * @Column(column="deleted_at", type="string", nullable=true)
      */
     protected $deletedAt;
 
     /**
-     *
      * @var integer
      * @Column(column="is_deleted", type="integer", length=1, nullable=false)
      */
@@ -272,7 +264,6 @@ class Category extends BaseModel
 
     public function initialize()
     {
-        $this->setSchema("shop_categories");
         $this->setSource("category");
         $this->useDynamicUpdate(true);
 

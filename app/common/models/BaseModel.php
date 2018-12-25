@@ -24,6 +24,7 @@ abstract class BaseModel extends Model implements BaseModelInterface
     public function onConstruct()
     {
         self::$instance = $this;
+        $this->setSchema("shop_categories");
     }
 
     public static function model(){}
