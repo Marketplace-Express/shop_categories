@@ -73,7 +73,7 @@ class ExistenceValidator extends Validator implements ValidatorInterface
         $exists = count($query->execute()->toArray()) ? true : false;
 
         if (!$exists) {
-            $validator->appendMessage(new Message($message ?: $attribute . ' does not exists in the model specified'));
+            $validator->appendMessage(new Message($message ?: $attribute . ' does not exists in the model specified', $attribute));
         }
 
         if (count($validator->getMessages())) {
