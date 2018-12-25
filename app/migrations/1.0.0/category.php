@@ -11,7 +11,7 @@ use Phalcon\Mvc\Model\Migration;
 class CategoryMigration_100 extends Migration
 {
     private $statements;
-    
+
     /**
      * Define the table structure
      *
