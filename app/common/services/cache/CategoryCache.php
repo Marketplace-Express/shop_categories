@@ -59,14 +59,6 @@ class CategoryCache extends BaseService
     }
 
     /**
-     * @return Config
-     */
-    private static function getConfig(): Config
-    {
-        return \Phalcon\Di::getDefault()->getConfig()->application;
-    }
-
-    /**
      * Get value from cache
      * @param $key
      * @return mixed
@@ -83,7 +75,7 @@ class CategoryCache extends BaseService
      */
     public static function set($key, $value)
     {
-        self::$cacheInstance->save($key, $value, self::getConfig()->categoryCacheTTL);
+        self::$cacheInstance->save($key, $value);
     }
 
     public static function has($key)
