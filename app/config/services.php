@@ -84,7 +84,7 @@ $di->setShared('modelsMetadata', function () {
 $di->setShared('cache', function () {
     $config = $this->getConfig();
     return new \Phalcon\Cache\Backend\Redis(
-        new \Phalcon\Cache\Frontend\Data(['lifetime' => 8600]), [
+        new \Phalcon\Cache\Frontend\Data(['lifetime' => $config->application->categoryCacheTTL]), [
         'host' => $config->cache->host,
         'port' => $config->cache->port,
         'auth' => $config->cache->auth,
