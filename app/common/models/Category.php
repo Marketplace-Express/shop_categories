@@ -402,8 +402,8 @@ class Category extends BaseModel
             'categoryParentId',
             new Validation\Validator\Callback([
                 'callback' => function ($data) {
-                    if (!empty($data['parentId'])) {
-                        return (new UuidUtil())->isValid($data['parentId']);
+                    if (!empty($data['categoryParentId'])) {
+                        return (new UuidUtil())->isValid($data['categoryParentId']);
                     }
                     return true;
                 },
