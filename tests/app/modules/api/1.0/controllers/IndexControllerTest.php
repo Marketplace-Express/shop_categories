@@ -10,10 +10,10 @@ namespace Shop_categories\Tests\Modules\Api\Controllers;
 use PHPUnit\Framework\MockObject\MockObject;
 use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\Modules\Api\Controllers\IndexController;
-use Shop_categories\RequestHandler\CreateCategoryRequestHandler;
-use Shop_categories\RequestHandler\DeleteCategoryRequestHandler;
-use Shop_categories\RequestHandler\GetCategoryRequestHandler;
-use Shop_categories\RequestHandler\UpdateCategoryRequestHandler;
+use Shop_categories\RequestHandler\Categories\CreateCategoryRequestHandler;
+use Shop_categories\RequestHandler\Categories\DeleteCategoryRequestHandler;
+use Shop_categories\RequestHandler\Categories\GetCategoryRequestHandler;
+use Shop_categories\RequestHandler\Categories\UpdateCategoryRequestHandler;
 use Shop_categories\Services\CategoryService;
 
 class IndexControllerTest extends \UnitTestCase
@@ -376,7 +376,8 @@ class IndexControllerTest extends \UnitTestCase
         $controllerMock = $this->getControllerMock('handleError');
 
         /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
-        $getRequestHandlerMock = $this->getGetRequestHandlerMock();
+        $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
+        $getRequestHandlerMock->expects(self::never())->method('successRequest');
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');

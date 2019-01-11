@@ -129,7 +129,7 @@ class AttributesController extends ControllerBase
      * @param $id
      * @Post('/{id:[0-9a-fA-F]{24}}/values')
      */
-    public function addValuesAction($id)
+    public function updateValuesAction($id)
     {
         try {
             /** @var CreateValuesRequestHandler $request */
@@ -139,7 +139,7 @@ class AttributesController extends ControllerBase
                 $request->invalidRequest();
             }
 
-            $attribute = $this->getService()->addValues($id, $request->toArray());
+            $attribute = $this->getService()->updateValues($id, $request->toArray());
             $request->successRequest($attribute->toApiArray());
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);

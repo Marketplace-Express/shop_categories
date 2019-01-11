@@ -24,5 +24,5 @@ interface AttributeDataSourceInterface
 
     public function getValues(string $attribute_id): array;
 
-    public function addValues(string $attribute_id, array $values);
+    public function updateValues(string $attribute_id, array $values);
 }
