@@ -22,16 +22,16 @@ $di->setShared('profiler', function () {
 $di->setShared('db', function () {
     $config = $this->getConfig();
 
-    $class = 'Phalcon\Db\Adapter\Pdo\\' . $config->database->mysql->adapter;
+    $class = 'Phalcon\Db\Adapter\Pdo\\' . $config->database->adapter;
     $params = [
-        'host'     => $config->database->mysql->host,
-        'username' => $config->database->mysql->username,
-        'password' => $config->database->mysql->password,
-        'dbname'   => $config->database->mysql->dbname,
-        'charset'  => $config->database->mysql->charset
+        'host'     => $config->database->host,
+        'username' => $config->database->username,
+        'password' => $config->database->password,
+        'dbname'   => $config->database->dbname,
+        'charset'  => $config->database->charset
     ];
 
-    if ($config->database->mysql->adapter == 'Postgresql') {
+    if ($config->database->adapter == 'Postgresql') {
         unset($params['charset']);
     }
 
@@ -79,12 +79,12 @@ $di->setShared('db', function () {
 $di->setShared('mongo', function(){
     $config = $this->getConfig();
     $connectionString = "mongodb://";
-    if (!empty($config->database->mongodb->username) && !empty($config->database->mongodb->password)) {
-        $connectionString  .= $config->database->mongodb->username.":".$config->database->mongodb->password."@";
+    if (!empty($config->mongodb->username) && !empty($config->mongodb->password)) {
+        $connectionString  .= $config->mongodb->username.":".$config->mongodb->password."@";
     }
-    $connectionString .= $config->database->mongodb->host.":".$config->database->mongodb->port;
+    $connectionString .= $config->mongodb->host.":".$config->mongodb->port;
     $mongo = new \Phalcon\Db\Adapter\MongoDB\Client($connectionString);
-    return $mongo->selectDatabase($config->database->mongodb->dbname);
+    return $mongo->selectDatabase($config->mongodb->dbname);
 });
 
 $di->setShared(
