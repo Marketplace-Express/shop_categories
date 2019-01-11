@@ -76,8 +76,21 @@ $di->setShared('db', function () {
  */
 $di->setShared('mongo', function(){
     $config = $this->getConfig();
-    return (new MongoClient())->selectDB($config->database->mongodb->dbname);
+    $connectionString = "mongodb://";
+    if (!empty($config->mongodb->username) && !empty($config->mongodb->password)) {
+        $connectionString  .= $config->mongodb->username.":".$config->mongodb->password."@";
+    }
+    $connectionString .= $config->mongodb->host.":".$config->mongodb->port;
+    $mongo = new \Phalcon\Db\Adapter\MongoDB\Client($connectionString);
+    return $mongo->selectDatabase($config->mongodb->dbname);
 });
+
+$di->setShared(
+    'collectionManager',
+    function () {
+        return new \Phalcon\Mvc\Collection\Manager();
+    }
+);
 
 /**
  * If the configuration specify the use of metadata adapter use it or use memory otherwise
@@ -89,55 +102,34 @@ $di->setShared('modelsMetadata', function () {
 /**
  * Register cache service
  */
-$di->setShared('cache', function () {
-    $config = $this->getConfig();
-    return new \Phalcon\Cache\Backend\Redis(
-        new \Phalcon\Cache\Frontend\Data(['lifetime' => $config->application->categoryCacheTTL]), [
-        'host' => $config->cache->host,
-        'port' => $config->cache->port,
-        'auth' => $config->cache->auth,
-        'persistent' => $config->cache->persistent,
-        'index' => $config->cache->database
-    ]);
+$di->setShared('category_cache', function () {
+    $config = $this->getConfig()->category_cache;
+    $cacheService = new Redis();
+    if (!empty($config->auth)) {
+        $cacheService->auth($config->auth);
+    }
+    $cacheService->pconnect(
+        $config->host,
+        $config->port
+    );
+    $cacheService->select($config->database);
+    return $cacheService;
 });
 
-/**
- * Configure the Volt service for rendering .volt templates
- */
-$di->setShared('voltShared', function ($view) {
-    $config = $this->getConfig();
+$di->setShared('attributes_cache', function () {
+    $config = $this->getConfig()->attributes_cache;
+    $cacheService = new Redis();
+    if (!empty($config->auth)) {
+        $cacheService->auth($config->auth);
+    }
+    $cacheService->pconnect(
+        $config->host,
+        $config->port
+    );
+    $cacheService->select($config->database);
+    return $cacheService;
+});
 
-    $volt = new VoltEngine($view, $this);
-    $volt->setOptions([
-        'compiledPath' => function($templatePath) use ($config) {
-            $basePath = $config->application->appDir;
-            if ($basePath && substr($basePath, 0, 2) == '..') {
-                $basePath = dirname(__DIR__);
-            }
-
-            $basePath = realpath($basePath);
-            $templatePath = trim(substr($templatePath, strlen($basePath)), '\\/');
-
-            $filename = basename(str_replace(['\\', '/'], '_', $templatePath), '.volt') . '.php';
-
-            $cacheDir = $config->application->cacheDir;
-            if ($cacheDir && substr($cacheDir, 0, 2) == '..') {
-                $cacheDir = __DIR__ . DIRECTORY_SEPARATOR . $cacheDir;
-            }
-
-            $cacheDir = realpath($cacheDir);
-
-            if (!$cacheDir) {
-                $cacheDir = sys_get_temp_dir();
-            }
-
-            if (!is_dir($cacheDir . DIRECTORY_SEPARATOR . 'volt' )) {
-                @mkdir($cacheDir . DIRECTORY_SEPARATOR . 'volt' , 0755, true);
-            }
-
-            return $cacheDir . DIRECTORY_SEPARATOR . 'volt' . DIRECTORY_SEPARATOR . $filename;
-        }
-    ]);
-
-    return $volt;
+$di->setShared('logger', function() {
+    return new \Shop_categories\Logger\ApplicationLogger();
 });

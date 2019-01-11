@@ -7,12 +7,12 @@
 
 namespace Shop_categories\Repositories;
 
-use Phalcon\Mvc\Model\Resultset;
-use Shop_categories\DBTools\Enums\QueryOperatorsEnum;
+use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
 use Shop_categories\Exceptions\ArrayOfStringsException;
+use Shop_categories\Interfaces\CategoryDataSourceInterface;
 use Shop_categories\Models\Category;
 
-class CategoryRepository
+class CategoryRepository implements CategoryDataSourceInterface
 {
     /**
      * @param bool $new
@@ -34,8 +34,8 @@ class CategoryRepository
     {
         /** @noinspection PhpUndefinedMethodInspection */
         $result = self::getModel()->getItems([
-            'categoryId' => [QueryOperatorsEnum::OP_EQUALS => $categoryId],
-            'categoryVendorId' => [QueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'categoryId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $categoryId],
+            'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);
 
         if (count($result)) {
@@ -56,8 +56,8 @@ class CategoryRepository
     {
         /** @noinspection PhpUndefinedMethodInspection */
         $result = self::getModel()->getItems([
-            'categoryId' => [QueryOperatorsEnum::OP_IN => [$categoriesIds]],
-            'categoryVendorId' => [QueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'categoryId' => [SchemaQueryOperatorsEnum::OP_IN => [$categoriesIds]],
+            'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);
 
         if (count($result)) {
@@ -75,7 +75,7 @@ class CategoryRepository
      * @return array
      * @throws \Exception
      */
-    public function getCategory(string $categoryId, string $vendorId)
+    public function getCategory(string $categoryId, string $vendorId): array
     {
         return self::findById($categoryId, $vendorId)->toApiArray();
     }
@@ -90,7 +90,7 @@ class CategoryRepository
     {
         /** @noinspection PhpUndefinedMethodInspection */
         $roots = $this::getModel()->roots([
-            'categoryVendorId' => [QueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);
         $result = [];
         if (count($roots)) {
@@ -109,12 +109,12 @@ class CategoryRepository
      * @return array
      * @throws \Exception
      */
-    public static function getChildren(string $categoryId, string $vendorId)
+    public function getChildren(string $categoryId, string $vendorId): array
     {
         /** @var Category[] $children */
         /** @noinspection PhpUndefinedMethodInspection */
         $children = self::getModel()->children($categoryId, [
-            'categoryVendorId' => [QueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);
 
         $result = [];
@@ -132,12 +132,12 @@ class CategoryRepository
      * @param string $vendorId
      * @return array
      */
-    public function getDescendants(string $categoryId, string $vendorId)
+    public function getDescendants(string $categoryId, string $vendorId): array
     {
         /** @var Category[] $descendants */
         /** @noinspection PhpUndefinedMethodInspection */
         $descendants = self::getModel()->descendants($categoryId, [
-            'categoryVendorId' => [QueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);
 
         $result = [];
@@ -153,12 +153,12 @@ class CategoryRepository
      * @param string $vendorId
      * @return array|bool
      */
-    public function getParents(string $categoryId, string $vendorId)
+    public function getParents(string $categoryId, string $vendorId): array
     {
         /** @var Category[] $parents */
         /** @noinspection PhpUndefinedMethodInspection */
         $parents = self::getModel()->parents($categoryId, [
-            'categoryVendorId' => [QueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);
 
         $result = [];
@@ -176,12 +176,12 @@ class CategoryRepository
      * @param string $vendorId
      * @return array|bool
      */
-    public function getParent(string $categoryId, string $vendorId)
+    public function getParent(string $categoryId, string $vendorId): array
     {
         /** @var Category[] $parent */
         /** @noinspection PhpUndefinedMethodInspection */
         $parent = self::getModel()->parents($categoryId, [
-            'categoryVendorId' => [QueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ], true);
 
         return array_map(function($category) {
@@ -196,12 +196,12 @@ class CategoryRepository
      * @return array
      * @throws \Exception
      */
-    public function getAll(string $vendorId)
+    public function getAll(string $vendorId): array
     {
         /** @var Category[] $categories */
         /** @noinspection PhpUndefinedMethodInspection */
         $categories = $this::getModel()->getItems([
-            'categoryVendorId' => [QueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);
 
         $result = [];
@@ -216,14 +216,11 @@ class CategoryRepository
     /**
      * @param array $data
      * @return Category
-     * @throws ArrayOfStringsException
      */
     public function create(array $data): Category
     {
         $category = self::getModel(true)->setAttributes($data);
-        if (!$category->save()) {
-            throw new ArrayOfStringsException($category->getMessages(), 400);
-        }
+        $category->save();
         return $category;
     }
 
@@ -248,7 +245,7 @@ class CategoryRepository
     {
         /** @noinspection PhpUndefinedMethodInspection */
         return self::getModel()->deleteCascade($categoryId, [
-            'categoryVendorId' => [QueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);
     }
 }

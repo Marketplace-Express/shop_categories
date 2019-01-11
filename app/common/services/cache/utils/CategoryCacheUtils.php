@@ -13,7 +13,7 @@ class CategoryCacheUtils
     /**
      * @var array $array
      */
-    public $array;
+    private $array;
 
     /**
      * @param array $array
@@ -26,13 +26,32 @@ class CategoryCacheUtils
     }
 
     /**
+     * @return \RecursiveIteratorIterator
+     */
+    private function getIterator()
+    {
+        return new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->array));
+    }
+
+    private function toTree(array $array): array
+    {
+        $tree = [];
+        foreach ($array as $key => $item) {
+            unset($array[$key]);
+            $item['children'] = (!empty($children = $this->toTree($array))) ? $children : null;
+            $tree[] = $item;
+        }
+        return array_slice($tree, 0, 1);
+    }
+
+    /**
      * Get category descendants
-     * @param \RecursiveIteratorIterator $iterator
      * @param string $categoryId
      * @return array
      */
-    private function getDescendants(\RecursiveIteratorIterator $iterator, string $categoryId)
+    public function getDescendants(string $categoryId)
     {
+        $iterator = $this->getIterator();
         while ($iterator->valid()) {
             if ($iterator->key() == 'categoryId' && $iterator->current() == $categoryId) {
                 return (array) $iterator->getInnerIterator();
@@ -44,8 +63,14 @@ class CategoryCacheUtils
         return [];
     }
 
-    private function getChildren(\RecursiveIteratorIterator $iterator, string $categoryId): array
+    /**
+     * Get category children
+     * @param string $categoryId
+     * @return array
+     */
+    public function getChildren(string $categoryId): array
     {
+        $iterator = $this->getIterator();
         $category = [];
         while ($iterator->valid()) {
             if ($iterator->key() == 'categoryId' && $iterator->current() == $categoryId) {
@@ -67,26 +92,17 @@ class CategoryCacheUtils
         return [];
     }
 
-    private function toTree(array $array): array
-    {
-        $tree = [];
-        foreach ($array as $key => $item) {
-            unset($array[$key]);
-            $item['children'] = (!empty($children = $this->toTree($array))) ? $children : null;
-            $tree[] = $item;
-        }
-        return array_slice($tree, 0, 1);
-    }
-
     /**
      * TODO: need to be enhanced more, it consumes a lot of memory
-     * @param \RecursiveIteratorIterator $iterator
+     * Get category parent(s)
      * @param string $categoryId
      * @param bool $prevLevel
      * @return array
      */
-    private function getParents(\RecursiveIteratorIterator $iterator, string $categoryId, bool $prevLevel = false)
+    public function getParents(string $categoryId, bool $prevLevel = false)
     {
+        $iterator = $this->getIterator();
+
         // Initialization
         $parents = [];
 
@@ -131,8 +147,14 @@ class CategoryCacheUtils
         return $parents;
     }
 
-    private function findById(\RecursiveIteratorIterator $iterator, string $categoryId)
+    /**
+     * Get category by id
+     * @param string $categoryId
+     * @return array
+     */
+    public function getCategory(string $categoryId)
     {
+        $iterator = $this->getIterator();
         $category = [];
         while ($iterator->valid()) {
             if ($iterator->key() == 'categoryId' && $iterator->current() == $categoryId) {
@@ -146,13 +168,13 @@ class CategoryCacheUtils
         return $category;
     }
 
-    /** Returns the first level items from multidimensional array
+    /** Returns roots
      * @return array
      */
     public function getRoots(): array
     {
         foreach ($this->array as &$item) {
-            $item = array_slice($item, 0, count($item) - 1);
+            unset($item['children']);
         }
         return $this->array;
     }
@@ -164,35 +186,5 @@ class CategoryCacheUtils
     public function getAll(): array
     {
         return $this->array;
-    }
-
-    /**
-     * Return category details, including/excluding children
-     * @param string $categoryId
-     * @param string $operation
-     * @return array|bool
-     */
-    public function getCategory(string $categoryId, string $operation): array
-    {
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->array));
-        switch ($operation) {
-            case 'getDescendants':
-                return $this->getDescendants($iterator, $categoryId);
-                break;
-            case 'getChildren':
-                return $this->getChildren($iterator, $categoryId);
-                break;
-            case 'getParents':
-                return $this->getParents($iterator, $categoryId);
-                break;
-            case 'getParent':
-                return $this->getParents($iterator, $categoryId, true);
-                break;
-            case 'getCategory':
-                return $this->findById($iterator, $categoryId);
-                break;
-            default:
-                return [];
-        }
     }
 }

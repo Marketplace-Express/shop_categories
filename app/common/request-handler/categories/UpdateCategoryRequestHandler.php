@@ -1,46 +1,38 @@
 <?php
 /**
+
  * User: Wajdi Jurry
  * Date: 28/07/18
  * Time: 01:47 م
  */
 
-namespace Shop_categories\RequestHandler;
+namespace Shop_categories\RequestHandler\Categories;
 
 use Phalcon\Validation;
+use Shop_categories\Controllers\ControllerBase;
 use Shop_categories\Exceptions\ArrayOfStringsException;
-use Shop_categories\Modules\Api\Controllers\ControllerBase;
+use Shop_categories\RequestHandler\RequestHandlerInterface;
 use Shop_categories\Utils\UuidUtil;
 
-class CreateRequestHandler extends ControllerBase implements RequestHandlerInterface
+class UpdateCategoryRequestHandler extends ControllerBase implements RequestHandlerInterface
 {
-    /** @var string $categoryId */
-    public $categoryId;
-
-    /** @var string $name */
+    /**
+     * @var string $name
+     */
     private $name;
 
-    /** @var int $order */
-    private $order = 0;
-
-    /** @var string $parentId */
+    /**
+     * @var string|null $parentId
+     */
     private $parentId;
 
-    public $uuidUtil;
+    /** @var int $order */
+    private $order;
+
+
     public $validator;
     public $errorMessages = [];
-
-    /**
-     * @return string
-     * @throws \Exception
-     */
-    public function getCategoryId(): string
-    {
-        if (!$this->categoryId) {
-            $this->categoryId = $this->getUuidUtil()->uuid();
-        }
-        return $this->categoryId;
-    }
+    public $uuidUtil;
 
     /**
      * @return string
@@ -51,16 +43,13 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     }
 
     /**
-     * @return string|null
+     * @return mixed
      */
     public function getParentId()
     {
         return $this->parentId;
     }
 
-    /**
-     * @return int|null
-     */
     public function getOrder()
     {
         return $this->order;
@@ -69,28 +58,28 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     /**
      * @param string $name
      */
-    public function setName($name): void
+    public function setName(string $name)
     {
         $this->name = $name;
     }
 
     /**
-     * @param string $parentId
+     * @param null|string $parentId
      */
-    public function setParentId($parentId): void
+    public function setParentId(?string $parentId)
     {
         $this->parentId = $parentId;
     }
 
-    public function setOrder($order): void
+    public function setOrder($order)
     {
         $this->order = $order;
     }
 
     /**
-     * @return UuidUtil
+     * @return mixed
      */
-    private function getUuidUtil(): UuidUtil
+    private function getUuidUtil()
     {
         if (!$this->uuidUtil) {
             $this->uuidUtil = new UuidUtil();
@@ -100,7 +89,7 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
 
     private function getAppConfig()
     {
-        return $this->di->getConfig()->application;
+        return $this->di->getConfig()->application->categoryNameValidationConfig;
     }
 
     /**
@@ -109,21 +98,6 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     public function validate() : Validation\Message\Group
     {
         $validator = new Validation();
-
-        $validator->add(
-            'name',
-            new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => $this->getAppConfig()->allowWhiteSpace,
-                'underscore' => $this->getAppConfig()->allowUnderscore,
-                'min' => $this->getAppConfig()->minCategoryNameLength,
-                'max' => $this->getAppConfig()->maxCategoryNameLength,
-                'message' => 'Invalid category name',
-                'messageMinimum' => 'Category name should be at least 3 characters',
-                'messageMaximum' => 'Category name should not exceed 100 characters',
-                'allowEmpty' => false
-            ])
-        );
-
         $validator->add(
             'parentId',
             new Validation\Validator\Callback([
@@ -133,7 +107,7 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
                     }
                     return true;
                 },
-                'message' => 'Invalid parent category Id'
+                'message' => 'Invalid category parent Id'
             ])
         );
 
@@ -145,6 +119,20 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
                 'allowFloat' => $this->getAppConfig()->allowFloat,
                 'allowSign' => $this->getAppConfig()->allowSign,
                 'message' => 'Category order should be a number',
+                'allowEmpty' => true
+            ])
+        );
+
+        $validator->add(
+            'name',
+            new Validation\Validator\AlphaNumericValidator([
+                'whiteSpace' => $this->getAppConfig()->allowWhiteSpace,
+                'underscore' => $this->getAppConfig()->allowUnderscore,
+                'min' => $this->getAppConfig()->minNameLength,
+                'max' => $this->getAppConfig()->maxNameLength,
+                'message' => 'Invalid category name',
+                'messageMinimum' => 'Category name should be at least 3 characters',
+                'messageMaximum' => 'Category name should not exceed 100 characters',
                 'allowEmpty' => true
             ])
         );
@@ -178,6 +166,15 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     }
 
     /**
+     * @param string $message
+     * @throws \Exception
+     */
+    public function notFound($message = 'Not Found!')
+    {
+        throw new \Exception($message, 404);
+    }
+
+    /**
      * @param null $message
      * @throws ArrayOfStringsException
      */
@@ -191,12 +188,10 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
 
     /**
      * @param null $message
-     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      */
     public function successRequest($message = null)
     {
-        http_response_code(200);
-        return $this->response
+        $this->response
             ->setJsonContent([
                 'status' => 200,
                 'message' => $message
@@ -204,28 +199,23 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     }
 
     /**
-     * @param string $message
-     * @throws \Exception
-     */
-    public function notFound($message = 'Not Found')
-    {
-        throw new \Exception($message, 404);
-    }
-
-    /**
      * @return array
-     * @throws \Exception
      */
     public function toArray(): array
     {
-        $result = [
-            'categoryId' => $this->getCategoryId(),
-            'categoryParentId' => $this->getParentId(),
-            'categoryName' => $this->getName(),
-            'categoryOrder' => $this->getOrder(),
-            'categoryVendorId' => $this->request->getQuery('vendorId'),
-            'categoryUserId' => 'fded67e4-9fcd-4a2d-ae2e-de15d70a8bb5'
-        ];
+        $result = [];
+
+        if (!empty($this->getName())) {
+            $result['categoryName'] = $this->getName();
+        }
+
+        if (!empty($this->getParentId())) {
+            $result['categoryParentId'] = $this->getParentId();
+        }
+
+        if (!empty($this->getOrder())) {
+            $result['categoryOrder'] = $this->getOrder();
+        }
 
         return $result;
     }

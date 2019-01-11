@@ -7,55 +7,57 @@
 
 namespace Shop_categories\Services\Cache;
 
-use Phalcon\Config;
 use Shop_categories\Helpers\ArrayHelper;
-use Shop_categories\Services\BaseService;
+use Shop_categories\Interfaces\CategoryDataSourceInterface;
 use Shop_categories\Services\Cache\Utils\CategoryCacheUtils;
+use Shop_categories\Services\CategoryService;
 
-/**
- * @method array getRoots()
- * @method array getCategory()
- * @method array getDescendants()
- * @method array getChildren()
- * @method array getParents()
- * @method array getParent()
- * @method array getAll()
- */
-class CategoryCache extends BaseService
+class CategoryCache implements CategoryDataSourceInterface
 {
     private static $cacheKey = 'categories:vendor:%s';
 
+    /** @var \Redis $categoryCacheInstance */
+    private static $categoryCacheInstance;
+
+    /** @var CategoryCacheUtils $categoryCacheUtils */
+    private $categoryCacheUtils;
+
     /**
      * CategoryCache constructor.
+     * @throws \Exception
+     * @throws \RedisException
      */
     public function __construct()
     {
-        self::$cacheInstance = self::getCacheInstance();
-    }
+        self::establishCacheConnection();
+        self::$cacheKey = sprintf(self::$cacheKey, CategoryService::getVendorId());
 
-    /**
-     * @param $name
-     * @param $arguments
-     * @return mixed
-     * @throws \Exception
-     */
-    public function __call($name, $arguments)
-    {
-        // Get cache key for requested action
-        $cacheKey = sprintf(self::$cacheKey, self::getVendorId());
-
-        if (!self::has($cacheKey)) {
+        if (!self::has(self::$cacheKey)) {
             // Get all categories from repository and set in cache
-            $categories = self::getRepository()->getAll(self::getVendorId());
+            $categories = CategoryService::getCategoryRepository()->getAll(CategoryService::getVendorId());
             $categories = (new ArrayHelper($categories, [
                 'itemIdAttribute' => 'categoryId',
                 'parentIdAttribute' => 'categoryParentId'
             ]))->tree();
-            self::set($cacheKey, $categories);
+            self::set(self::$cacheKey, $categories);
         }
+        $this->getCategoryCacheUtils()->setArray(self::get(self::$cacheKey));
+    }
 
-        // Process data from cache
-        return self::processData($name, self::get($cacheKey));
+    /**
+     * Establish cache connection
+     */
+    public static function establishCacheConnection(): void
+    {
+        self::$categoryCacheInstance = \Phalcon\Di::getDefault()->getShared('category_cache');
+    }
+
+    /**
+     * @return CategoryCacheUtils
+     */
+    public function getCategoryCacheUtils()
+    {
+        return $this->categoryCacheUtils ?? $this->categoryCacheUtils = new CategoryCacheUtils();
     }
 
     /**
@@ -65,7 +67,7 @@ class CategoryCache extends BaseService
      */
     public static function get($key)
     {
-        return self::$cacheInstance->get($key);
+        return json_decode(self::$categoryCacheInstance->get($key), true);
     }
 
     /**
@@ -75,40 +77,85 @@ class CategoryCache extends BaseService
      */
     public static function set($key, $value)
     {
-        self::$cacheInstance->save($key, $value);
-    }
-
-    public static function has($key)
-    {
-        return self::$cacheInstance->exists($key);
+        self::$categoryCacheInstance->set($key, json_encode($value));
     }
 
     /**
-     * @param $operation
-     * @param $value
-     * @return array|bool
-     * @throws \Exception
+     * Check if key exists in cache
+     * @param $key
+     * @return bool
      */
-    public static function processData($operation, $value)
+    public static function has($key)
     {
-        $cacheUtils = (new CategoryCacheUtils())->setArray($value);
-        switch ($operation) {
-            case 'getAll':
-                return $cacheUtils->getAll();
-                break;
-            case 'getRoots':
-                return $cacheUtils->getRoots();
-                break;
-            case 'getDescendants':
-            case 'getChildren':
-            case 'getParents':
-            case 'getParent':
-            case 'getCategory':
-                return $cacheUtils->getCategory(self::getCategoryId(), $operation);
-                break;
-            default:
-                throw new \Exception('Method is not callable');
-        }
+        return self::$categoryCacheInstance->exists($key);
+    }
+
+    /**
+     * @param string $categoryId
+     * @param string $vendorId
+     * @return array
+     */
+    public function getCategory(string $categoryId, ?string $vendorId = null): array
+    {
+        return $this->getCategoryCacheUtils()->getCategory($categoryId);
+    }
+
+    /**
+     * @param string $vendorId
+     * @return array
+     */
+    public function getRoots(?string $vendorId = null): array
+    {
+        return $this->getCategoryCacheUtils()->getRoots();
+    }
+
+    /**
+     * @param string $categoryId
+     * @param string $vendorId
+     * @return array
+     */
+    public function getChildren(string $categoryId, ?string $vendorId = null): array
+    {
+        return $this->getCategoryCacheUtils()->getChildren($categoryId);
+    }
+
+    /**
+     * @param string $categoryId
+     * @param string $vendorId
+     * @return array
+     */
+    public function getDescendants(string $categoryId, ?string $vendorId = null): array
+    {
+        return $this->getCategoryCacheUtils()->getDescendants($categoryId);
+    }
+
+    /**
+     * @param string $categoryId
+     * @param string $vendorId
+     * @return array
+     */
+    public function getParents(string $categoryId, ?string $vendorId = null): array
+    {
+        return $this->getCategoryCacheUtils()->getParents($categoryId);
+    }
+
+    /**
+     * @param string $categoryId
+     * @param string $vendorId
+     * @return array
+     */
+    public function getParent($categoryId, ?string $vendorId = null): array
+    {
+        return $this->getCategoryCacheUtils()->getParents($categoryId, true);
+    }
+
+    /**
+     * @param string $vendorId
+     * @return array
+     */
+    public function getAll(?string $vendorId = null): array
+    {
+        return $this->getCategoryCacheUtils()->getAll();
     }
 
     /**
@@ -117,9 +164,8 @@ class CategoryCache extends BaseService
      */
     public function invalidateCache()
     {
-        $cacheKey = sprintf(self::$cacheKey, self::getVendorId());
-        if (self::has($cacheKey)) {
-            return self::$cacheInstance->delete($cacheKey);
+        if (self::has(self::$cacheKey)) {
+            return self::$categoryCacheInstance->delete(self::$cacheKey);
         }
         return false;
     }
