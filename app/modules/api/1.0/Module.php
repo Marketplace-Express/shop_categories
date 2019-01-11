@@ -19,7 +19,6 @@ class Module implements ModuleDefinitionInterface
         $loader = new Loader();
         $loader->registerNamespaces([
             'Shop_categories\Modules\Api\Controllers' => __DIR__ . '/controllers/',
-            'Shop_categories\Modules\Api\Models'      => __DIR__ . '/models/'
         ]);
 
         $loader->register();
@@ -32,20 +31,6 @@ class Module implements ModuleDefinitionInterface
      */
     public function registerServices(DiInterface $di)
     {
-        /**
-         * Try to load local configuration
-         */
-        if (file_exists(__DIR__ . '/config/config.php')) {
 
-            $config = $di['config'];
-
-            $override = new Config(include __DIR__ . '/config/config.php');
-
-            if ($config instanceof Config) {
-                $config->merge($override);
-            } else {
-                $config = $override;
-            }
-        }
     }
 }
