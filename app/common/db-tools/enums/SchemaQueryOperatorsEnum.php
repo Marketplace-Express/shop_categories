@@ -7,7 +7,7 @@
 
 namespace Shop_categories\DBTools\Enums;
 
-class QueryOperatorsEnum
+class SchemaQueryOperatorsEnum
 {
     const OP_EQUALS = '=';
     const OP_GREATER_THAN = '>';

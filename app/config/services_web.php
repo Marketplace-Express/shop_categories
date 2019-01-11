@@ -12,7 +12,8 @@ use Phalcon\Flash\Direct as Flash;
 $di->setShared('router', function () {
     $config = $this->getConfig();
     $router = new Router\Annotations(false);
-    $router->addModuleResource('api', 'Shop_categories\Modules\Api\Controllers\Index', '/api/' . $config->api->version);
+    $router->addModuleResource('api', 'Shop_categories\Modules\Api\Controllers\Index', '/api/' . $config->api->version . '/categories');
+    $router->addModuleResource('api', 'Shop_categories\Modules\Api\Controllers\Attributes', '/api/' . $config->api->version . '/attributes');
     return $router;
 });
 

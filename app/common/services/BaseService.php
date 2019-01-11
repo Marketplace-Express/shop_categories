@@ -9,102 +9,78 @@ namespace Shop_categories\Services;
 
 use Phalcon\Cache\Backend\Redis;
 use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
+use Shop_categories\Repositories\AttributesRepository;
 use Shop_categories\Repositories\CategoryRepository;
+use Shop_categories\Services\Cache\AttributesCache;
 use Shop_categories\Services\Cache\CategoryCache;
 
 class BaseService
 {
+    const CATEGORY_CACHE_CONFIG_KEY = 'category_cache';
+    const ATTRIBUTES_CACHE_CONFIG_KEY = 'attributes_cache';
     /**
-     * @var Redis $cacheInstance
+     * @var Redis $categoryCacheInstance
      */
-    public static $cacheInstance;
+    protected static $categoryCacheInstance;
 
     /**
-     * @var CategoryCache $cacheService
+     * @var CategoryCache $categoryCacheService
      */
-    public static $cacheService;
+    public static $categoryCacheService;
 
     /**
-     * @var CategoryRepository $repository
+     * @var AttributesCache $attributesCacheService
      */
-    public static $repository;
+    public static $attributesCacheService;
 
     /**
-     * @var string $vendorId
+     * @var CategoryRepository $categoryRepository
      */
-    public static $vendorId;
+    public static $categoryRepository;
 
     /**
-     * @var string $categoryId
+     * @var AttributesRepository $attributesRepository
      */
-    public static $categoryId;
+    public static $attributesRepository;
 
     /**
-     * @return CategoryRepository|AdjacencyListModelBehavior
+     * @return CategoryRepository
      */
-    public static function getRepository()
+    public static function getCategoryRepository(): CategoryRepository
     {
-        if (!self::$repository) {
-            self::$repository = new CategoryRepository();
-        }
-
-        return self::$repository;
+        return self::$categoryRepository ?? new CategoryRepository();
     }
 
     /**
-     * @return Redis
+     * @return AttributesRepository
      */
-    public static function getCacheInstance(): Redis
+    public static function getAttributesRepository(): AttributesRepository
     {
-        if (!self::$cacheInstance) {
-            self::$cacheInstance = \Phalcon\Di::getDefault()->getShared('cache');
-        }
-        self::$cacheInstance->_connect();
-        return self::$cacheInstance;
+        return self::$attributesRepository ?? new AttributesRepository();
     }
-
 
     /**
      * @return CategoryCache
+     * @throws \Exception
      * @throws \RedisException
      */
-    public static function getCacheService(): CategoryCache
+    public static function getCategoryCache(): CategoryCache
     {
-        if (!self::$cacheService) {
-            self::$cacheService = new CategoryCache();
+        if (!self::$categoryCacheService) {
+            self::$categoryCacheService = new CategoryCache();
         }
-        return self::$cacheService;
+        return self::$categoryCacheService;
     }
 
     /**
-     * @return string
+     * @return AttributesCache
+     * @throws \RedisException
      */
-    public static function getVendorId(): string
+    public static function getAttributesCacheService(): AttributesCache
     {
-        return self::$vendorId;
-    }
-
-    /**
-     * @param string $vendorId
-     */
-    public function setVendorId(string $vendorId): void
-    {
-        self::$vendorId = $vendorId;
-    }
-
-    /**
-     * @return string
-     */
-    public static function getCategoryId(): string
-    {
-        return self::$categoryId;
-    }
-
-    /**
-     * @param string $categoryId
-     */
-    public static function setCategoryId(string $categoryId): void
-    {
-        self::$categoryId = $categoryId;
+        if (!self::$attributesCacheService) {
+            self::$attributesCacheService = new AttributesCache();
+        }
+        return self::$attributesCacheService;
     }
 }

@@ -7,7 +7,7 @@
 
 namespace Shop_categories\Tests\DBTools;
 
-use Shop_categories\DBTools\Enums\QueryOperatorsEnum;
+use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
 use Shop_categories\DBTools\RecursiveQueryBuilder;
 
 class RecursiveQueryBuilderTest extends \UnitTestCase
@@ -54,8 +54,8 @@ class RecursiveQueryBuilderTest extends \UnitTestCase
             [
                 [
                     'CONDITIONS' => [
-                        'column1' => [QueryOperatorsEnum::OP_LESS_THAN_EQUAL => '100'],
-                        'column2' => [QueryOperatorsEnum::OP_EQUALS => false]
+                        'column1' => [SchemaQueryOperatorsEnum::OP_LESS_THAN_EQUAL => '100'],
+                        'column2' => [SchemaQueryOperatorsEnum::OP_EQUALS => false]
                     ]
                 ],
                 [
@@ -71,8 +71,8 @@ class RecursiveQueryBuilderTest extends \UnitTestCase
                         'table' => 'test',
                         'alias' => 't1',
                         'conditions' => [
-                            't1.column1' => [QueryOperatorsEnum::OP_EQUALS => 't0.column1', 'process' => false],
-                            't1.column2' => [QueryOperatorsEnum::OP_EQUALS => false]
+                            't1.column1' => [SchemaQueryOperatorsEnum::OP_EQUALS => 't0.column1', 'process' => false],
+                            't1.column2' => [SchemaQueryOperatorsEnum::OP_EQUALS => false]
                         ]
                     ]
                 ]
