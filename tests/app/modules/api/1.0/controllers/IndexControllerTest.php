@@ -10,10 +10,10 @@ namespace Shop_categories\Tests\Modules\Api\Controllers;
 use PHPUnit\Framework\MockObject\MockObject;
 use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\Modules\Api\Controllers\IndexController;
-use Shop_categories\RequestHandler\Categories\CreateCategoryRequestHandler;
-use Shop_categories\RequestHandler\Categories\DeleteCategoryRequestHandler;
-use Shop_categories\RequestHandler\Categories\GetCategoryRequestHandler;
-use Shop_categories\RequestHandler\Categories\UpdateCategoryRequestHandler;
+use Shop_categories\RequestHandler\Category\CreateRequestHandler;
+use Shop_categories\RequestHandler\Category\DeleteRequestHandler;
+use Shop_categories\RequestHandler\Category\GetRequestHandler;
+use Shop_categories\RequestHandler\Category\UpdateRequestHandler;
 use Shop_categories\Services\CategoryService;
 
 class IndexControllerTest extends \UnitTestCase
@@ -47,28 +47,28 @@ class IndexControllerTest extends \UnitTestCase
 
     public function getGetRequestHandlerMock(...$methods)
     {
-        return $this->getMockBuilder(GetCategoryRequestHandler::class)
+        return $this->getMockBuilder(GetRequestHandler::class)
             ->setMethods($methods)
             ->getMock();
     }
 
     public function getCreateRequestHandlerMock(...$methods)
     {
-        return $this->getMockBuilder(CreateCategoryRequestHandler::class)
+        return $this->getMockBuilder(CreateRequestHandler::class)
             ->setMethods($methods)
             ->getMock();
     }
 
     public function getUpdateRequestHandlerMock(...$methods)
     {
-        return $this->getMockBuilder(CreateCategoryRequestHandler::class)
+        return $this->getMockBuilder(CreateRequestHandler::class)
             ->setMethods($methods)
             ->getMock();
     }
 
     public function getDeleteRequestHandlerMock(...$methods)
     {
-        return $this->getMockBuilder(DeleteCategoryRequestHandler::class)
+        return $this->getMockBuilder(DeleteRequestHandler::class)
             ->setMethods($methods)
             ->getMock();
     }
@@ -85,13 +85,13 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
-        /** @var GetCategoryRequestHandler|MockObject $getGetRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getGetRequestHandlerMock */
         $getGetRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
         $getGetRequestHandlerMock->expects(self::once())->method('successRequest');
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects($this->once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getGetRequestHandlerMock);
+        $jsonMapperMock->expects($this->once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getGetRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -107,12 +107,12 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
-        /** @var GetCategoryRequestHandler|MockObject $getGetRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getGetRequestHandlerMock */
         $getGetRequestHandlerMock = $this->getGetRequestHandlerMock();
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getGetRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getGetRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -129,13 +129,13 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('toTree');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
         $getRequestHandlerMock->expects(self::once())->method('successRequest');
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -152,12 +152,12 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock();
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -174,13 +174,13 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
         $getRequestHandlerMock->expects(self::once())->method('successRequest');
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -196,12 +196,12 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock();
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -218,13 +218,13 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
         $getRequestHandlerMock->expects(self::once())->method('successRequest');
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -240,12 +240,12 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock();
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -262,13 +262,13 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('toTree');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
         $getRequestHandlerMock->expects(self::once())->method('successRequest');
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -285,12 +285,12 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock();
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -308,13 +308,13 @@ class IndexControllerTest extends \UnitTestCase
         $controllerMock = $this->getControllerMock('toTree');
         $controllerMock->expects(self::once())->method('toTree')->with([])->willReturn([]);
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
         $getRequestHandlerMock->expects(self::once())->method('successRequest');
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -330,12 +330,12 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock();
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -353,13 +353,13 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
         $getRequestHandlerMock->expects(self::once())->method('successRequest');
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -375,13 +375,13 @@ class IndexControllerTest extends \UnitTestCase
         /** @var IndexController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
-        /** @var GetCategoryRequestHandler|MockObject $getRequestHandlerMock */
+        /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
         $getRequestHandlerMock = $this->getGetRequestHandlerMock('successRequest');
         $getRequestHandlerMock->expects(self::never())->method('successRequest');
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetCategoryRequestHandler())->willReturn($getRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new GetRequestHandler())->willReturn($getRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -401,7 +401,7 @@ class IndexControllerTest extends \UnitTestCase
         $request = $this->di->get('request');
         $request->setJsonRawBody($this->jsonRawBody);
 
-        /** @var CreateCategoryRequestHandler|MockObject $createRequestHandlerMock */
+        /** @var CreateRequestHandler|MockObject $createRequestHandlerMock */
         $createRequestHandlerMock = $this->getCreateRequestHandlerMock('isValid', 'toArray', 'successRequest');
         $createRequestHandlerMock->expects(self::once())->method('isValid')->willReturn(true);
         $createRequestHandlerMock->expects(self::once())->method('toArray')->willReturn((array) $request->getJsonRawBody());
@@ -409,7 +409,7 @@ class IndexControllerTest extends \UnitTestCase
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new CreateCategoryRequestHandler())->willReturn($createRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new CreateRequestHandler())->willReturn($createRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -428,14 +428,14 @@ class IndexControllerTest extends \UnitTestCase
         $request = $this->di->get('request');
         $request->setJsonRawBody($this->jsonRawBody);
 
-        /** @var CreateCategoryRequestHandler|MockObject $createRequestHandlerMock */
+        /** @var CreateRequestHandler|MockObject $createRequestHandlerMock */
         $createRequestHandlerMock = $this->getCreateRequestHandlerMock('isValid', 'invalidRequest');
         $createRequestHandlerMock->expects(self::once())->method('isValid')->willReturn(false);
         $createRequestHandlerMock->expects(self::once())->method('invalidRequest')->willThrowException(new ArrayOfStringsException(['Invalid request'], 400));
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new CreateCategoryRequestHandler())->willReturn($createRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new CreateRequestHandler())->willReturn($createRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         $controllerMock->expects(self::once())->method('handleError')->with(json_encode(['Invalid request']), 400);
@@ -450,7 +450,7 @@ class IndexControllerTest extends \UnitTestCase
         $request = $this->di->get('request');
         $request->setJsonRawBody($this->jsonRawBody);
 
-        /** @var UpdateCategoryRequestHandler|MockObject $updateRequestHandlerMock */
+        /** @var UpdateRequestHandler|MockObject $updateRequestHandlerMock */
         $updateRequestHandlerMock = $this->getUpdateRequestHandlerMock('isValid', 'toArray', 'successRequest');
         $updateRequestHandlerMock->expects(self::once())->method('isValid')->willReturn(true);
         $updateRequestHandlerMock->expects(self::once())->method('toArray')->willReturn((array) $request->getJsonRawBody());
@@ -458,7 +458,7 @@ class IndexControllerTest extends \UnitTestCase
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new UpdateCategoryRequestHandler())->willReturn($updateRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new UpdateRequestHandler())->willReturn($updateRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */
@@ -483,7 +483,7 @@ class IndexControllerTest extends \UnitTestCase
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new UpdateCategoryRequestHandler())->willReturn($updateRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with($request->getJsonRawBody(), new UpdateRequestHandler())->willReturn($updateRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         $controllerMock->expects(self::once())->method('handleError')->with(json_encode(['Invalid request']), 400);
@@ -500,7 +500,7 @@ class IndexControllerTest extends \UnitTestCase
 
         /** @var \JsonMapper|MockObject $jsonMapperMock */
         $jsonMapperMock = $this->getJsonMapperMock('map');
-        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new DeleteCategoryRequestHandler())->willReturn($deleteRequestHandlerMock);
+        $jsonMapperMock->expects(self::once())->method('map')->with(new \stdClass(), new DeleteRequestHandler())->willReturn($deleteRequestHandlerMock);
         $controllerMock->setJsonMapper($jsonMapperMock);
 
         /** @var CategoryService|MockObject $serviceMock */

@@ -10,9 +10,6 @@
         "ext-mongodb": "*"
     },
     "require-dev": {
-        "phalcon/ide-stubs": "^3.4",
-        "phpunit/phpunit": "^7.3",
-        "phpmd/phpmd": "^2.6",
-        "phalcon/devtools": "^3.4"
+        "phpunit/phpunit": "^7.3"
     }
 }

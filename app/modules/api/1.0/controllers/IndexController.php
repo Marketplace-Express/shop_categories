@@ -2,12 +2,12 @@
 namespace Shop_categories\Modules\Api\Controllers;
 
 use Shop_categories\Controllers\ControllerBase;
-use Shop_categories\RequestHandler\Categories\
+use Shop_categories\RequestHandler\Category\
 {
-    CreateCategoryRequestHandler,
-    DeleteCategoryRequestHandler,
-    GetCategoryRequestHandler,
-    UpdateCategoryRequestHandler
+    CreateRequestHandler,
+    DeleteRequestHandler,
+    GetRequestHandler,
+    UpdateRequestHandler
 };
 use Shop_categories\Services\CategoryService;
 
@@ -43,8 +43,8 @@ class IndexController extends ControllerBase
     public function rootsAction()
     {
         try {
-            /** @var GetCategoryRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetCategoryRequestHandler());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->getService()->getRoots());
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
@@ -58,8 +58,8 @@ class IndexController extends ControllerBase
     public function getAllAction()
     {
         try {
-            /** @var GetCategoryRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetCategoryRequestHandler());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->toTree($this->getService()->getAll()));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
@@ -75,8 +75,8 @@ class IndexController extends ControllerBase
     public function getAction($categoryId)
     {
         try {
-            /** @var GetCategoryRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetCategoryRequestHandler());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $category = $this->getService()->getCategory($categoryId);
             $request->successRequest($category);
         } catch (\Throwable $exception) {
@@ -92,8 +92,8 @@ class IndexController extends ControllerBase
     public function descendantsAction($categoryId)
     {
         try {
-            /** @var GetCategoryRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetCategoryRequestHandler());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $descendants = $this->getService()->getDescendants($categoryId);
             $request->successRequest($this->toTree([$descendants]));
         } catch (\Throwable $exception) {
@@ -109,8 +109,8 @@ class IndexController extends ControllerBase
     public function childrenAction($categoryId)
     {
         try {
-            /** @var GetCategoryRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetCategoryRequestHandler());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->getService()->getChildren($categoryId));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
@@ -125,8 +125,8 @@ class IndexController extends ControllerBase
     public function parentsAction($categoryId)
     {
         try {
-            /** @var GetCategoryRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetCategoryRequestHandler());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $parents = $this->getService()->getParents($categoryId);
             $request->successRequest($this->toTree($parents));
         } catch (\Throwable $exception) {
@@ -142,8 +142,8 @@ class IndexController extends ControllerBase
     public function parentAction($categoryId)
     {
         try {
-            /** @var GetCategoryRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetCategoryRequestHandler());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->getService()->getParent($categoryId));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
@@ -158,8 +158,8 @@ class IndexController extends ControllerBase
     public function createAction()
     {
         try {
-            /** @var CreateCategoryRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateCategoryRequestHandler());
+            /** @var CreateRequestHandler $request */
+            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateRequestHandler());
 
             if (!$request->isValid()) {
                 $request->invalidRequest();
@@ -179,8 +179,8 @@ class IndexController extends ControllerBase
     public function updateAction($categoryId)
     {
         try {
-            /** @var UpdateCategoryRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateCategoryRequestHandler());
+            /** @var UpdateRequestHandler $request */
+            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateRequestHandler());
 
             if (!$request->isValid()) {
                 $request->invalidRequest();
@@ -200,8 +200,8 @@ class IndexController extends ControllerBase
     public function deleteAction($categoryId)
     {
         try {
-            /** @var DeleteCategoryRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new DeleteCategoryRequestHandler());
+            /** @var DeleteRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new DeleteRequestHandler());
             $this->getService()->delete($categoryId);
             $request->successRequest('Deleted');
         } catch (\Throwable $exception) {
