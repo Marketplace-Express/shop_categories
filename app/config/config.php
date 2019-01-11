@@ -15,20 +15,21 @@ return new \Phalcon\Config([
     'debug' => true,
 
     'database' => [
-        'adapter'  => 'Mysql',
-        'host'     => 'localhost',
-        'username' => 'phalcon',
-        'password' => 'secret',
-        'dbname'   => 'shop_categories',
-        'charset'  => 'utf8'
-    ],
-
-    'mongodb' => [
-        'host' => 'localhost',
-        'username' => '',
-        'password' => '',
-        'port' => '27017',
-        'dbname' => 'shop_categories'
+        'mysql' => [
+            'adapter'  => 'Mysql',
+            'host'     => 'localhost',
+            'username' => 'phalcon',
+            'password' => 'secret',
+            'dbname'   => 'shop_categories',
+            'charset'  => 'utf8'
+        ],
+        'mongodb' => [
+            'host' => 'localhost',
+            'username' => '',
+            'password' => '',
+            'port' => '27017',
+            'dbname' => 'shop_categories'
+        ]
     ],
 
     'category_cache' => [

@@ -143,7 +143,7 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('getDescendants')->with(self::CATEGORY_ID)->willReturn([]);
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('toTree')->with([])->willReturn([]);
+        $controllerMock->expects(self::once())->method('toTree')->with([[]])->willReturn([]);
         $controllerMock->descendantsAction(self::CATEGORY_ID);
     }
 
