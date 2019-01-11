@@ -5,7 +5,6 @@ namespace Shop_categories\Models;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\AlphaNumericValidator;
 use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
-use Shop_categories\Traits\ModelBehaviorTrait;
 use Shop_categories\Utils\UuidUtil;
 use Shop_categories\Validators\ExistenceValidator;
 
@@ -18,8 +17,6 @@ use Shop_categories\Validators\ExistenceValidator;
  */
 class Category extends BaseModel
 {
-    use ModelBehaviorTrait;
-
     /**
      * @var string
      * @Primary
@@ -254,14 +251,8 @@ class Category extends BaseModel
     }
 
     /**
-     * @param bool $new
-     * @return Category
+     * @throws \Exception
      */
-    public static function model(bool $new = false): self
-    {
-        return !empty(self::$instance) && !$new ? self::$instance : new self;
-    }
-
     public function initialize()
     {
         $this->setSource("category");
@@ -348,7 +339,7 @@ class Category extends BaseModel
 
     public function beforeDelete()
     {
-        $this->operation = self::DELETE_OPERATION;
+        $this->_operationMade = self::OP_DELETE;
     }
 
     /**
@@ -357,7 +348,7 @@ class Category extends BaseModel
      */
     public function validation(): bool
     {
-        if ($this->operation == self::DELETE_OPERATION) {
+        if ($this->_operationMade == self::OP_DELETE) {
             return true;
         }
 
@@ -365,10 +356,10 @@ class Category extends BaseModel
         $validator->add(
             'categoryName',
             new AlphaNumericValidator([
-                'whiteSpace' => $this->di->getConfig()->application->allowWhiteSpace,
-                'underscore' => $this->di->getConfig()->application->allowUnderscore,
-                'min' => $this->di->getConfig()->application->minCategoryNameLength,
-                'max' => $this->di->getConfig()->application->maxCategoryNameLength,
+                'whiteSpace' => $this->di->getConfig()->application->categoryNameValidationConfig->allowWhiteSpace,
+                'underscore' => $this->di->getConfig()->application->categoryNameValidationConfig->allowUnderscore,
+                'min' => $this->di->getConfig()->application->categoryNameValidationConfig->minNameLength,
+                'max' => $this->di->getConfig()->application->categoryNameValidationConfig->maxNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters'

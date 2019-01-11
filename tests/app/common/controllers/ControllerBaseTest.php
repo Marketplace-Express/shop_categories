@@ -5,10 +5,10 @@
  * Time: 10:36 م
  */
 
-namespace Shop_categories\Tests\Modules\Api\Controllers;
+namespace Shop_categories\Tests\Controllers;
 
+use Shop_categories\Controllers\ControllerBase;
 use PHPUnit\Framework\MockObject\MockObject;
-use Shop_categories\Modules\Api\Controllers\ControllerBase;
 
 class ControllerBaseTest extends \UnitTestCase
 {

@@ -11,7 +11,7 @@ use Phalcon\Db\AdapterInterface;
 use Phalcon\Mvc\Model\Behavior;
 use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\ModelInterface;
-use Shop_categories\DBTools\Enums\QueryOperatorsEnum;
+use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
 use Shop_categories\DBTools\QueryBuilder;
 use Shop_categories\DBTools\RecursiveQueryBuilder;
 use Shop_categories\Traits\AdjacencyModelEventManagerTrait;
@@ -193,8 +193,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
             [
                 [
                     'CONDITIONS' => array_merge([
-                        $this->isDeletedAttribute => [QueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue],
-                        $this->parentIdAttribute => [QueryOperatorsEnum::OP_IS_NULL => '']
+                        $this->isDeletedAttribute => [SchemaQueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue],
+                        $this->parentIdAttribute => [SchemaQueryOperatorsEnum::OP_IS_NULL => '']
                     ], $additionalConditions)
                 ]
             ],
@@ -233,9 +233,9 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
             [
                 [
                     'CONDITIONS' => array_merge([
-                        'category_id' => [QueryOperatorsEnum::OP_EQUALS => $itemId],
-                        'category_parent_id' => [QueryOperatorsEnum::OP_IS_NOT_NULL => ''],
-                        'is_deleted' => [QueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
+                        'category_id' => [SchemaQueryOperatorsEnum::OP_EQUALS => $itemId],
+                        'category_parent_id' => [SchemaQueryOperatorsEnum::OP_IS_NOT_NULL => ''],
+                        'is_deleted' => [SchemaQueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
                     ], $additionalConditions)
                 ],
                 [
@@ -250,8 +250,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
                         'table' => 'category',
                         'alias' => 'c',
                         'conditions' => [
-                            'c.category_id' => [QueryOperatorsEnum::OP_EQUALS => 'cp.category_parent_id', 'process' => false],
-                            'c.is_deleted' => [QueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
+                            'c.category_id' => [SchemaQueryOperatorsEnum::OP_EQUALS => 'cp.category_parent_id', 'process' => false],
+                            'c.is_deleted' => [SchemaQueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
                         ]
                     ]
                 ]
@@ -286,8 +286,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
             [
                 [
                     'CONDITIONS' => array_merge([
-                            'category_id' => [QueryOperatorsEnum::OP_EQUALS => $itemId],
-                            'is_deleted' => [QueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
+                            'category_id' => [SchemaQueryOperatorsEnum::OP_EQUALS => $itemId],
+                            'is_deleted' => [SchemaQueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
                     ], $additionalConditions)
                 ],
                 [
@@ -303,8 +303,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
                         'table' => 'category',
                         'alias' => 'c',
                         'conditions' => [
-                            'c.category_parent_id' => [QueryOperatorsEnum::OP_EQUALS => 'cp.category_id', 'process' => false],
-                            'c.is_deleted' => [QueryOperatorsEnum::OP_EQUALS => false]
+                            'c.category_parent_id' => [SchemaQueryOperatorsEnum::OP_EQUALS => 'cp.category_id', 'process' => false],
+                            'c.is_deleted' => [SchemaQueryOperatorsEnum::OP_EQUALS => false]
                         ]
                     ]
                 ]
@@ -336,8 +336,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
             [
                 [
                     'CONDITIONS' => array_merge([
-                        $this->parentIdAttribute => [QueryOperatorsEnum::OP_EQUALS => $itemId],
-                        $this->isDeletedAttribute => [QueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
+                        $this->parentIdAttribute => [SchemaQueryOperatorsEnum::OP_EQUALS => $itemId],
+                        $this->isDeletedAttribute => [SchemaQueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
                     ], $additionalConditions)
                 ]
             ],
@@ -370,7 +370,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
             [
                 [
                     'CONDITIONS' => array_merge([
-                        $this->isDeletedAttribute => [QueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
+                        $this->isDeletedAttribute => [SchemaQueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
                     ], $additionalConditions)
                 ]
             ],

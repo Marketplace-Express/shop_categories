@@ -7,7 +7,7 @@
 
 namespace Shop_categories\Tests\DBTools;
 
-use Shop_categories\DBTools\Enums\QueryOperatorsEnum;
+use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
 use Shop_categories\DBTools\QueryBuilder;
 
 class QueryBuilderTest extends \UnitTestCase
@@ -58,8 +58,8 @@ class QueryBuilderTest extends \UnitTestCase
             [
                 [
                     'CONDITIONS' => [
-                        'column1' => [QueryOperatorsEnum::OP_EQUALS => false],
-                        'column2' => [QueryOperatorsEnum::OP_NOT_IN => [1,2,3]]
+                        'column1' => [SchemaQueryOperatorsEnum::OP_EQUALS => false],
+                        'column2' => [SchemaQueryOperatorsEnum::OP_NOT_IN => [1,2,3]]
                     ]
                 ]
             ],

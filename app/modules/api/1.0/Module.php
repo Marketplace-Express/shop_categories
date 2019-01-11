@@ -4,13 +4,8 @@ namespace Shop_categories\Modules\Api;
 
 use Phalcon\DiInterface;
 use Phalcon\Loader;
-use Phalcon\Mvc\Dispatcher;
-use Phalcon\Mvc\View;
-use Phalcon\Mvc\View\Engine\Php as PhpEngine;
 use Phalcon\Mvc\ModuleDefinitionInterface;
 use Phalcon\Config;
-use Shop_categories\Modules\Api\Controllers\ControllerBase;
-
 
 class Module implements ModuleDefinitionInterface
 {

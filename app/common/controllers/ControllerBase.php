@@ -5,16 +5,19 @@
  * Time: 11:53 م
  */
 
-namespace Shop_categories\Modules\Api\Controllers;
+namespace Shop_categories\Controllers;
 
 use Phalcon\Mvc\Controller;
 use Shop_categories\Helpers\ArrayHelper;
+use Shop_categories\Services\BaseService;
 use Shop_categories\Services\CategoryService;
+use Shop_categories\Utils\UuidUtil;
 
 class ControllerBase extends Controller
 {
     /**
      * Columns to be returned
+     * @deprecated
      */
     const PUBLIC_COLUMNS = ['categoryId', 'categoryName', 'categoryParentId', 'categoryOrder'];
 
@@ -24,9 +27,31 @@ class ControllerBase extends Controller
     public $jsonMapper;
 
     /**
-     * @var CategoryService $service
+     * @var $service
      */
     public $service;
+
+    /**
+     * @var UuidUtil $uuidUtil
+     */
+    public $uuidUtil;
+
+    /**
+     * @param BaseService $service
+     * @codeCoverageIgnore
+     */
+    public function setService(BaseService $service): void
+    {
+        $this->service = $service;
+    }
+
+    /**
+     * @param mixed $uuidUtil
+     */
+    public function setUuidUtil($uuidUtil): void
+    {
+        $this->uuidUtil = $uuidUtil;
+    }
 
     /**
      * @return \JsonMapper
@@ -51,24 +76,11 @@ class ControllerBase extends Controller
     }
 
     /**
-     * @return CategoryService
-     * @codeCoverageIgnore
+     * Initialize controller
      */
-    public function getService(): CategoryService
+    public function onConstruct()
     {
-        if (!$this->service) {
-            $this->service = new CategoryService();
-        }
-        return $this->service;
-    }
-
-    /**
-     * @param CategoryService $service
-     * @codeCoverageIgnore
-     */
-    public function setService(CategoryService $service): void
-    {
-        $this->service = $service;
+        $this->setUuidUtil(new UuidUtil());
     }
 
     /**
@@ -95,8 +107,6 @@ class ControllerBase extends Controller
      */
     public function sendResponse($message, int $code = 400)
     {
-        // response->setStatusCode slows down the performance
-        // replacing it with http_response_code
         http_response_code($code);
         $this->response
             ->setJsonContent([
@@ -145,5 +155,19 @@ class ControllerBase extends Controller
             'itemIdAttribute' => 'categoryId',
             'parentIdAttribute' => 'categoryParentId'
         ]))->tree();
+    }
+
+    /**
+     * @param array $params
+     * @return \stdClass
+     */
+    protected function queryStringToObject(array $params)
+    {
+        $object = new \stdClass();
+        unset($params['_url']);
+        foreach ($params as $key => $value) {
+            $object->$key = $value;
+        }
+        return $object;
     }
 }

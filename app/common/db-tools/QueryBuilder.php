@@ -8,7 +8,7 @@
 namespace Shop_categories\DBTools;
 
 
-use Shop_categories\DBTools\Enums\QueryOperatorsEnum;
+use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
 
 class QueryBuilder
 {
@@ -255,30 +255,30 @@ class QueryBuilder
                             $alias = ($this->alias ?: $this->table). '.';
                         }
                         switch ($operator) {
-                            case QueryOperatorsEnum::OP_EQUALS:
-                            case QueryOperatorsEnum::OP_NOT_EQUAL:
-                            case QueryOperatorsEnum::OP_GREATER_THAN:
-                            case QueryOperatorsEnum::OP_GREATER_THAN_EQUAL:
-                            case QueryOperatorsEnum::OP_LESS_THAN:
-                            case QueryOperatorsEnum::OP_LESS_THAN_EQUAL:
+                            case SchemaQueryOperatorsEnum::OP_EQUALS:
+                            case SchemaQueryOperatorsEnum::OP_NOT_EQUAL:
+                            case SchemaQueryOperatorsEnum::OP_GREATER_THAN:
+                            case SchemaQueryOperatorsEnum::OP_GREATER_THAN_EQUAL:
+                            case SchemaQueryOperatorsEnum::OP_LESS_THAN:
+                            case SchemaQueryOperatorsEnum::OP_LESS_THAN_EQUAL:
                                 $condition = $alias . $column . ' ' . $operator . ' ' . implode(self::bindValuesAliases([$value[$operator]]));
                                 break;
-                            case QueryOperatorsEnum::OP_IN:
-                            case QueryOperatorsEnum::OP_NOT_IN:
+                            case SchemaQueryOperatorsEnum::OP_IN:
+                            case SchemaQueryOperatorsEnum::OP_NOT_IN:
                                 if (!is_array($value[$operator])) {
                                     throw new \Exception('Invalid value type for IN', 500);
                                 }
                                 $condition = $alias . $column . ' ' .$operator . ' ('.implode(',', self::bindValuesAliases($value[$operator])).')';
                                 break;
-                            case QueryOperatorsEnum::OP_BETWEEN:
+                            case SchemaQueryOperatorsEnum::OP_BETWEEN:
                                 if (!is_array($value[$operator]) || count($value[$operator]) < 2) {
                                     throw new \Exception('Invalid value type for BETWEEN', 500);
                                 }
                                 $bindValues = self::bindValuesAliases($value[$operator]);
                                 $condition = $alias . $column . ' ' . $operator . $bindValues[0] . ' AND ' . $bindValues[1];
                                 break;
-                            case QueryOperatorsEnum::OP_IS_NULL:
-                            case QueryOperatorsEnum::OP_IS_NOT_NULL:
+                            case SchemaQueryOperatorsEnum::OP_IS_NULL:
+                            case SchemaQueryOperatorsEnum::OP_IS_NOT_NULL:
                                 $condition = $alias . $column . ' ' . $operator;
                                 break;
                             default:

@@ -1,12 +1,13 @@
 {
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "ext-pdo": "*",
         "ramsey/uuid": "3.8.0",
         "phalcon/incubator": "^3.4",
         "netresearch/jsonmapper": "^1.4",
         "ext-json": "*",
-        "ext-redis": "*"
+        "ext-redis": "*",
+        "ext-mongodb": "*"
     },
     "require-dev": {
         "phalcon/ide-stubs": "^3.4",

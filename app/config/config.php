@@ -23,12 +23,30 @@ return new \Phalcon\Config([
         'charset'  => 'utf8'
     ],
 
-    'cache' => [
+    'mongodb' => [
+        'host' => 'localhost',
+        'username' => '',
+        'password' => '',
+        'port' => '27017',
+        'dbname' => 'shop_categories'
+    ],
+
+    'category_cache' => [
         'host' => 'localhost',
         'port' => 6379,
         'auth' => '',
         'persistent' => true,
-        'database' => 0
+        'database' => 0,
+        'ttl' => -1
+    ],
+
+    'attributes_cache' => [
+        'host' => 'localhost',
+        'port' => 6379,
+        'auth' => '',
+        'persistent' => true,
+        'database' => 1,
+        'ttl' => -1
     ],
 
     'application' => [
@@ -43,14 +61,28 @@ return new \Phalcon\Config([
         // possibly if the web server rewrite rules are changed. This can also be set to a static path.
         'baseUri'        => preg_replace('/public([\/\\\\])index.php$/', '', $_SERVER["PHP_SELF"]),
 
-        // Category cache TTL
-        'categoryCacheTTL' => 86400,
-
         // Category name validation config
-        'minCategoryNameLength' => 3,
-        'maxCategoryNameLength' => 100,
-        'allowWhiteSpace' => true,
-        'allowUnderscore' => true,
+        'categoryNameValidationConfig' => [
+            'minNameLength' => 3,
+            'maxNameLength' => 100,
+            'allowWhiteSpace' => true,
+            'allowUnderscore' => true
+        ],
+
+        // Attribute name validation config
+        'attributeNameValidationConfig' => [
+            'minNameLength' => 3,
+            'maxNameLength' => 50,
+            'allowWhiteSpace' => true,
+            'allowUnderscore' => true
+        ],
+
+        'attributeValueValidationConfig' => [
+            'minNameLength' => 3,
+            'maxNameLength' => 50,
+            'allowWhiteSpace' => false,
+            'allowUnderscore' => false
+        ],
 
         // Category order validation config
         'minCategoryOrder' => 0,

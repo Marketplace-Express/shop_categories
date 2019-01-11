@@ -7,27 +7,29 @@
 
 namespace Shop_categories\models;
 
-
 use Phalcon\Mvc\Model;
 use Shop_categories\Interfaces\BaseModelInterface;
+use Shop_categories\Traits\ModelBehaviorTrait;
 
 abstract class BaseModel extends Model implements BaseModelInterface
 {
-    const DELETE_OPERATION = 'delete';
-    const CREATE_OPERATION = 'create';
-    const UPDATE_OPERATION = 'update';
-
-    protected $operation;
+    use ModelBehaviorTrait;
 
     protected static $instance;
 
     public function onConstruct()
     {
         self::$instance = $this;
-        $this->setSchema("shop_categories");
     }
 
-    public static function model(){}
+    /**
+     * @param bool $new
+     * @return Category
+     */
+    public static function model(bool $new = false): self
+    {
+        return !empty(self::$instance) && !$new ? self::$instance : new static;
+    }
 
     /**
      * @param \Phalcon\DiInterface|null $dependencyInjector
@@ -49,8 +51,20 @@ abstract class BaseModel extends Model implements BaseModelInterface
     {
         $messages = [];
         foreach (parent::getMessages($filter) as $message) {
-            $messages[$message->getField()] = $message->getMessage();
+            if (is_array($field = $message->getField())) {
+                $field = $message->getField()[0];
+            }
+            $messages[$field] = $message->getMessage();
         }
         return $messages;
+    }
+
+    /**
+     * Returns model type
+     * @return string
+     */
+    public static function getType()
+    {
+        return Model::class;
     }
 }
