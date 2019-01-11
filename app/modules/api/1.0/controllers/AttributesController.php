@@ -9,12 +9,12 @@ namespace Shop_categories\Modules\Api\Controllers;
 
 
 use Shop_categories\Controllers\ControllerBase;
-use Shop_categories\RequestHandler\Attributes\{
-    CreateAttributeRequestHandler,
-    CreateValuesRequestHandler,
-    DeleteAttributeRequestHandler,
-    GetAttributeRequestHandler,
-    UpdateAttributeRequestHandler
+use Shop_categories\RequestHandler\Attribute\{
+    CreateRequestHandler,
+    UpdateValuesRequestHandler,
+    DeleteRequestHandler,
+    GetRequestHandler,
+    UpdateRequestHandler
 };
 use Shop_categories\Services\AttributesService;
 
@@ -45,8 +45,8 @@ class AttributesController extends ControllerBase
     public function getAction($id)
     {
         try {
-            /** @var GetAttributeRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetAttributeRequestHandler());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->getService()->getAttribute($id));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
@@ -59,8 +59,8 @@ class AttributesController extends ControllerBase
     public function getAllAction()
     {
         try {
-            /** @var GetAttributeRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->queryStringToObject($this->request->getQuery()), new GetAttributeRequestHandler());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map($this->queryStringToObject($this->request->getQuery()), new GetRequestHandler());
             if (!$request->isValid()) {
                 $request->invalidRequest();
             }
@@ -76,8 +76,8 @@ class AttributesController extends ControllerBase
     public function createAction()
     {
         try {
-            /** @var CreateAttributeRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateAttributeRequestHandler());
+            /** @var CreateRequestHandler $request */
+            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateRequestHandler());
 
             if (!$request->isValid()) {
                 $request->invalidRequest();
@@ -96,8 +96,8 @@ class AttributesController extends ControllerBase
     public function updateAction($id)
     {
         try {
-            /** @var UpdateAttributeRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateAttributeRequestHandler());
+            /** @var UpdateRequestHandler $request */
+            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateRequestHandler());
 
             if (!$request->isValid()) {
                 $request->invalidRequest();
@@ -117,8 +117,8 @@ class AttributesController extends ControllerBase
     public function deleteAction($id)
     {
         try {
-            /** @var DeleteAttributeRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new DeleteAttributeRequestHandler());
+            /** @var DeleteRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new DeleteRequestHandler());
             $request->successRequest($this->getService()->delete($id));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
@@ -132,8 +132,8 @@ class AttributesController extends ControllerBase
     public function updateValuesAction($id)
     {
         try {
-            /** @var CreateValuesRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateValuesRequestHandler());
+            /** @var UpdateValuesRequestHandler $request */
+            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateValuesRequestHandler());
 
             if (!$request->isValid()) {
                 $request->invalidRequest();
@@ -153,8 +153,8 @@ class AttributesController extends ControllerBase
     public function getValuesAction($id)
     {
         try {
-            /** @var GetAttributeRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetAttributeRequestHandler());
+            /** @var GetRequestHandler $request */
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->getService()->getValues($id));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
