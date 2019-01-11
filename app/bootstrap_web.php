@@ -46,7 +46,6 @@ try {
      */
     $application->registerModules([
         'api' => ['className' => 'Shop_categories\Modules\Api\Module'],
-        'frontend' => ['className' => 'Shop_categories\Modules\Frontend\Module'],
         'cli' => ['className' => 'Shop_categories\Modules\Cli\Module']
     ]);
 

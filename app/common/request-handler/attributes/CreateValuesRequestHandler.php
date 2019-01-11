@@ -120,8 +120,6 @@ class CreateValuesRequestHandler extends ControllerBase implements RequestHandle
      */
     public function toArray(): array
     {
-        return [
-            'attribute_values' => $this->getValues()
-        ];
+        return $this->getValues();
     }
 }

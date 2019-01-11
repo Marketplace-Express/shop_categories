@@ -180,7 +180,7 @@ class AttributesCache extends AbstractService implements AttributeDataSourceInte
         return $this->getAttribute($attribute_id)['attribute_values'];
     }
 
-    public function addValues(string $attribute_id, array $values)
+    public function updateValues(string $attribute_id, array $values)
     {
         // TODO: Implement addValue() method.
     }

@@ -147,13 +147,13 @@ class AttributesRepository implements AttributeDataSourceInterface
      * @throws \Phalcon\Mvc\Collection\Exception
      * @throws \Exception
      */
-    public function addValues(string $attribute_id, array $values)
+    public function updateValues(string $attribute_id, array $values)
     {
         $attribute = self::getModel()::findById($attribute_id);
         if (!$attribute) {
             throw new \Exception('Attribute not found', 404);
         }
-        $attribute->attribute_values = array_unique(array_merge($attribute->attribute_values, array_shift($values)));
+        $attribute->attribute_values = array_unique($values);
         if (!$attribute->save()) {
             throw new ArrayOfStringsException($attribute->getMessages(), 400);
         }

@@ -44,6 +44,7 @@ $loader->registerNamespaces([
     'Shop_categories\Services\Cache' => ROOT_PATH . '/../app/common/services/cache',
     'Shop_categories\Services\Cache\Utils' => ROOT_PATH . '/../app/common/services/cache/utils',
     'Shop_categories\RequestHandler' => ROOT_PATH . '/../app/common/request-handler',
+    'Shop_categories\RequestHandler\Categories' => ROOT_PATH . '/../app/common/request-handler/categories',
     'Shop_categories\Modules\Api\Controllers' => ROOT_PATH . '/../app/modules/api/1.0/controllers',
     'Shop_categories\Utils' => ROOT_PATH . '/../app/common/utils',
     'Shop_categories\Logger' => ROOT_PATH . '/common/logger/'

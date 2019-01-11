@@ -115,7 +115,7 @@ class AttributesService extends AbstractService
      * Add values to attribute
      *
      * @param string $attributeId
-     * @param array $value
+     * @param array $values
      * @return bool|\Shop_categories\Models\Attribute
      *
      * @throws ArrayOfStringsException
@@ -123,9 +123,9 @@ class AttributesService extends AbstractService
      * @throws \Phalcon\Mvc\Collection\Exception
      * @throws \Exception
      */
-    public function addValues(string $attributeId, array $value)
+    public function updateValues(string $attributeId, array $values)
     {
-        if ($attribute = self::getAttributesRepository()->addValues($attributeId, $value)) {
+        if ($attribute = self::getAttributesRepository()->updateValues($attributeId, $values)) {
             $categoryId = self::getAttributesCacheService()->getAttribute($attributeId)['attribute_category_id'];
             self::getAttributesCacheService()->updateCache($attributeId, $categoryId, $attribute->toApiArray());
             return $attribute;
