@@ -95,7 +95,7 @@ class IndexController extends ControllerBase
             /** @var GetCategoryRequestHandler $request */
             $request = $this->getJsonMapper()->map(new \stdClass(), new GetCategoryRequestHandler());
             $descendants = $this->getService()->getDescendants($categoryId);
-            $request->successRequest($this->toTree($descendants));
+            $request->successRequest($this->toTree([$descendants]));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }

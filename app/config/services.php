@@ -24,16 +24,16 @@ $di->setShared('profiler', function () {
 $di->setShared('db', function () {
     $config = $this->getConfig();
 
-    $class = 'Phalcon\Db\Adapter\Pdo\\' . $config->database->adapter;
+    $class = 'Phalcon\Db\Adapter\Pdo\\' . $config->database->mysql->adapter;
     $params = [
-        'host'     => $config->database->host,
-        'username' => $config->database->username,
-        'password' => $config->database->password,
-        'dbname'   => $config->database->dbname,
-        'charset'  => $config->database->charset
+        'host'     => $config->database->mysql->host,
+        'username' => $config->database->mysql->username,
+        'password' => $config->database->mysql->password,
+        'dbname'   => $config->database->mysql->dbname,
+        'charset'  => $config->database->mysql->charset
     ];
 
-    if ($config->database->adapter == 'Postgresql') {
+    if ($config->database->mysql->adapter == 'Postgresql') {
         unset($params['charset']);
     }
 
@@ -59,6 +59,10 @@ $di->setShared('db', function () {
         if ($event->getType() == 'afterQuery') {
             $profiler->stopProfile();
 
+            if (!file_exists($config->application->logsDir . 'db.log')) {
+                touch($config->application->logsDir . 'db.log');
+            }
+
             // Log last SQL statement
             \Phalcon\Logger\Factory::load([
                 'name' => $config->application->logsDir . 'db.log',
@@ -77,12 +81,12 @@ $di->setShared('db', function () {
 $di->setShared('mongo', function(){
     $config = $this->getConfig();
     $connectionString = "mongodb://";
-    if (!empty($config->mongodb->username) && !empty($config->mongodb->password)) {
-        $connectionString  .= $config->mongodb->username.":".$config->mongodb->password."@";
+    if (!empty($config->database->mongodb->username) && !empty($config->database->mongodb->password)) {
+        $connectionString  .= $config->database->mongodb->username.":".$config->database->mongodb->password."@";
     }
-    $connectionString .= $config->mongodb->host.":".$config->mongodb->port;
+    $connectionString .= $config->database->mongodb->host.":".$config->database->mongodb->port;
     $mongo = new \Phalcon\Db\Adapter\MongoDB\Client($connectionString);
-    return $mongo->selectDatabase($config->mongodb->dbname);
+    return $mongo->selectDatabase($config->database->mongodb->dbname);
 });
 
 $di->setShared(
