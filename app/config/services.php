@@ -1,8 +1,6 @@
 <?php
 
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
-use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
-
 
 /**
  * Shared configuration service
