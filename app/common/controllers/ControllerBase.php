@@ -10,7 +10,6 @@ namespace Shop_categories\Controllers;
 use Phalcon\Mvc\Controller;
 use Shop_categories\Helpers\ArrayHelper;
 use Shop_categories\Services\BaseService;
-use Shop_categories\Services\CategoryService;
 use Shop_categories\Utils\UuidUtil;
 
 class ControllerBase extends Controller
