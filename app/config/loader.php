@@ -43,7 +43,7 @@ $loader->registerFiles([
  * Register module classes
  */
 $loader->registerClasses([
-    'Shop_categories\Modules\Api\Module' => APP_PATH . '/modules/api/' . $config->api->version . '/Module.php',
+    'Shop_categories\Modules\Api\Module' => APP_PATH . '/modules/api/Module.php',
     'Shop_categories\Modules\Cli\Module'      => APP_PATH . '/modules/cli/Module.php'
 ]);
 
