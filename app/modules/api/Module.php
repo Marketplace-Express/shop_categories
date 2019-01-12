@@ -5,7 +5,6 @@ namespace Shop_categories\Modules\Api;
 use Phalcon\DiInterface;
 use Phalcon\Loader;
 use Phalcon\Mvc\ModuleDefinitionInterface;
-use Phalcon\Config;
 
 class Module implements ModuleDefinitionInterface
 {
