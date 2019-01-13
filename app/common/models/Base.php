@@ -11,7 +11,7 @@ use Phalcon\Mvc\Model;
 use Shop_categories\Interfaces\BaseModelInterface;
 use Shop_categories\Traits\ModelBehaviorTrait;
 
-abstract class BaseModel extends Model implements BaseModelInterface
+abstract class Base extends Model implements BaseModelInterface
 {
     use ModelBehaviorTrait;
 
@@ -51,10 +51,7 @@ abstract class BaseModel extends Model implements BaseModelInterface
     {
         $messages = [];
         foreach (parent::getMessages($filter) as $message) {
-            if (is_array($field = $message->getField())) {
-                $field = $message->getField()[0];
-            }
-            $messages[$field] = $message->getMessage();
+            $messages[$message->getField()] = $message->getMessage();
         }
         return $messages;
     }
