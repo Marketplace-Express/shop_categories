@@ -214,17 +214,24 @@ class CategoryRepository implements CategoryDataSourceInterface
     }
 
     /**
+     * Create new category
+     *
      * @param array $data
      * @return Category
+     * @throws ArrayOfStringsException
      */
     public function create(array $data): Category
     {
-        $category = self::getModel(true)->setAttributes($data);
-        $category->save();
+        $category = self::getModel(true);
+        if (!$category->save($data, Category::WHITE_LIST)) {
+            throw new ArrayOfStringsException($category->getMessages(), 400);
+        }
         return $category;
     }
 
     /**
+     * Update category
+     *
      * @param string $categoryId
      * @param string $vendorId
      * @param array $data
@@ -234,8 +241,7 @@ class CategoryRepository implements CategoryDataSourceInterface
     public function update(string $categoryId, string $vendorId, array $data)
     {
         $category = self::findById($categoryId, $vendorId);
-        $category->setAttributes($data);
-        if (!$category->update()) {
+        if (!$category->update($data, Category::WHITE_LIST)) {
             throw new ArrayOfStringsException($category->getMessages(), 400);
         }
         return $category;

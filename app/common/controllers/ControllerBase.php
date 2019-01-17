@@ -61,7 +61,6 @@ class ControllerBase extends Controller
         if (!$this->jsonMapper) {
             $this->jsonMapper = new \JsonMapper();
         }
-        $this->jsonMapper->bExceptionOnUndefinedProperty = true;
         return $this->jsonMapper;
     }
 

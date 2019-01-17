@@ -65,12 +65,10 @@ class AttributesService extends AbstractService
     {
         // TODO: PREPARE ATTRIBUTE BEFORE CREATE
 
-        if ($attribute = self::getAttributesRepository()->create($data)) {
-            $attribute = $attribute->toApiArray();
-            self::getAttributesCacheService()->updateCache($attribute['attribute_id'], $attribute['attribute_category_id'], $attribute);
-            return $attribute;
-        }
-        throw new ArrayOfStringsException($attribute->getMessages(), 400);
+        $attribute = self::getAttributesRepository()->create($data);
+        $attribute = $attribute->toApiArray();
+        self::getAttributesCacheService()->updateCache($attribute['attribute_id'], $attribute['attribute_category_id'], $attribute);
+        return $attribute;
     }
 
     /**
@@ -80,17 +78,14 @@ class AttributesService extends AbstractService
      * @param array $data
      * @return \Shop_categories\Models\Attribute
      *
-     * @throws ArrayOfStringsException
      * @throws RedisException
      * @throws \Exception
      */
     public function update(string $attributeId, array $data)
     {
-        if ($attribute = self::getAttributesRepository()->update($attributeId, $data)) {
-            self::getAttributesCacheService()->updateCache($attributeId, $attribute->attribute_category_id, $attribute->toApiArray());
-            return $attribute;
-        }
-        throw new ArrayOfStringsException($attribute->getMessages(), 400);
+        $attribute = self::getAttributesRepository()->update($attributeId, $data);
+        self::getAttributesCacheService()->updateCache($attributeId, $attribute->attribute_category_id, $attribute->toApiArray());
+        return $attribute;
     }
 
     /**
