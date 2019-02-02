@@ -141,12 +141,9 @@ class CategoryService extends AbstractService
      */
     public function create(array $data): array
     {
-        if ($category = self::getCategoryRepository()->create($data)) {
-            self::getCategoryCache()->invalidateCache();
-            return $category->toApiArray();
-        }
-
-        throw new ArrayOfStringsException($category->getMessages(), 400);
+        $category = self::getCategoryRepository()->create($data);
+        self::getCategoryCache()->invalidateCache();
+        return $category->toApiArray();
     }
 
     /**
@@ -158,12 +155,9 @@ class CategoryService extends AbstractService
      */
     public function update(string $categoryId, array $data): array
     {
-        if ($category = self::getCategoryRepository()->update($categoryId, self::getVendorId(), $data)) {
-            self::getCategoryCache()->invalidateCache();
-            return $category->toApiArray();
-        }
-
-        throw new ArrayOfStringsException($category->getMessages(), 400);
+        $category = self::getCategoryRepository()->update($categoryId, self::getVendorId(), $data);
+        self::getCategoryCache()->invalidateCache();
+        return $category->toApiArray();
     }
 
     /**

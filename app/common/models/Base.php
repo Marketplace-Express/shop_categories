@@ -9,11 +9,11 @@ namespace Shop_categories\models;
 
 use Phalcon\Mvc\Model;
 use Shop_categories\Interfaces\BaseModelInterface;
-use Shop_categories\Traits\ModelBehaviorTrait;
+use Shop_categories\Traits\ModelCollectionBehaviorTrait;
 
 abstract class Base extends Model implements BaseModelInterface
 {
-    use ModelBehaviorTrait;
+    use ModelCollectionBehaviorTrait;
 
     protected static $instance;
 

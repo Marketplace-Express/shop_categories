@@ -109,38 +109,6 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
             ])
         );
 
-        // TODO: move validation to product and remove from attribute
-//        $validator->add(
-//            'conditions',
-//            new Validation\Validator\Callback([
-//                'callback' => function ($data) {
-//                    return !empty($data['conditions']) && is_array($data['conditions']);
-//                },
-//                'message' => 'Attribute conditions should be an array'
-//            ])
-//        );
-//        $validator->add(
-//            'conditions',
-//            new Validation\Validator\Callback([
-//                'callback' => function ($data) {
-//                    $includeUsersIds = $data['conditions']['include']['usersIds'];
-//                    $includeCountries = $data['conditions']['include']['countries'];
-//                    $excludeUsersIds = $data['conditions']['exclude']['usersIds'];
-//                    $excludeCountries = $data['conditions']['exclude']['countries'];
-//                    if (!empty($includeUsersIds) && !empty($excludeUsersIds)
-//                        && count(array_intersect($includeUsersIds, $excludeUsersIds))) {
-//                        return false;
-//                    }
-//                    if (!empty($includeCountries) && !empty($excludeCountries)
-//                        && count(array_intersect($includeCountries, $excludeCountries))) {
-//                        return false;
-//                    }
-//                    return true;
-//                },
-//                'message' => 'Included values should not exist in excluded values'
-//            ])
-//        );
-
         $validator->add(
             'values',
             new Validation\Validator\Callback([
@@ -160,7 +128,7 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
                     }
                     return true;
                 },
-                'message' => 'You must provide a unique values'
+                'message' => 'There are duplicate entries'
             ])
         );
 

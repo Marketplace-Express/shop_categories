@@ -16,7 +16,7 @@ return new \Phalcon\Config([
 
     'database' => [
         'adapter'  => 'Mysql',
-        'host'     => 'localhost',
+        'host'     => '172.17.0.2',
         'username' => 'phalcon',
         'password' => 'secret',
         'dbname'   => 'shop_categories',
@@ -32,7 +32,7 @@ return new \Phalcon\Config([
     ],
 
     'category_cache' => [
-        'host' => 'localhost',
+        'host' => '172.17.0.3',
         'port' => 6379,
         'auth' => '',
         'persistent' => true,
@@ -52,6 +52,7 @@ return new \Phalcon\Config([
     'application' => [
         'appDir'         => APP_PATH . '/',
         'modelsDir'      => APP_PATH . '/common/models/',
+        'collectionsDir' => APP_PATH . '/common/collections/',
         'migrationsDir'  => APP_PATH . '/migrations/',
         'cacheDir'       => BASE_PATH . '/cache/',
         'logsDir'        => APP_PATH . '/logs/',

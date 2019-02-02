@@ -9,7 +9,7 @@ namespace Shop_categories\Repositories;
 
 use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\Interfaces\AttributeDataSourceInterface;
-use Shop_categories\Models\Attribute;
+use Shop_categories\Collections\Attribute;
 
 class AttributesRepository implements AttributeDataSourceInterface
 {

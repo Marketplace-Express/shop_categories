@@ -17,6 +17,15 @@ use Shop_categories\Validators\ExistenceValidator;
  */
 class Category extends Base
 {
+    const WHITE_LIST = [
+        'categoryId',
+        'categoryParentId',
+        'categoryVendorId',
+        'categoryUserId',
+        'categoryName',
+        'categoryOrder'
+    ];
+
     /**
      * @var string
      * @Primary
@@ -156,18 +165,6 @@ class Category extends Base
     public function setIsDeleted($isDeleted)
     {
         $this->isDeleted = $isDeleted;
-    }
-
-    /**
-     * @param array $attributes
-     * @return Category
-     */
-    public function setAttributes(array $attributes): self
-    {
-        foreach ($attributes as $attribute => $value) {
-            $this->$attribute = $value;
-        }
-        return $this;
     }
 
     /**
