@@ -12,7 +12,7 @@ use Phalcon\Mvc\Collection;
 use Phalcon\Mvc\MongoCollection;
 use Phalcon\Mvc\Model;
 
-trait ModelBehaviorTrait
+trait ModelCollectionBehaviorTrait
 {
     public static $dateFormat = 'Y-m-d G:i:s';
 
@@ -72,7 +72,7 @@ trait ModelBehaviorTrait
             ]));
 
         } else {
-            throw new \Exception('Use ModelBehaviorTrait only with Model and Collection models types');
+            throw new \Exception('Use ModelBehaviorTrait only with Models and Collections');
         }
     }
 }

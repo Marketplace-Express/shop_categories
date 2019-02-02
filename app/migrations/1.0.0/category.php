@@ -61,6 +61,7 @@ class CategoryMigration_100 extends Migration
                         'category_vendor_id',
                         [
                             'type' => Column::TYPE_VARCHAR,
+                            'notNull' => true,
                             'size' => 36,
                             'after' => 'category_order'
                         ]
@@ -103,6 +104,7 @@ class CategoryMigration_100 extends Migration
                         'is_deleted',
                         [
                             'type' => Column::TYPE_INTEGER,
+                            'notNull' => true,
                             'default' => "0",
                             'size' => 1,
                             'after' => 'deleted_at'

@@ -5,7 +5,7 @@
  * Time: 10:32 م
  */
 
-namespace Shop_categories\Models;
+namespace Shop_categories\Collections;
 
 use Phalcon\Validation;
 use Shop_categories\Utils\UuidUtil;
@@ -50,7 +50,7 @@ class Attribute extends BaseCollection
 
     /**
      * @param array|null $parameters
-     * @return Attribute|bool
+     * @return array|Attribute|bool
      */
     public static function findFirst(array $parameters = null)
     {
@@ -60,7 +60,7 @@ class Attribute extends BaseCollection
 
     /**
      * @param mixed $id
-     * @return Attribute|bool
+     * @return array|Attribute|bool
      */
     public static function findById($id)
     {
@@ -181,38 +181,6 @@ class Attribute extends BaseCollection
             ])
         );
 
-        // TODO: move validation to product and remove from attribute
-//        $validator->add(
-//            'attribute_conditions',
-//            new Validation\Validator\Callback([
-//                'callback' => function ($data) {
-//                    return !empty($data['attribute_conditions']) && is_array($data['attribute_conditions']);
-//                },
-//                'message' => 'Attribute conditions should be an array'
-//            ])
-//        );
-//        $validator->add(
-//            'conditions',
-//            new Validation\Validator\Callback([
-//                'callback' => function ($data) {
-//                    $includeUsersIds = $data['conditions']['include']['usersIds'];
-//                    $includeCountries = $data['conditions']['include']['countries'];
-//                    $excludeUsersIds = $data['conditions']['exclude']['usersIds'];
-//                    $excludeCountries = $data['conditions']['exclude']['countries'];
-//                    if (!empty($includeUsersIds) && !empty($excludeUsersIds)
-//                        && count(array_intersect($includeUsersIds, $excludeUsersIds))) {
-//                        return false;
-//                    }
-//                    if (!empty($includeCountries) && !empty($excludeCountries)
-//                        && count(array_intersect($includeCountries, $excludeCountries))) {
-//                        return false;
-//                    }
-//                    return true;
-//                },
-//                'message' => 'Included values should not exist in excluded values'
-//            ])
-//        );
-
         $validator->add(
             'values',
             new Validation\Validator\Callback([
@@ -229,11 +197,11 @@ class Attribute extends BaseCollection
         $this->_errorMessages = $messages =  $validator->validate([
             'attribute_name' => $this->attribute_name,
             'attribute_category_id' => $this->attribute_category_id,
-            'attribute_conditions' => $this->attribute_conditions,
             'attribute_values' => $this->attribute_values
         ]);
 
         if (count($messages)) {
+            $this->_errorMessages = $messages;
             return false;
         }
         return true;

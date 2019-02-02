@@ -9,6 +9,7 @@ $loader = new Loader();
  */
 $loader->registerNamespaces([
     'Shop_categories\Models' => APP_PATH . '/common/models/',
+    'Shop_categories\Collections' => APP_PATH . '/common/collections',
     'Shop_categories\Interfaces' => APP_PATH . '/common/interfaces/',
     'Shop_categories\Controllers' => APP_PATH . '/common/controllers/',
     'Shop_categories\Models\Behaviors' => APP_PATH . '/common/models/behaviors/',

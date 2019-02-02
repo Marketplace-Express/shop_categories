@@ -1,1 +1,8 @@
-**/logs
+# logs
+app/logs
+
+# .idea PHPSTORM
+.idea
+
+# phalcon aut generated folder
+.phalcon

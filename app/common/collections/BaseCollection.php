@@ -5,17 +5,17 @@
  * Time: 06:13 م
  */
 
-namespace Shop_categories\Models;
+namespace Shop_categories\Collections;
 
 use Phalcon\Mvc\MongoCollection As Collection;
-use Shop_categories\Traits\ModelBehaviorTrait;
+use Shop_categories\Traits\ModelCollectionBehaviorTrait;
 
 abstract class BaseCollection extends Collection
 {
-    /** @var Attribute $instance */
+    /** @var Collection $instance */
     protected static $instance;
 
-    use ModelBehaviorTrait;
+    use ModelCollectionBehaviorTrait;
 
     public function onConstruct()
     {
@@ -24,9 +24,9 @@ abstract class BaseCollection extends Collection
 
     /**
      * @param bool $new
-     * @return Attribute
+     * @return Collection|BaseCollection|Attribute
      */
-    public static function model(bool $new = false): Collection
+    public static function model(bool $new = false)
     {
         return (self::$instance && !$new) ? self::$instance : new static;
     }
