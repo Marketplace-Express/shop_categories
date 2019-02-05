@@ -67,7 +67,11 @@ class AttributesService extends AbstractService
 
         $attribute = self::getAttributesRepository()->create($data);
         $attribute = $attribute->toApiArray();
-        self::getAttributesCacheService()->updateCache($attribute['attribute_id'], $attribute['attribute_category_id'], $attribute);
+        try {
+            self::getAttributesCacheService()->updateCache($attribute['attribute_id'], $attribute['attribute_category_id'], $attribute);
+        } catch (\RedisException $exception) {
+            // do nothing
+        }
         return $attribute;
     }
 
@@ -76,15 +80,18 @@ class AttributesService extends AbstractService
      *
      * @param string $attributeId
      * @param array $data
-     * @return \Shop_categories\Models\Attribute
+     * @return \Shop_categories\Collections\Attribute
      *
-     * @throws RedisException
      * @throws \Exception
      */
     public function update(string $attributeId, array $data)
     {
         $attribute = self::getAttributesRepository()->update($attributeId, $data);
-        self::getAttributesCacheService()->updateCache($attributeId, $attribute->attribute_category_id, $attribute->toApiArray());
+        try {
+            self::getAttributesCacheService()->updateCache($attributeId, $attribute->attribute_category_id, $attribute->toApiArray());
+        } catch (\RedisException $exception) {
+            // do nothing
+        }
         return $attribute;
     }
 
@@ -94,13 +101,16 @@ class AttributesService extends AbstractService
      * @param string $attributeId
      *
      * @return bool
-     * @throws RedisException
      * @throws \Exception
      */
     public function delete(string $attributeId): bool
     {
         if (self::getAttributesRepository()->delete($attributeId)) {
-            self::getAttributesCacheService()->invalidateCache($attributeId);
+            try {
+                self::getAttributesCacheService()->invalidateCache($attributeId);
+            } catch (\RedisException $exception) {
+                // do nothing
+            }
             return true;
         }
         throw new \Exception('Attribute could not be deleted', 400);
@@ -111,7 +121,7 @@ class AttributesService extends AbstractService
      *
      * @param string $attributeId
      * @param array $values
-     * @return bool|\Shop_categories\Models\Attribute
+     * @return bool|\Shop_categories\Collections\Attribute
      *
      * @throws ArrayOfStringsException
      * @throws RedisException
@@ -122,7 +132,11 @@ class AttributesService extends AbstractService
     {
         if ($attribute = self::getAttributesRepository()->updateValues($attributeId, $values)) {
             $categoryId = self::getAttributesCacheService()->getAttribute($attributeId)['attribute_category_id'];
-            self::getAttributesCacheService()->updateCache($attributeId, $categoryId, $attribute->toApiArray());
+            try {
+                self::getAttributesCacheService()->updateCache($attributeId, $categoryId, $attribute->toApiArray());
+            } catch (\RedisException $exception) {
+                // do nothing
+            }
             return $attribute;
         }
         throw new ArrayOfStringsException($attribute->getMessages(), 400);

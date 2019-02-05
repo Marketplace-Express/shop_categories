@@ -41,7 +41,7 @@ return new \Phalcon\Config([
     ],
 
     'attributes_cache' => [
-        'host' => 'localhost',
+        'host' => '172.17.0.3',
         'port' => 6379,
         'auth' => '',
         'persistent' => true,
