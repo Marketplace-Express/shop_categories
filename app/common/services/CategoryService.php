@@ -142,7 +142,11 @@ class CategoryService extends AbstractService
     public function create(array $data): array
     {
         $category = self::getCategoryRepository()->create($data);
-        self::getCategoryCache()->invalidateCache();
+        try {
+            self::getCategoryCache()->invalidateCache();
+        } catch (\RedisException $exception) {
+            // do nothing
+        }
         return $category->toApiArray();
     }
 
@@ -156,7 +160,11 @@ class CategoryService extends AbstractService
     public function update(string $categoryId, array $data): array
     {
         $category = self::getCategoryRepository()->update($categoryId, self::getVendorId(), $data);
-        self::getCategoryCache()->invalidateCache();
+        try {
+            self::getCategoryCache()->invalidateCache();
+        } catch (\RedisException $exception) {
+            // do nothing
+        }
         return $category->toApiArray();
     }
 
@@ -167,7 +175,11 @@ class CategoryService extends AbstractService
     public function delete($categoryId): void
     {
         if (self::getCategoryRepository()->delete($categoryId, self::getVendorId())) {
-            self::getCategoryCache()->invalidateCache();
+            try {
+                self::getCategoryCache()->invalidateCache();
+            } catch (\RedisException $exception) {
+                // do nothing
+            }
         } else {
             throw new \Exception('Category not found or maybe deleted', 404);
         }

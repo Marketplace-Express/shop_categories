@@ -22,8 +22,14 @@ class ArrayHelper
 
         $this->itemIdAttribute = $params['itemIdAttribute'];
         $this->parentIdAttribute = $params['parentIdAttribute'];
-        $this->subItemsSlug = $params['subItemsSlug'] ?: 'children';
-        $this->noParentValue = $params['noParentValue'] ?: null;
+        $this->subItemsSlug = 'children';
+        $this->noParentValue = null;
+        if (array_key_exists('subItemsSlug', $params)) {
+            $this->subItemsSlug = $params['subItemsSlug'];
+        }
+        if (array_key_exists('noParentValue', $params)) {
+            $this->noParentValue = $params['noParentValue'];
+        }
     }
 
     /**
