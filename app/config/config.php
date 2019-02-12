@@ -16,7 +16,7 @@ return new \Phalcon\Config([
 
     'database' => [
         'adapter'  => 'Mysql',
-        'host'     => '172.17.0.2',
+        'host'     => '172.17.0.3',
         'username' => 'phalcon',
         'password' => 'secret',
         'dbname'   => 'shop_categories',
@@ -24,7 +24,7 @@ return new \Phalcon\Config([
     ],
 
     'mongodb' => [
-        'host' => 'localhost',
+        'host' => '172.17.0.5',
         'username' => '',
         'password' => '',
         'port' => '27017',
@@ -32,7 +32,7 @@ return new \Phalcon\Config([
     ],
 
     'category_cache' => [
-        'host' => '172.17.0.3',
+        'host' => '172.17.0.4',
         'port' => 6379,
         'auth' => '',
         'persistent' => true,
@@ -41,7 +41,7 @@ return new \Phalcon\Config([
     ],
 
     'attributes_cache' => [
-        'host' => '172.17.0.3',
+        'host' => '172.17.0.4',
         'port' => 6379,
         'auth' => '',
         'persistent' => true,
@@ -86,10 +86,12 @@ return new \Phalcon\Config([
         ],
 
         // Category order validation config
-        'minCategoryOrder' => 0,
-        'maxCategoryOrder' => 999,
-        'allowFloat' => false,
-        'allowSign' => false
+        'categoryOrderValidationConfig' => [
+            'minCategoryOrder' => 0,
+            'maxCategoryOrder' => 999,
+            'allowFloat' => false,
+            'allowSign' => false
+        ]
     ],
 
     /**
