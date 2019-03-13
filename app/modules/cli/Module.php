@@ -4,6 +4,9 @@ namespace Shop_categories\Modules\Cli;
 use Phalcon\DiInterface;
 use Phalcon\Loader;
 use Phalcon\Mvc\ModuleDefinitionInterface;
+use Shop_categories\Modules\Cli\Services\IndexingService;
+use Shop_categories\Services\AttributesService;
+use Shop_categories\Services\CategoryService;
 
 class Module implements ModuleDefinitionInterface
 {
@@ -30,5 +33,23 @@ class Module implements ModuleDefinitionInterface
      */
     public function registerServices(DiInterface $di)
     {
+        // Register category service as a service
+        $di->set('category', function (string $vendorId){
+            $categoryService = new CategoryService();
+            $categoryService::setVendorId($vendorId);
+            return $categoryService;
+        });
+
+        // Register attributes service as a service
+        $di->set('attributes', function (string $categoryId){
+            $attributesService = new AttributesService();
+            $attributesService::setCategoryId($categoryId);
+            return $attributesService;
+        });
+
+        // Register indexing service as a service
+        $di->set('indexing', function() {
+            return new IndexingService();
+        });
     }
 }

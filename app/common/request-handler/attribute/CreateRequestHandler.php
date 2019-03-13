@@ -9,11 +9,11 @@ namespace Shop_categories\RequestHandler\Attribute;
 
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
-use Shop_categories\Controllers\ControllerBase;
+use Shop_categories\Controllers\BaseController;
 use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\RequestHandler\RequestHandlerInterface;
 
-class CreateRequestHandler extends ControllerBase implements RequestHandlerInterface
+class CreateRequestHandler extends BaseController implements RequestHandlerInterface
 {
     /** @var string $name */
     private $name;
@@ -135,7 +135,6 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         return $validator->validate([
             'name' => $this->getName(),
             'categoryId' => $this->getCategoryId(),
-            'conditions' => $this->getConditions(),
             'values' => $this->getValues()
         ]);
     }
@@ -196,7 +195,6 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         return [
             'attribute_name' => $this->getName(),
             'attribute_category_id' => $this->getCategoryId(),
-            'attribute_conditions' => $this->getConditions(),
             'attribute_values' => $this->getValues()
         ];
     }

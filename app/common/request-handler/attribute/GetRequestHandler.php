@@ -9,11 +9,11 @@ namespace Shop_categories\RequestHandler\Attribute;
 
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
-use Shop_categories\Controllers\ControllerBase;
+use Shop_categories\Controllers\BaseController;
 use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\RequestHandler\RequestHandlerInterface;
 
-class GetRequestHandler extends ControllerBase implements RequestHandlerInterface
+class GetRequestHandler extends BaseController implements RequestHandlerInterface
 {
     /** @var string $categoryId */
     private $categoryId;

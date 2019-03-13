@@ -10,13 +10,14 @@ namespace Shop_categories\Repositories;
 use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
 use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\Interfaces\CategoryDataSourceInterface;
+use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
 use Shop_categories\Models\Category;
 
 class CategoryRepository implements CategoryDataSourceInterface
 {
     /**
      * @param bool $new
-     * @return Category
+     * @return Category|AdjacencyListModelBehavior
      */
     public static function getModel(bool $new = false): Category
     {
@@ -131,6 +132,8 @@ class CategoryRepository implements CategoryDataSourceInterface
      * @param string $categoryId
      * @param string $vendorId
      * @return array
+     *
+     * @throws \Exception
      */
     public function getDescendants(string $categoryId, string $vendorId): array
     {
@@ -152,6 +155,8 @@ class CategoryRepository implements CategoryDataSourceInterface
      * @param string $categoryId
      * @param string $vendorId
      * @return array|bool
+     *
+     * @throws \Exception
      */
     public function getParents(string $categoryId, string $vendorId): array
     {
@@ -175,6 +180,8 @@ class CategoryRepository implements CategoryDataSourceInterface
      * @param string $categoryId
      * @param string $vendorId
      * @return array|bool
+     *
+     * @throws \Exception
      */
     public function getParent(string $categoryId, string $vendorId): array
     {
@@ -214,6 +221,17 @@ class CategoryRepository implements CategoryDataSourceInterface
     }
 
     /**
+     * Return slugged category name
+     * Ex.: My Category -> my_category
+     * @param string $categoryName
+     * @return string
+     */
+    private function toTinyName(string $categoryName)
+    {
+        return strtolower(str_replace(' ', '_', trim($categoryName)));
+    }
+
+    /**
      * Create new category
      *
      * @param array $data
@@ -223,6 +241,7 @@ class CategoryRepository implements CategoryDataSourceInterface
     public function create(array $data): Category
     {
         $category = self::getModel(true);
+        $data['categoryTinyName'] = $this->toTinyName($data['categoryName']);
         if (!$category->save($data, Category::WHITE_LIST)) {
             throw new ArrayOfStringsException($category->getMessages(), 400);
         }
@@ -247,11 +266,25 @@ class CategoryRepository implements CategoryDataSourceInterface
         return $category;
     }
 
+    /**
+     * Delete category
+     *
+     * @param string $categoryId
+     * @param string $vendorId
+     * @return bool
+     *
+     * @throws \Exception
+     */
     public function delete(string $categoryId, string $vendorId)
     {
         /** @noinspection PhpUndefinedMethodInspection */
         return self::getModel()->deleteCascade($categoryId, [
             'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);
+    }
+
+    public function autoComplete(string $keyword): array
+    {
+        return [];
     }
 }

@@ -102,36 +102,57 @@ $di->setShared('modelsMetadata', function () {
 });
 
 /**
+ * Register Redis as a service
+ */
+$di->setShared('cache', function(int $database = 0) {
+    $config = $this->getConfig()->cache;
+    $redisInstance = new Ehann\RedisRaw\PhpRedisAdapter();
+    $redisInstance->connect(
+        $config->category_cache->host,
+        $config->category_cache->port,
+        $database,
+        $config->category_cache->auth
+    );
+    return ['adapter' => $redisInstance, 'instance' => $redisInstance->redis];
+});
+
+/**
  * Register cache service
  */
 $di->setShared('category_cache', function () {
-    $config = $this->getConfig()->category_cache;
-    $cacheService = new Redis();
-    if (!empty($config->auth)) {
-        $cacheService->auth($config->auth);
-    }
-    $cacheService->pconnect(
-        $config->host,
-        $config->port
-    );
-    $cacheService->select($config->database);
-    return $cacheService;
+    $config = $this->getConfig()->cache->category_cache;
+    return $this->getCache($config->database)['instance'];
+});
+
+$di->setShared('category_cache_index', function () {
+    $config = $this->getConfig()->cache->category_cache;
+    return new \Ehann\RediSearch\Index($this->get('cache', [$config->database])['adapter'],
+        \Shop_categories\Enums\CacheIndexesEnum::CATEGORY_INDEX_NAME);
+});
+
+$di->setShared('category_cache_suggest', function() {
+    $config = $this->getConfig()->cache->category_cache;
+    return new \Ehann\RediSearch\Suggestion($this->getCache($config->database, true)['adapter'],
+        \Shop_categories\Enums\CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });
 
 $di->setShared('attributes_cache', function () {
-    $config = $this->getConfig()->attributes_cache;
-    $cacheService = new Redis();
-    if (!empty($config->auth)) {
-        $cacheService->auth($config->auth);
-    }
-    $cacheService->pconnect(
-        $config->host,
-        $config->port
-    );
-    $cacheService->select($config->database);
-    return $cacheService;
+    $config = $this->getConfig()->cache->attributes_cache;
+    return $this->getCache($config->database)['instance'];
 });
 
 $di->setShared('logger', function() {
     return new \Shop_categories\Logger\ApplicationLogger();
+});
+
+/** RabbitMQ service */
+$di->setShared('queue', function () {
+    $config = $this->getConfig();
+    $connection = new \PhpAmqpLib\Connection\AMQPStreamConnection(
+        $config->rabbitmq->host,
+        $config->rabbitmq->port,
+        $config->rabbitmq->username,
+        $config->rabbitmq->password
+    );
+    return $connection->channel();
 });

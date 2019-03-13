@@ -206,13 +206,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
         $query = $this->getOwner()->getReadConnection()->query($queryBuilder->getQuery(), $queryBuilder->getBinds());
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
-        $result = $query->fetchAll();
-
-        if (count($result)) {
-            return $result;
-        }
-
-        throw new \Exception("No roots found", 404);
+        return $query->fetchAll();
     }
 
     /**
@@ -349,12 +343,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
         $query = $this->getOwner()->getReadConnection()->query($queryBuilder->getQuery(), $queryBuilder->getBinds());
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
-        $result = $query->fetchAll();
-        if (count($result)) {
-            return $result;
-        }
-
-        throw new \Exception("Item not found or maybe deleted", 404);
+        return $query->fetchAll();
     }
 
     /**

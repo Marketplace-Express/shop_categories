@@ -7,7 +7,7 @@
 
 namespace Shop_categories\Tests\Controllers;
 
-use Shop_categories\Controllers\ControllerBase;
+use Shop_categories\Controllers\BaseController;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class ControllerBaseTest extends \UnitTestCase
@@ -20,7 +20,7 @@ class ControllerBaseTest extends \UnitTestCase
 
     public function getControllerMock(...$methods)
     {
-        return $this->getMockBuilder(ControllerBase::class)
+        return $this->getMockBuilder(BaseController::class)
             ->setMethods($methods)
             ->getMock();
     }
@@ -103,7 +103,7 @@ class ControllerBaseTest extends \UnitTestCase
      */
     public function testShowPublicColumns($actual, $expected)
     {
-        /** @var ControllerBase|MockObject $controllerMock */
+        /** @var BaseController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
         $this->assertEquals($expected, $controllerMock->showPublicColumns($actual));
