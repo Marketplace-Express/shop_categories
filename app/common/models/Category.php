@@ -3,6 +3,7 @@
 namespace Shop_categories\Models;
 
 use Phalcon\Config;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\AlphaNumericValidator;
 use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
@@ -415,7 +416,7 @@ class Category extends Base
                     }
                     return true;
                 },
-                'message' => 'We only support English category name'
+                'message' => 'We only support English language'
             ])
         );
 
@@ -429,6 +430,18 @@ class Category extends Base
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters'
+            ])
+        );
+
+        $validator->add(
+            ['categoryName', 'categoryVendorId'],
+            new Validation\Validator\Uniqueness([
+                'model' => self::model(true),
+                'convert' => function ($values) {
+                    $values['categoryVendorId'] = $this->categoryVendorId;
+                    return $values;
+                },
+                'message' => 'Category name already exists'
             ])
         );
 

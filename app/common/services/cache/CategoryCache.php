@@ -8,14 +8,12 @@
 namespace Shop_categories\Services\Cache;
 
 use Ehann\RediSearch\RediSearchRedisClient;
-use Ehann\RediSearch\Suggestion;
 use Shop_categories\Enums\QueueNamesEnum;
 use Shop_categories\Helpers\ArrayHelper;
 use Shop_categories\Interfaces\CategoryDataSourceInterface;
 use Shop_categories\RequestHandler\Queue\QueueRequestHandler;
 use Shop_categories\Services\Cache\Utils\CategoryCacheUtils;
 use Shop_categories\Services\CategoryService;
-use Wamania\Snowball\English;
 
 class CategoryCache implements CategoryDataSourceInterface
 {
@@ -49,8 +47,8 @@ class CategoryCache implements CategoryDataSourceInterface
      */
     public static function establishCacheConnection(): void
     {
-        self::$categoryCacheInstance = \Phalcon\Di::getDefault()->getShared('category_cache');
-        self::$cacheIndexInstance = \Phalcon\Di::getDefault()->getShared('category_cache_index');
+        self::$categoryCacheInstance = \Phalcon\Di::getDefault()->getShared('categoryCache');
+        self::$cacheIndexInstance = \Phalcon\Di::getDefault()->getShared('categoryCacheIndex');
     }
 
     /**
@@ -59,14 +57,6 @@ class CategoryCache implements CategoryDataSourceInterface
     public function getCategoryCacheUtils()
     {
         return $this->categoryCacheUtils ?? $this->categoryCacheUtils = new CategoryCacheUtils();
-    }
-
-    /**
-     * @return Suggestion
-     */
-    private function getSuggestionInstance(): Suggestion
-    {
-        return \Phalcon\Di::getDefault()->get('category_cache_suggest');
     }
 
     /**
@@ -230,19 +220,10 @@ class CategoryCache implements CategoryDataSourceInterface
             ->setMethod('add')
             ->setData([
                 'id' => $category['categoryId'],
+                'vendorId' => $category['categoryVendorId'],
                 'name' => $category['categoryName'],
                 'url' => $category['categoryUrl']
             ])
             ->sendAsync();
-    }
-
-    /**
-     * @param string $keyword
-     * @return array
-     */
-    public function autoComplete(string $keyword): array
-    {
-        $suggestion = $this->getSuggestionInstance();
-        return $suggestion->get($keyword);
     }
 }

@@ -106,7 +106,7 @@ $di->setShared('modelsMetadata', function () {
  */
 $di->setShared('cache', function(int $database = 0) {
     $config = $this->getConfig()->cache;
-    $redisInstance = new Ehann\RedisRaw\PhpRedisAdapter();
+    $redisInstance = new \Shop_categories\Redis\Connector();
     $redisInstance->connect(
         $config->category_cache->host,
         $config->category_cache->port,
@@ -119,24 +119,24 @@ $di->setShared('cache', function(int $database = 0) {
 /**
  * Register cache service
  */
-$di->setShared('category_cache', function () {
+$di->setShared('categoryCache', function () {
     $config = $this->getConfig()->cache->category_cache;
     return $this->getCache($config->database)['instance'];
 });
 
-$di->setShared('category_cache_index', function () {
+$di->setShared('categoryCacheIndex', function () {
     $config = $this->getConfig()->cache->category_cache;
     return new \Ehann\RediSearch\Index($this->get('cache', [$config->database])['adapter'],
         \Shop_categories\Enums\CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });
 
-$di->setShared('category_cache_suggest', function() {
+$di->setShared('categoryCacheSuggest', function() {
     $config = $this->getConfig()->cache->category_cache;
     return new \Ehann\RediSearch\Suggestion($this->getCache($config->database, true)['adapter'],
         \Shop_categories\Enums\CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });
 
-$di->setShared('attributes_cache', function () {
+$di->setShared('attributesCache', function () {
     $config = $this->getConfig()->cache->attributes_cache;
     return $this->getCache($config->database)['instance'];
 });
@@ -154,5 +154,14 @@ $di->setShared('queue', function () {
         $config->rabbitmq->username,
         $config->rabbitmq->password
     );
-    return $connection->channel();
+    $channel = $connection->channel();
+    $channel->queue_declare($config->rabbitmq->sync_queue->queue_name,
+        false, false, false, false, false,
+        new \PhpAmqpLib\Wire\AMQPTable(['x-message-ttl' => $config->rabbitmq->sync_queue->message_ttl])
+    );
+    $channel->queue_declare($config->rabbitmq->async_queue->queue_name,
+        false, false, false, false, false,
+        new \PhpAmqpLib\Wire\AMQPTable(['x-message-ttl' => $config->rabbitmq->async_queue->message_ttl])
+    );
+    return $channel;
 });

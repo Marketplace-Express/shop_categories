@@ -18,17 +18,9 @@ class SearchRequestHandler extends BaseController implements RequestHandlerInter
 {
 
     /** @var string */
-    private $keyword;
+    protected $keyword;
 
-    private $errorMessages;
-
-    /**
-     * @return string
-     */
-    public function getKeyword()
-    {
-        return $this->keyword;
-    }
+    protected $errorMessages;
 
     /**
      * @param string $keyword
@@ -44,12 +36,14 @@ class SearchRequestHandler extends BaseController implements RequestHandlerInter
     public function validate(): Group
     {
         $validator = new Validation();
+
         $validator->add(
             'keyword',
             new Validation\Validator\PresenceOf()
         );
+
         return $validator->validate([
-            'keyword' => $this->getKeyword()
+            'keyword' => $this->keyword
         ]);
     }
 
@@ -58,7 +52,7 @@ class SearchRequestHandler extends BaseController implements RequestHandlerInter
      */
     public function isValid(): bool
     {
-        $messages = $this->validate();
+        $messages = self::validate();
         if (count($messages)) {
             foreach ($messages as $message) {
                 $this->errorMessages[$message->getField()] = $message->getMessage();
@@ -68,9 +62,14 @@ class SearchRequestHandler extends BaseController implements RequestHandlerInter
         return true;
     }
 
+    /**
+     * @param string $message
+     *
+     * @throws \Exception
+     */
     public function notFound($message = 'Not Found')
     {
-        // TODO: Implement notFound() method.
+        throw new \Exception($message, 404);
     }
 
     /**
@@ -80,8 +79,10 @@ class SearchRequestHandler extends BaseController implements RequestHandlerInter
      */
     public function invalidRequest($message = null)
     {
-        http_response_code(400);
-        throw new ArrayOfStringsException($this->errorMessages);
+        if (is_null($message)) {
+            $message = $this->errorMessages;
+        }
+        throw new ArrayOfStringsException($message, 400);
     }
 
     /**
@@ -104,7 +105,7 @@ class SearchRequestHandler extends BaseController implements RequestHandlerInter
     public function toArray(): array
     {
         return [
-            'keyword' => $this->getKeyword()
+            'keyword' => $this->keyword
         ];
     }
 }

@@ -47,22 +47,14 @@ abstract class Base extends Model implements BaseModelInterface
      * @param null $filter
      * @return array
      */
-    public function getMessages($filter = null)
+    public function getMessages($filter = null): array
     {
-        // TODO: TO BE ENHANCED LATER
         $messages = [];
-        $multiErrorFields = [];
         foreach (parent::getMessages() as $message) {
-            $multiErrorFields[] = $message->getField();
-        }
-        $multiErrorFields = array_diff_assoc($multiErrorFields, array_unique($multiErrorFields));
-
-        foreach (parent::getMessages() as $message) {
-            if (in_array($message->getField(), $multiErrorFields)) {
-                $messages[$message->getField()][] = $message->getMessage();
-            } else {
-                $messages[$message->getField()] = $message->getMessage();
+            if (is_array($field = $message->getField())) {
+                $field = $field[0];
             }
+            $messages[$field] = $message->getMessage();
         }
         return $messages;
     }

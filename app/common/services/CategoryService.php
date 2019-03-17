@@ -35,7 +35,7 @@ class CategoryService extends AbstractService
      * @return \Shop_categories\Repositories\CategoryRepository|Cache\CategoryCache
      * @throws \Exception
      */
-    private function getCategoryDataSource()
+    public static function getDataSource()
     {
         try {
             return self::getCategoryCache();
@@ -64,7 +64,7 @@ class CategoryService extends AbstractService
      */
     public function getRoots()
     {
-        return self::getCategoryDataSource()->getRoots(self::getVendorId());
+        return self::getDataSource()->getRoots(self::getVendorId());
     }
 
     /**
@@ -73,7 +73,7 @@ class CategoryService extends AbstractService
      */
     public function getAll(): array
     {
-        return self::getCategoryDataSource()->getAll(self::getVendorId());
+        return self::getDataSource()->getAll(self::getVendorId());
     }
 
 
@@ -85,7 +85,7 @@ class CategoryService extends AbstractService
     public function getCategory($categoryId): array
     {
         self::setCategoryId($categoryId);
-        if ($category = self::getCategoryDataSource()->getCategory($categoryId, self::getVendorId())) {
+        if ($category = self::getDataSource()->getCategory($categoryId, self::getVendorId())) {
             return $category;
         }
 
@@ -100,7 +100,7 @@ class CategoryService extends AbstractService
     public function getDescendants($categoryId): array
     {
         self::setCategoryId($categoryId);
-        return self::getCategoryDataSource()->getDescendants($categoryId, self::getVendorId());
+        return self::getDataSource()->getDescendants($categoryId, self::getVendorId());
     }
 
     /**
@@ -111,7 +111,7 @@ class CategoryService extends AbstractService
     public function getChildren($categoryId): array
     {
         self::setCategoryId($categoryId);
-        return self::getCategoryDataSource()->getChildren($categoryId, self::getVendorId());
+        return self::getDataSource()->getChildren($categoryId, self::getVendorId());
     }
 
     /**
@@ -122,7 +122,7 @@ class CategoryService extends AbstractService
     public function getParent($categoryId): array
     {
         self::setCategoryId($categoryId);
-        return self::getCategoryDataSource()->getParent($categoryId, self::getVendorId());
+        return self::getDataSource()->getParent($categoryId, self::getVendorId());
     }
 
     /**
@@ -133,7 +133,7 @@ class CategoryService extends AbstractService
     public function getParents($categoryId): array
     {
         self::setCategoryId($categoryId);
-        return self::getCategoryDataSource()->getParents($categoryId, self::getVendorId());
+        return self::getDataSource()->getParents($categoryId, self::getVendorId());
     }
 
     /**

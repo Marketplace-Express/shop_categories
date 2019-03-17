@@ -13,6 +13,8 @@ abstract class AbstractService extends BaseService
     /** @var string $categoryId */
     protected static $categoryId;
 
+    abstract static function getDataSource();
+
     /**
      * @return string
      */

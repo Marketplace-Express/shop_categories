@@ -9,8 +9,10 @@ namespace Shop_categories\RequestHandler\Queue;
 
 
 use Phalcon\Di\Injectable;
+use Phalcon\Validation;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
+use Shop_categories\Exceptions\ArrayOfStringsException;
 
 class QueueRequestHandler extends Injectable
 {
@@ -113,6 +115,36 @@ class QueueRequestHandler extends Injectable
     }
 
     /**
+     * @return bool
+     * @throws ArrayOfStringsException
+     */
+    private function validate()
+    {
+        $validator = new Validation();
+
+        $validator->add(
+            ['queueName', 'service', 'method'],
+            new Validation\Validator\PresenceOf()
+        );
+
+        $messages = $validator->validate([
+            'queueName' => $this->queueName,
+            'service' => $this->service,
+            'method' => $this->method
+        ]);
+
+        if (!count($messages)) {
+            return true;
+        }
+
+        $errors = [];
+        foreach ($messages as $message) {
+            $errors[$message->getField()] = $message->getMessage();
+        }
+        throw new ArrayOfStringsException($errors, 400);
+    }
+
+    /**
      * Initialize consumer for Sync requests
      * @throws \Exception
      */
@@ -162,9 +194,13 @@ class QueueRequestHandler extends Injectable
      *
      * @throws \ErrorException
      * @throws \Exception
+     * @throws ArrayOfStringsException
      */
     public function sendSync()
     {
+        // validate request
+        $this->validate();
+
         $this->initializeConsumer();
         $message = new AMQPMessage(json_encode([
             'service' => $this->service,
@@ -188,8 +224,14 @@ class QueueRequestHandler extends Injectable
         return $this->response;
     }
 
+    /**
+     * @throws ArrayOfStringsException
+     */
     public function sendAsync()
     {
+        // validate request
+        $this->validate();
+
         $message = new AMQPMessage(json_encode([
             'service' => $this->service,
             'service_args' => $this->serviceArgs,

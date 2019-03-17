@@ -32,20 +32,21 @@ class IndexingService extends Injectable
 
     public function __construct()
     {
-        $this->redis = $this->getDI()->get('category_cache');
-        $this->redisIndexing = $this->getDI()->get('category_cache_index');
-        $this->redisSuggesting = $this->getDI()->get('category_cache_suggest');
+        $this->redis = $this->getDI()->get('categoryCache');
+        $this->redisIndexing = $this->getDI()->get('categoryCacheIndex');
+        $this->redisSuggesting = $this->getDI()->get('categoryCacheSuggest');
     }
 
     /**
      * Create an index
      *
      */
-    public function create()
+    private function create()
     {
         $this->redisIndexing
+            ->addTextField('vendor_id', 1.0, false, true)
             ->addTextField('name')
-            ->addTextField('url')
+            ->addTextField('url', 1.0, false, true)
             ->create();
     }
 
@@ -53,22 +54,23 @@ class IndexingService extends Injectable
      * Add document to index
      *
      * @param string $docId
+     * @param string $vendorId
      * @param string $name
      * @param string $url
      *
      * @throws \Ehann\RediSearch\Exceptions\FieldNotInSchemaException
      * @throws \Exception
      */
-    public function add(string $docId, string $name, ?string $url)
+    public function add(string $docId, string $vendorId, string $name, ?string $url)
     {
-        if (empty($docId) || empty($name)) {
+        if (empty($docId) || empty($name) || empty($vendorId)) {
             throw new \Exception('Missing arguments');
         }
         if (!$this->redis->exists($this->indexName))  {
             $this->create();
         }
         $document = new DocumentMapper($docId);
-        $document = $document->makeDocument($name, $url);
+        $document = $document->makeDocument($vendorId, $name, $url);
         $this->redisIndexing->add($document);
         $this->redisSuggesting->add($name, 1.0);
     }
@@ -86,20 +88,5 @@ class IndexingService extends Injectable
             throw new \Exception('Missing argument');
         }
         $this->redisIndexing->delete($id);
-    }
-
-    /**
-     * Drop an index
-     *
-     * @param array $params
-     *
-     * @throws \Exception
-     */
-    public function drop(array $params)
-    {
-        if (empty($params)) {
-            throw new \Exception('Missing arguments');
-        }
-        $this->redisIndexing->drop();
     }
 }

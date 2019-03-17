@@ -3,8 +3,6 @@
  * Modified: prepend directory path of current file, because of this file own different ENV under between Apache and command line.
  * NOTE: please remove this comment.
  */
-defined('BASE_PATH') || define('BASE_PATH', getenv('BASE_PATH') ?: realpath(dirname(__FILE__) . '/../..'));
-defined('APP_PATH') || define('APP_PATH', BASE_PATH . '/app');
 defined('MISC_PATH') || define('MISC_PATH', APP_PATH . '/misc');
 
 return new \Phalcon\Config([
@@ -56,7 +54,15 @@ return new \Phalcon\Config([
         'host' => '172.17.0.3',
         'port' => '5672',
         'username' => 'guest',
-        'password' => 'guest'
+        'password' => 'guest',
+        'sync_queue' => [
+            'queue_name' => 'categories-sync',
+            'message_ttl' => 10000
+        ],
+        'async_queue' => [
+            'queue_name' => 'categories-async',
+            'message_ttl' => 10000
+        ]
     ],
 
     'application' => [

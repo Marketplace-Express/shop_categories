@@ -23,6 +23,4 @@ interface CategoryDataSourceInterface
     public function getParent(string $categoryId, string $vendorId): array;
 
     public function getAll(string $vendorId): array;
-
-    public function autoComplete(string $keyword): array;
 }

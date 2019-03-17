@@ -16,10 +16,10 @@ class AttributesService extends AbstractService
      * @return \Shop_categories\Repositories\AttributesRepository|Cache\AttributesCache
      * @throws \Exception
      */
-    private function getAttributesDataSource()
+    private function getDataSource()
     {
         try {
-            return self::getAttributesCacheService();
+            return self::getAttributesCache();
         } catch (RedisException $exception) {
             return self::getAttributesRepository();
         } catch (\Throwable $exception) {
@@ -37,7 +37,7 @@ class AttributesService extends AbstractService
      */
     public function getAttribute(string $attributeId): array
     {
-        return $this->getAttributesDataSource()->getAttribute($attributeId);
+        return $this->getDataSource()->getAttribute($attributeId);
     }
 
     /**
@@ -50,7 +50,7 @@ class AttributesService extends AbstractService
      */
     public function getAll(string $categoryId)
     {
-        return self::getAttributesDataSource()->getAll($categoryId);
+        return self::getDataSource()->getAll($categoryId);
     }
 
     /**
@@ -68,7 +68,7 @@ class AttributesService extends AbstractService
         $attribute = self::getAttributesRepository()->create($data);
         $attribute = $attribute->toApiArray();
         try {
-            self::getAttributesCacheService()->updateCache($attribute['attribute_id'], $attribute['attribute_category_id'], $attribute);
+            self::getAttributesCache()->updateCache($attribute['attribute_id'], $attribute['attribute_category_id'], $attribute);
         } catch (\RedisException $exception) {
             // do nothing
         }
@@ -88,7 +88,7 @@ class AttributesService extends AbstractService
     {
         $attribute = self::getAttributesRepository()->update($attributeId, $data);
         try {
-            self::getAttributesCacheService()->updateCache($attributeId, $attribute->attribute_category_id, $attribute->toApiArray());
+            self::getAttributesCache()->updateCache($attributeId, $attribute->attribute_category_id, $attribute->toApiArray());
         } catch (\RedisException $exception) {
             // do nothing
         }
@@ -107,7 +107,7 @@ class AttributesService extends AbstractService
     {
         if (self::getAttributesRepository()->delete($attributeId)) {
             try {
-                self::getAttributesCacheService()->invalidateCache($attributeId);
+                self::getAttributesCache()->invalidateCache($attributeId);
             } catch (\RedisException $exception) {
                 // do nothing
             }
@@ -131,9 +131,9 @@ class AttributesService extends AbstractService
     public function updateValues(string $attributeId, array $values)
     {
         if ($attribute = self::getAttributesRepository()->updateValues($attributeId, $values)) {
-            $categoryId = self::getAttributesCacheService()->getAttribute($attributeId)['attribute_category_id'];
+            $categoryId = self::getAttributesCache()->getAttribute($attributeId)['attribute_category_id'];
             try {
-                self::getAttributesCacheService()->updateCache($attributeId, $categoryId, $attribute->toApiArray());
+                self::getAttributesCache()->updateCache($attributeId, $categoryId, $attribute->toApiArray());
             } catch (\RedisException $exception) {
                 // do nothing
             }
@@ -152,6 +152,6 @@ class AttributesService extends AbstractService
      */
     public function getValues(string $attributeId)
     {
-        return self::getAttributesDataSource()->getValues($attributeId);
+        return self::getDataSource()->getValues($attributeId);
     }
 }

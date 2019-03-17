@@ -9,6 +9,7 @@ namespace Shop_categories\Modules\Api\Controllers;
 
 
 use Shop_categories\Controllers\BaseController;
+use Shop_categories\RequestHandler\Category\AutocompleteRequestHandler;
 use Shop_categories\RequestHandler\Category\SearchRequestHandler;
 use Shop_categories\Services\SearchService;
 
@@ -31,14 +32,14 @@ class SearchController extends BaseController
     public function autocompleteAction()
     {
         try {
-            /** @var SearchRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->queryStringToObject($this->request->getQuery()), new SearchRequestHandler());
+            /** @var AutocompleteRequestHandler $request */
+            $request = $this->getJsonMapper()->map($this->queryStringToObject($this->request->getQuery()), new AutocompleteRequestHandler());
             if (!$request->isValid()) {
                 $request->invalidRequest();
             }
             $request->successRequest($this->getService()->autocomplete($request->toArray()));
         } catch (\Throwable $exception) {
-
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
@@ -48,12 +49,15 @@ class SearchController extends BaseController
     public function searchAction()
     {
         try {
-            /** @var SearchRequestHandler $request */
+            /** @var AutocompleteRequestHandler $request */
             $request = $this->getJsonMapper()->map($this->queryStringToObject($this->request->getQuery()), new SearchRequestHandler());
             if (!$request->isValid()) {
                 $request->invalidRequest();
             }
             $result = $this->getService()->search($request->toArray());
+            if (empty($result)) {
+                $request->notFound();
+            }
             $request->successRequest($result);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);

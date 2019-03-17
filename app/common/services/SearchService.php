@@ -8,28 +8,32 @@
 namespace Shop_categories\Services;
 
 
+use Ehann\RediSearch\Index;
+use Ehann\RediSearch\Suggestion;
+
 class SearchService extends AbstractService
 {
     /**
      * Get search data source
      *
-     * @return \Shop_categories\Repositories\CategoryRepository|Cache\CategoryCache
-     * @throws \Exception
+     * @param string $instance
+     * @return Suggestion|Index
      *
+     * @throws \Exception
      */
-    public static function getDataSource()
+    public static function getDataSource($instance = 'indexing')
     {
-        try {
-            return parent::getCategoryCache();
-        } catch (\RedisException $exception) {
-            return parent::getCategoryRepository();
-        } catch (\Throwable $exception) {
-            throw new \Exception($exception->getMessage() ?: 'No data source available for search');
+        if ($instance == 'indexing') {
+            return \Phalcon\Di::getDefault()->get('categoryCacheIndex');
+        } elseif ($instance == 'suggestion') {
+            return \Phalcon\Di::getDefault()->get('categoryCacheSuggest');
+        } else {
+            throw new \Exception('No data source is available');
         }
     }
 
     /**
-     * Search for categories by keyword
+     * Autocomplete search
      *
      * @param array $searchParams
      * @return array
@@ -38,6 +42,23 @@ class SearchService extends AbstractService
      */
     public function autocomplete(array $searchParams = []): array
     {
-        return self::getDataSource()->autoComplete($searchParams['keyword']);
+        return ['results' => self::getDataSource('suggestion')->get($searchParams['keyword'], true)];
+    }
+
+    /**
+     * Categories search
+     *
+     * @param array $searchParams
+     * @return array
+     *
+     * @throws \Ehann\RedisRaw\Exceptions\RedisRawCommandException
+     * @throws \Exception
+     */
+    public function search(array $searchParams = []): array
+    {
+        return [
+            'results' => self::getDataSource()->search($searchParams['keyword'], true)
+                ->getDocuments()
+        ];
     }
 }

@@ -282,9 +282,4 @@ class CategoryRepository implements CategoryDataSourceInterface
             'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);
     }
-
-    public function autoComplete(string $keyword): array
-    {
-        return [];
-    }
 }
