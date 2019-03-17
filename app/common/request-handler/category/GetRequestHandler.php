@@ -9,10 +9,10 @@
 namespace Shop_categories\RequestHandler\Category;
 
 use Phalcon\Validation\Message\Group;
-use Shop_categories\Controllers\ControllerBase;
+use Shop_categories\Controllers\BaseController;
 use Shop_categories\RequestHandler\RequestHandlerInterface;
 
-class GetRequestHandler extends ControllerBase implements RequestHandlerInterface
+class GetRequestHandler extends BaseController implements RequestHandlerInterface
 {
     /** Validate request fields using \Phalcon\Validation\Validator
      * @return Group

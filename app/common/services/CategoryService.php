@@ -8,7 +8,6 @@
 namespace Shop_categories\Services;
 
 use RedisException;
-use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\Models\Category;
 
 class CategoryService extends AbstractService
@@ -36,15 +35,27 @@ class CategoryService extends AbstractService
      * @return \Shop_categories\Repositories\CategoryRepository|Cache\CategoryCache
      * @throws \Exception
      */
-    private function getCategoryDataSource()
+    public static function getDataSource()
     {
         try {
             return self::getCategoryCache();
         } catch (RedisException $exception) {
             return self::getCategoryRepository();
         } catch (\Throwable $exception) {
-            throw new \Exception('No data source available for categories');
+            throw new \Exception($exception->getMessage() ?: 'No data source available for categories');
         }
+    }
+
+    /**
+     * Get stop words
+     * @return array
+     */
+    public static function getStopWords(): array
+    {
+        if (file_exists($stopWords = \Phalcon\Di::getDefault()->getConfig()->application->stopWords)) {
+            return json_decode(file_get_contents($stopWords), true);
+        }
+        return [];
     }
 
     /**
@@ -53,11 +64,7 @@ class CategoryService extends AbstractService
      */
     public function getRoots()
     {
-        if ($roots = self::getCategoryDataSource()->getRoots(self::getVendorId())) {
-            return $roots;
-        }
-
-        throw new \Exception('No roots found', 404);
+        return self::getDataSource()->getRoots(self::getVendorId());
     }
 
     /**
@@ -66,11 +73,7 @@ class CategoryService extends AbstractService
      */
     public function getAll(): array
     {
-        if ($allCategories = self::getCategoryDataSource()->getAll(self::getVendorId())) {
-            return $allCategories;
-        }
-
-        throw new \Exception('No categories found', 404);
+        return self::getDataSource()->getAll(self::getVendorId());
     }
 
 
@@ -82,7 +85,7 @@ class CategoryService extends AbstractService
     public function getCategory($categoryId): array
     {
         self::setCategoryId($categoryId);
-        if ($category = self::getCategoryDataSource()->getCategory($categoryId, self::getVendorId())) {
+        if ($category = self::getDataSource()->getCategory($categoryId, self::getVendorId())) {
             return $category;
         }
 
@@ -97,7 +100,7 @@ class CategoryService extends AbstractService
     public function getDescendants($categoryId): array
     {
         self::setCategoryId($categoryId);
-        return self::getCategoryDataSource()->getDescendants($categoryId, self::getVendorId());
+        return self::getDataSource()->getDescendants($categoryId, self::getVendorId());
     }
 
     /**
@@ -108,7 +111,7 @@ class CategoryService extends AbstractService
     public function getChildren($categoryId): array
     {
         self::setCategoryId($categoryId);
-        return self::getCategoryDataSource()->getChildren($categoryId, self::getVendorId());
+        return self::getDataSource()->getChildren($categoryId, self::getVendorId());
     }
 
     /**
@@ -119,7 +122,7 @@ class CategoryService extends AbstractService
     public function getParent($categoryId): array
     {
         self::setCategoryId($categoryId);
-        return self::getCategoryDataSource()->getParent($categoryId, self::getVendorId());
+        return self::getDataSource()->getParent($categoryId, self::getVendorId());
     }
 
     /**
@@ -130,7 +133,7 @@ class CategoryService extends AbstractService
     public function getParents($categoryId): array
     {
         self::setCategoryId($categoryId);
-        return self::getCategoryDataSource()->getParents($categoryId, self::getVendorId());
+        return self::getDataSource()->getParents($categoryId, self::getVendorId());
     }
 
     /**
@@ -141,13 +144,14 @@ class CategoryService extends AbstractService
      */
     public function create(array $data): array
     {
-        $category = self::getCategoryRepository()->create($data);
+        $category = self::getCategoryRepository()->create($data)->toApiArray();
         try {
             self::getCategoryCache()->invalidateCache();
+            self::getCategoryCache()->indexCategory($category);
         } catch (\RedisException $exception) {
             // do nothing
         }
-        return $category->toApiArray();
+        return $category;
     }
 
     /**

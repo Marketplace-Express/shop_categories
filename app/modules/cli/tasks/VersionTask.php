@@ -1,7 +1,7 @@
 <?php
 namespace Shop_categories\Modules\Cli\Tasks;
 
-class VersionTask extends \Phalcon\Cli\Task
+class VersionTask extends MainTask
 {
     public function mainAction()
     {

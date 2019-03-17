@@ -9,7 +9,7 @@ namespace Shop_categories\Tests\Modules\Api\Controllers;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use Shop_categories\Exceptions\ArrayOfStringsException;
-use Shop_categories\Modules\Api\Controllers\IndexController;
+use Shop_categories\Modules\Api\Controllers\CategoryController;
 use Shop_categories\RequestHandler\Category\CreateRequestHandler;
 use Shop_categories\RequestHandler\Category\DeleteRequestHandler;
 use Shop_categories\RequestHandler\Category\GetRequestHandler;
@@ -32,7 +32,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function getControllerMock(...$methods)
     {
-        return $this->getMockBuilder(IndexController::class)
+        return $this->getMockBuilder(CategoryController::class)
             ->disableOriginalConstructor()
             ->setMethods($methods)
             ->getMock();
@@ -82,7 +82,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testRootsAction()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
         /** @var GetRequestHandler|MockObject $getGetRequestHandlerMock */
@@ -104,7 +104,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testRootsActionWithException()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
         /** @var GetRequestHandler|MockObject $getGetRequestHandlerMock */
@@ -126,7 +126,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testDescendantsAction()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('toTree');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -149,7 +149,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testDescendantsActionWithException()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -171,7 +171,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testGetAction()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -193,7 +193,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testGetActionWithException()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -215,7 +215,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testParentAction()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -237,7 +237,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testParentActionWithException()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -259,7 +259,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testParentsAction()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('toTree');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -282,7 +282,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testParentsActionWithException()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -304,7 +304,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testGetAllAction()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('toTree');
         $controllerMock->expects(self::once())->method('toTree')->with([])->willReturn([]);
 
@@ -327,7 +327,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testGetAllActionWithException()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -350,7 +350,7 @@ class IndexControllerTest extends \UnitTestCase
     public function testChildrenAction()
     {
 
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -372,7 +372,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testChildrenActionWithException()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
         /** @var GetRequestHandler|MockObject $getRequestHandlerMock */
@@ -395,7 +395,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testCreateAction()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
         $request = $this->di->get('request');
@@ -422,7 +422,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testCreateActionWithInvalidRequest()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
         $request = $this->di->get('request');
@@ -444,7 +444,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testUpdateAction()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
         $request = $this->di->get('request');
@@ -471,7 +471,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testUpdateActionWithInvalidRequest()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
         $request = $this->di->get('request');
@@ -492,7 +492,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testDeleteAction()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('nothing');
 
         $deleteRequestHandlerMock = $this->getDeleteRequestHandlerMock('successRequest');
@@ -513,7 +513,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function testDeleteActionWithException()
     {
-        /** @var IndexController|MockObject $controllerMock */
+        /** @var CategoryController|MockObject $controllerMock */
         $controllerMock = $this->getControllerMock('handleError');
 
         /** @var CategoryService|MockObject $serviceMock */

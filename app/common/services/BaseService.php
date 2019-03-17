@@ -8,7 +8,6 @@
 namespace Shop_categories\Services;
 
 use Phalcon\Cache\Backend\Redis;
-use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
 use Shop_categories\Repositories\AttributesRepository;
 use Shop_categories\Repositories\CategoryRepository;
 use Shop_categories\Services\Cache\AttributesCache;
@@ -16,8 +15,8 @@ use Shop_categories\Services\Cache\CategoryCache;
 
 class BaseService
 {
-    const CATEGORY_CACHE_CONFIG_KEY = 'category_cache';
-    const ATTRIBUTES_CACHE_CONFIG_KEY = 'attributes_cache';
+    const CATEGORY_CACHE_CONFIG_KEY = 'categoryCache';
+    const ATTRIBUTES_CACHE_CONFIG_KEY = 'attributesCache';
     /**
      * @var Redis $categoryCacheInstance
      */
@@ -76,7 +75,7 @@ class BaseService
      * @return AttributesCache
      * @throws \RedisException
      */
-    public static function getAttributesCacheService(): AttributesCache
+    public static function getAttributesCache(): AttributesCache
     {
         if (!self::$attributesCacheService) {
             self::$attributesCacheService = new AttributesCache();

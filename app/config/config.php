@@ -3,8 +3,7 @@
  * Modified: prepend directory path of current file, because of this file own different ENV under between Apache and command line.
  * NOTE: please remove this comment.
  */
-defined('BASE_PATH') || define('BASE_PATH', getenv('BASE_PATH') ?: realpath(dirname(__FILE__) . '/../..'));
-defined('APP_PATH') || define('APP_PATH', BASE_PATH . '/app');
+defined('MISC_PATH') || define('MISC_PATH', APP_PATH . '/misc');
 
 return new \Phalcon\Config([
     'version' => '1.0',
@@ -16,7 +15,7 @@ return new \Phalcon\Config([
 
     'database' => [
         'adapter'  => 'Mysql',
-        'host'     => '172.17.0.3',
+        'host'     => '172.17.0.5',
         'username' => 'phalcon',
         'password' => 'secret',
         'dbname'   => 'shop_categories',
@@ -24,29 +23,46 @@ return new \Phalcon\Config([
     ],
 
     'mongodb' => [
-        'host' => '172.17.0.5',
+        'host' => '172.17.0.4',
         'username' => '',
         'password' => '',
         'port' => '27017',
         'dbname' => 'shop_categories'
     ],
 
-    'category_cache' => [
-        'host' => '172.17.0.4',
-        'port' => 6379,
-        'auth' => '',
-        'persistent' => true,
-        'database' => 0,
-        'ttl' => -1
+    'cache' => [
+        'category_cache' => [
+            'host' => '172.17.0.2',
+            'port' => 6379,
+            'auth' => '',
+            'persistent' => true,
+            'database' => 0,
+            'ttl' => -1
+        ],
+
+        'attributes_cache' => [
+            'host' => '172.17.0.2',
+            'port' => 6379,
+            'auth' => '',
+            'persistent' => true,
+            'database' => 1,
+            'ttl' => -1
+        ]
     ],
 
-    'attributes_cache' => [
-        'host' => '172.17.0.4',
-        'port' => 6379,
-        'auth' => '',
-        'persistent' => true,
-        'database' => 1,
-        'ttl' => -1
+    'rabbitmq' => [
+        'host' => '172.17.0.3',
+        'port' => '5672',
+        'username' => 'guest',
+        'password' => 'guest',
+        'sync_queue' => [
+            'queue_name' => 'categories-sync',
+            'message_ttl' => 10000
+        ],
+        'async_queue' => [
+            'queue_name' => 'categories-async',
+            'message_ttl' => 10000
+        ]
     ],
 
     'application' => [
@@ -56,6 +72,9 @@ return new \Phalcon\Config([
         'migrationsDir'  => APP_PATH . '/migrations/',
         'cacheDir'       => BASE_PATH . '/cache/',
         'logsDir'        => APP_PATH . '/logs/',
+
+        // Stop words source
+        'stopWords'      => MISC_PATH . '/stop_words.json',
 
         // This allows the baseUri to be understand project paths that are not in the root directory
         // of the webpspace.  This will break if the public/index.php entry point is moved or

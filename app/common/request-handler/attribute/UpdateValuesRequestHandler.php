@@ -10,11 +10,11 @@ namespace Shop_categories\RequestHandler\Attribute;
 
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
-use Shop_categories\Controllers\ControllerBase;
+use Shop_categories\Controllers\BaseController;
 use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\RequestHandler\RequestHandlerInterface;
 
-class UpdateValuesRequestHandler extends ControllerBase implements RequestHandlerInterface
+class UpdateValuesRequestHandler extends BaseController implements RequestHandlerInterface
 {
     /** @var array $values */
     private $values;

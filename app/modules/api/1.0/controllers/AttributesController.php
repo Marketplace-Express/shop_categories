@@ -8,7 +8,7 @@
 namespace Shop_categories\Modules\Api\Controllers;
 
 
-use Shop_categories\Controllers\ControllerBase;
+use Shop_categories\Controllers\BaseController;
 use Shop_categories\RequestHandler\Attribute\{
     CreateRequestHandler,
     UpdateValuesRequestHandler,
@@ -23,7 +23,7 @@ use Shop_categories\Services\AttributesService;
  * @package Shop_categories\Modules\Api\Controllers
  * @RoutePrefix("/api/1.0/attributes")
  */
-class AttributesController extends ControllerBase
+class AttributesController extends BaseController
 {
     public function initialize()
     {

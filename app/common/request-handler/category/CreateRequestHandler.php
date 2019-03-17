@@ -7,13 +7,15 @@
 
 namespace Shop_categories\RequestHandler\Category;
 
+use Phalcon\Config;
 use Phalcon\Validation;
-use Shop_categories\Controllers\ControllerBase;
+use Shop_categories\Controllers\BaseController;
 use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\RequestHandler\RequestHandlerInterface;
 use Shop_categories\Utils\UuidUtil;
+use Shop_categories\Validators\ExistenceValidator;
 
-class CreateRequestHandler extends ControllerBase implements RequestHandlerInterface
+class CreateRequestHandler extends BaseController implements RequestHandlerInterface
 {
     /** @var string $categoryId */
     public $categoryId;
@@ -96,7 +98,7 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         return $this->uuidUtil;
     }
 
-    private function getAppConfig()
+    private function getConfig(): Config
     {
         return $this->getDI()->getConfig()->application;
     }
@@ -108,13 +110,28 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
     {
         $validator = new Validation();
 
+        // Validate English input
+        $validator->add(
+            'name',
+            new Validation\Validator\Callback([
+                'callback' => function ($data) {
+                    $name = preg_replace('/[\d\s_]/i', '', $data['name']);
+                    if (preg_match('/[a-z]/i', $name) == false) {
+                        return false;
+                    }
+                    return true;
+                },
+                'message' => 'We only support English category name'
+            ])
+        );
+
         $validator->add(
             'name',
             new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => $this->getAppConfig()->categoryNameValidationConfig->allowWhiteSpace,
-                'underscore' => $this->getAppConfig()->categoryNameValidationConfig->allowUnderscore,
-                'min' => $this->getAppConfig()->categoryNameValidationConfig->minNameLength,
-                'max' => $this->getAppConfig()->categoryNameValidationConfig->maxNameLength,
+                'whiteSpace' => $this->getConfig()->categoryNameValidationConfig->allowWhiteSpace,
+                'underscore' => $this->getConfig()->categoryNameValidationConfig->allowUnderscore,
+                'min' => $this->getConfig()->categoryNameValidationConfig->minNameLength,
+                'max' => $this->getConfig()->categoryNameValidationConfig->maxNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters',
@@ -138,10 +155,8 @@ class CreateRequestHandler extends ControllerBase implements RequestHandlerInter
         $validator->add(
             'order',
             new Validation\Validator\NumericValidator([
-                'min' => $this->getAppConfig()->categoryOrderValidationConfig->minCategoryOrder,
-                'max' => $this->getAppConfig()->categoryOrderValidationConfig->maxCategoryOrder,
-                'allowFloat' => $this->getAppConfig()->categoryOrderValidationConfig->allowFloat,
-                'allowSign' => $this->getAppConfig()->categoryOrderValidationConfig->allowSign,
+                'min' => $this->getConfig()->categoryOrderValidationConfig->minCategoryOrder,
+                'max' => $this->getConfig()->categoryOrderValidationConfig->maxCategoryOrder,
                 'message' => 'Category order should be a number',
                 'allowEmpty' => true
             ])

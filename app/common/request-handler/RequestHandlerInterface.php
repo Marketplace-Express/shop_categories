@@ -17,13 +17,32 @@ interface RequestHandlerInterface
      */
     public function validate() : Group;
 
+
+    /**
+     * @return bool
+     */
     public function isValid() : bool;
 
+    /**
+     * @param string $message
+     * @return mixed
+     */
     public function notFound($message = 'Not Found');
 
+    /**
+     * @param null $message
+     * @return mixed
+     */
     public function invalidRequest($message = null);
 
+    /**
+     * @param null $message
+     * @return mixed
+     */
     public function successRequest($message = null);
 
+    /**
+     * @return array
+     */
     public function toArray(): array;
 }

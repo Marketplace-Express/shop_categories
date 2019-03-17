@@ -2,6 +2,8 @@
 
 namespace Shop_categories\Models;
 
+use Phalcon\Config;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\AlphaNumericValidator;
 use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
@@ -23,6 +25,7 @@ class Category extends Base
         'categoryVendorId',
         'categoryUserId',
         'categoryName',
+        'categoryTinyName',
         'categoryOrder'
     ];
 
@@ -59,9 +62,21 @@ class Category extends Base
 
     /**
      * @var string
-     * @Column(column="category_name", type="string", length=255, nullable=false)
+     * @Column(column="category_name", type="string", length=100, nullable=false)
      */
     protected $categoryName;
+
+    /**
+     * @var string
+     * @Column(column="category_tiny_name", type="string", length=100, nullable=false)
+     */
+    private $categoryTinyName;
+
+    /**
+     * @var string
+     * @Column(column="category_url", type="string", length=255, nullable=true)
+     */
+    protected $categoryUrl;
 
     /**
      * @var string
@@ -109,6 +124,14 @@ class Category extends Base
     public function setCategoryName($categoryName)
     {
         $this->categoryName = $categoryName;
+    }
+
+    /**
+     * @param $categoryTinyName
+     */
+    public function setCategoryTinyName($categoryTinyName)
+    {
+        $this->categoryTinyName = $categoryTinyName;
     }
 
     /**
@@ -218,6 +241,22 @@ class Category extends Base
     /**
      * @return string
      */
+    public function getCategoryTinyName()
+    {
+        return $this->categoryTinyName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryUrl()
+    {
+        return $this->categoryUrl;
+    }
+
+    /**
+     * @return string
+     */
     public function getCreatedAt()
     {
         return $this->createdAt;
@@ -292,9 +331,11 @@ class Category extends Base
             'category_id' => 'categoryId',
             'category_parent_id' => 'categoryParentId',
             'category_name' => 'categoryName',
+            'category_tiny_name' => 'categoryTinyName',
             'category_order' => 'categoryOrder',
             'category_vendor_id' => 'categoryVendorId',
             'category_user_id' => 'categoryUserId',
+            'category_url' => 'categoryUrl',
             'created_at' => 'createdAt',
             'updated_at' => 'updatedAt',
             'deleted_at' => 'deletedAt',
@@ -311,7 +352,9 @@ class Category extends Base
         return [
             'categoryId' => $this->getCategoryId(),
             'categoryParentId' => $this->getCategoryParentId(),
+            'categoryVendorId' => $this->getCategoryVendorId(),
             'categoryName' => $this->getCategoryName(),
+            'categoryUrl' => $this->getCategoryUrl(),
             'categoryOrder' => $this->getCategoryOrder()
         ];
     }
@@ -327,9 +370,12 @@ class Category extends Base
             'categoryId' => $this->getCategoryId(),
             'categoryParentId' => $this->getCategoryParentId(),
             'categoryName' => $this->getCategoryName(),
+            'categoryTinyName' => $this->getCategoryTinyName(),
             'categoryOrder' => $this->getCategoryOrder(),
             'categoryUserId' => $this->getCategoryUserId(),
             'categoryVendorId' => $this->getCategoryVendorId(),
+            'categoryUrl' => $this->getCategoryUrl(),
+            'createdAt' => $this->getCreatedAt(),
             'updatedAt' => $this->getUpdatedAt()
         ];
     }
@@ -337,6 +383,14 @@ class Category extends Base
     public function beforeDelete()
     {
         $this->_operationMade = self::OP_DELETE;
+    }
+
+    /**
+     * @return Config
+     */
+    private function getConfig(): Config
+    {
+        return $this->getDI()->getConfig()->application;
     }
 
     /**
@@ -350,16 +404,44 @@ class Category extends Base
         }
 
         $validator = new Validation();
+
+        // Validate English input
+        $validator->add(
+            'name',
+            new Validation\Validator\Callback([
+                'callback' => function ($data) {
+                    $categoryName = preg_replace('/[\d\s_]/i', '', $data['categoryName']);
+                    if (preg_match('/[a-z]/i', $categoryName) == false) {
+                        return false;
+                    }
+                    return true;
+                },
+                'message' => 'We only support English language'
+            ])
+        );
+
         $validator->add(
             'categoryName',
             new AlphaNumericValidator([
-                'whiteSpace' => $this->di->getConfig()->application->categoryNameValidationConfig->allowWhiteSpace,
-                'underscore' => $this->di->getConfig()->application->categoryNameValidationConfig->allowUnderscore,
-                'min' => $this->di->getConfig()->application->categoryNameValidationConfig->minNameLength,
-                'max' => $this->di->getConfig()->application->categoryNameValidationConfig->maxNameLength,
+                'whiteSpace' => $this->getConfig()->categoryNameValidationConfig->allowWhiteSpace,
+                'underscore' => $this->getConfig()->categoryNameValidationConfig->allowUnderscore,
+                'min' => $this->getConfig()->categoryNameValidationConfig->minNameLength,
+                'max' => $this->getConfig()->categoryNameValidationConfig->maxNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters'
+            ])
+        );
+
+        $validator->add(
+            ['categoryName', 'categoryVendorId'],
+            new Validation\Validator\Uniqueness([
+                'model' => self::model(true),
+                'convert' => function ($values) {
+                    $values['categoryVendorId'] = $this->categoryVendorId;
+                    return $values;
+                },
+                'message' => 'Category name already exists'
             ])
         );
 
@@ -392,10 +474,8 @@ class Category extends Base
         $validator->add(
             'categoryOrder',
             new Validation\Validator\NumericValidator([
-                'min' => $this->di->getConfig()->application->minCategoryOrder,
-                'max' => $this->di->getConfig()->application->maxCategoryOrder,
-                'allowFloat' => $this->di->getConfig()->application->allowFloat,
-                'allowSign' => $this->di->getConfig()->application->allowSign,
+                'min' => $this->getConfig()->categoryOrderValidationConfig->minCategoryOrder,
+                'max' => $this->getConfig()->categoryOrderValidationConfig->maxCategoryOrder,
                 'message' => 'Category order should be a number'
             ])
         );

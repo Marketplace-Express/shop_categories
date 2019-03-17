@@ -185,7 +185,7 @@ class Attribute extends BaseCollection
             'values',
             new Validation\Validator\Callback([
                 'callback' => function($data) {
-                    if (array_unique($data['values']) !== $data['values']) {
+                    if (array_unique($data['attribute_values']) !== $data['attribute_values']) {
                         return false;
                     }
                     return true;

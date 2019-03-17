@@ -50,8 +50,11 @@ abstract class Base extends Model implements BaseModelInterface
     public function getMessages($filter = null): array
     {
         $messages = [];
-        foreach (parent::getMessages($filter) as $message) {
-            $messages[$message->getField()] = $message->getMessage();
+        foreach (parent::getMessages() as $message) {
+            if (is_array($field = $message->getField())) {
+                $field = $field[0];
+            }
+            $messages[$field] = $message->getMessage();
         }
         return $messages;
     }

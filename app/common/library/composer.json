@@ -7,7 +7,9 @@
         "netresearch/jsonmapper": "^1.4",
         "ext-json": "*",
         "ext-redis": "*",
-        "ext-mongodb": "*"
+        "ext-mongodb": "*",
+        "php-amqplib/php-amqplib": "^2.8",
+        "ethanhann/redisearch-php": "^1.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.3"
