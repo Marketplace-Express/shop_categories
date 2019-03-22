@@ -1,6 +1,5 @@
 {
     "require": {
-        "php": "^7.2",
         "ext-pdo": "*",
         "ramsey/uuid": "3.8.0",
         "phalcon/incubator": "^3.4",
