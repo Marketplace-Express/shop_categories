@@ -1140,3 +1140,18 @@
 [Sun, 17 Mar 19 22:09:50 +0000][ERROR] Category not found
 [Sun, 17 Mar 19 22:10:29 +0000][ERROR] Category not found
 [Sun, 17 Mar 19 22:12:45 +0000][ERROR] {"categoryName":"Category name already exists"}
+[Fri, 22 Mar 19 09:40:48 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:41:04 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:41:47 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:42:32 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:43:05 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:43:06 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:44:01 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:48:34 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:48:35 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:50:08 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:53:48 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:54:19 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:54:20 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:56:02 +0000][ERROR] Class 'JsonMapper' not found
+[Fri, 22 Mar 19 09:57:10 +0000][ERROR] Class 'JsonMapper' not found
