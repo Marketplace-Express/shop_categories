@@ -15,7 +15,7 @@ return new \Phalcon\Config([
 
     'database' => [
         'adapter'  => 'Mysql',
-        'host'     => '172.17.0.5',
+        'host'     => '172.17.0.6',
         'username' => 'phalcon',
         'password' => 'secret',
         'dbname'   => 'shop_categories',
@@ -23,7 +23,7 @@ return new \Phalcon\Config([
     ],
 
     'mongodb' => [
-        'host' => '172.17.0.4',
+        'host' => '172.17.0.5',
         'username' => '',
         'password' => '',
         'port' => '27017',
@@ -51,7 +51,7 @@ return new \Phalcon\Config([
     ],
 
     'rabbitmq' => [
-        'host' => '172.17.0.3',
+        'host' => '172.17.0.4',
         'port' => '5672',
         'username' => 'guest',
         'password' => 'guest',
