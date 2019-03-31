@@ -15,7 +15,7 @@ return new \Phalcon\Config([
 
     'database' => [
         'adapter'  => 'Mysql',
-        'host'     => '172.17.0.6',
+        'host'     => '172.17.0.2',
         'username' => 'phalcon',
         'password' => 'secret',
         'dbname'   => 'shop_categories',

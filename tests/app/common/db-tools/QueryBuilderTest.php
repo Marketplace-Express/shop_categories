@@ -25,7 +25,7 @@ class QueryBuilderTest extends \UnitTestCase
         if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
             $this->markTestSkipped('PDO extension should be enabled');
         }
-        $this->pdo = new \PDO('mysql:dbname=test;host=192.168.50.4', 'test', 'test', [
+        $this->pdo = new \PDO('mysql:dbname=test;host=172.17.0.2', 'test', 'test', [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
         ]);
     }
