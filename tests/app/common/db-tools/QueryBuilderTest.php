@@ -9,6 +9,7 @@ namespace Shop_categories\Tests\DBTools;
 
 use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
 use Shop_categories\DBTools\QueryBuilder;
+use PDO;
 
 class QueryBuilderTest extends \UnitTestCase
 {
@@ -16,7 +17,7 @@ class QueryBuilderTest extends \UnitTestCase
     const ANOTHER_TABLE_NAME = 'test2';
     const COLUMNS = ['column1', 'column2'];
 
-    /** @var \PDO $pdo */
+    /** @var PDO $pdo */
     public $pdo;
 
     public function setUp()
@@ -25,8 +26,9 @@ class QueryBuilderTest extends \UnitTestCase
         if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
             $this->markTestSkipped('PDO extension should be enabled');
         }
-        $this->pdo = new \PDO('mysql:dbname=test;host=172.17.0.2', 'test', 'test', [
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+        $this->pdo = new PDO('mysql:dbname=test;host=172.17.0.2', 'test', 'test', [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_TIMEOUT =>  10
         ]);
     }
 
