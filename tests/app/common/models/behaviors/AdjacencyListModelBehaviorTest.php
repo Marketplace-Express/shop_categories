@@ -242,10 +242,6 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
 
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
-
-        $this->expectExceptionMessage('Item not found or maybe deleted');
-        $this->expectExceptionCode(404);
-
         $behaviorMock->missingMethod($modelMock, 'children', [self::ITEM_ID, [], false]);
     }
 
@@ -378,10 +374,6 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
 
         /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
-
-        $this->expectExceptionMessage('No roots found');
-        $this->expectExceptionCode(404);
-
         $behaviorMock->missingMethod($modelMock, 'roots', []);
     }
 
