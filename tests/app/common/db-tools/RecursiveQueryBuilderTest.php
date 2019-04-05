@@ -23,7 +23,7 @@ class RecursiveQueryBuilderTest extends \UnitTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->pdo = new PDO('mysql:dbname=test;host=172.17.0.2', 'test', 'test', [
+        $this->pdo = new PDO('mysql:dbname=test;host=127.0.0.1:3306', 'test', 'test', [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ]);
     }
