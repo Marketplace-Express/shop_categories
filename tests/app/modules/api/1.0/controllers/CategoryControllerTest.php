@@ -15,8 +15,10 @@ use Shop_categories\RequestHandler\Category\DeleteRequestHandler;
 use Shop_categories\RequestHandler\Category\GetRequestHandler;
 use Shop_categories\RequestHandler\Category\UpdateRequestHandler;
 use Shop_categories\Services\CategoryService;
+use stdClass;
+use JsonMapper;
 
-class IndexControllerTest extends \UnitTestCase
+class CategoryControllerTest extends \UnitTestCase
 {
     const VENDOR_ID = 'd9423ce9-bf98-432b-bb00-1c31d4e50e14';
     const CATEGORY_ID = '92aaf1e3-ed52-44ad-ac2a-f7c8d2b08a6d';
@@ -25,7 +27,7 @@ class IndexControllerTest extends \UnitTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->jsonRawBody = new \stdClass();
+        $this->jsonRawBody = new stdClass();
         $this->jsonRawBody->name = 'sample category';
         $this->jsonRawBody->parentId = 'a06c62f3-9398-438f-a563-f188f509b577';
     }
@@ -40,7 +42,7 @@ class IndexControllerTest extends \UnitTestCase
 
     public function getJsonMapperMock(...$methods)
     {
-        return $this->getMockBuilder(\JsonMapper::class)
+        return $this->getMockBuilder(JsonMapper::class)
             ->setMethods($methods)
             ->getMock();
     }
@@ -143,7 +145,7 @@ class IndexControllerTest extends \UnitTestCase
         $serviceMock->expects(self::once())->method('getDescendants')->with(self::CATEGORY_ID)->willReturn([]);
         $controllerMock->setService($serviceMock);
 
-        $controllerMock->expects(self::once())->method('toTree')->with([[]])->willReturn([]);
+        $controllerMock->expects(self::once())->method('toTree')->with([])->willReturn([]);
         $controllerMock->descendantsAction(self::CATEGORY_ID);
     }
 
