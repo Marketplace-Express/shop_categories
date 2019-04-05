@@ -221,17 +221,6 @@ class CategoryRepository implements CategoryDataSourceInterface
     }
 
     /**
-     * Return slugged category name
-     * Ex.: My Category -> my_category
-     * @param string $categoryName
-     * @return string
-     */
-    private function toTinyName(string $categoryName)
-    {
-        return strtolower(str_replace(' ', '_', trim($categoryName)));
-    }
-
-    /**
      * Create new category
      *
      * @param array $data
@@ -241,7 +230,6 @@ class CategoryRepository implements CategoryDataSourceInterface
     public function create(array $data): Category
     {
         $category = self::getModel(true);
-        $data['categoryTinyName'] = $this->toTinyName($data['categoryName']);
         if (!$category->save($data, Category::WHITE_LIST)) {
             throw new ArrayOfStringsException($category->getMessages(), 400);
         }

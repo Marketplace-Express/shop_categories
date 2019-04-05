@@ -25,7 +25,6 @@ class Category extends Base
         'categoryVendorId',
         'categoryUserId',
         'categoryName',
-        'categoryTinyName',
         'categoryOrder'
     ];
 
@@ -65,12 +64,6 @@ class Category extends Base
      * @Column(column="category_name", type="string", length=100, nullable=false)
      */
     protected $categoryName;
-
-    /**
-     * @var string
-     * @Column(column="category_tiny_name", type="string", length=100, nullable=false)
-     */
-    private $categoryTinyName;
 
     /**
      * @var string
@@ -124,14 +117,6 @@ class Category extends Base
     public function setCategoryName($categoryName)
     {
         $this->categoryName = $categoryName;
-    }
-
-    /**
-     * @param $categoryTinyName
-     */
-    public function setCategoryTinyName($categoryTinyName)
-    {
-        $this->categoryTinyName = $categoryTinyName;
     }
 
     /**
@@ -241,14 +226,6 @@ class Category extends Base
     /**
      * @return string
      */
-    public function getCategoryTinyName()
-    {
-        return $this->categoryTinyName;
-    }
-
-    /**
-     * @return string
-     */
     public function getCategoryUrl()
     {
         return $this->categoryUrl;
@@ -331,7 +308,6 @@ class Category extends Base
             'category_id' => 'categoryId',
             'category_parent_id' => 'categoryParentId',
             'category_name' => 'categoryName',
-            'category_tiny_name' => 'categoryTinyName',
             'category_order' => 'categoryOrder',
             'category_vendor_id' => 'categoryVendorId',
             'category_user_id' => 'categoryUserId',
@@ -370,7 +346,6 @@ class Category extends Base
             'categoryId' => $this->getCategoryId(),
             'categoryParentId' => $this->getCategoryParentId(),
             'categoryName' => $this->getCategoryName(),
-            'categoryTinyName' => $this->getCategoryTinyName(),
             'categoryOrder' => $this->getCategoryOrder(),
             'categoryUserId' => $this->getCategoryUserId(),
             'categoryVendorId' => $this->getCategoryVendorId(),

@@ -38,7 +38,7 @@ return new Config([
 
     'cache' => [
         'category_cache' => [
-            'host' => 'localhost',
+            'host' => '172.17.0.4',
             'port' => 6379,
             'auth' => '',
             'persistent' => true,
@@ -47,7 +47,7 @@ return new Config([
         ],
 
         'attributes_cache' => [
-            'host' => 'localhost',
+            'host' => '172.17.0.4',
             'port' => 6379,
             'auth' => '',
             'persistent' => true,
@@ -57,7 +57,7 @@ return new Config([
     ],
 
     'rabbitmq' => [
-        'host' => '172.17.0.2',
+        'host' => 'localhost',
         'port' => '5672',
         'username' => 'guest',
         'password' => 'guest',

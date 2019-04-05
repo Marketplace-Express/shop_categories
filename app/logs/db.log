@@ -3983,3 +3983,16 @@ UNION ALL SELECT c.category_id,c.category_parent_id,c.category_name,c.category_o
 [Sun, 17 Mar 19 22:12:45 +0000][INFO] DESCRIBE `category`
 [Sun, 17 Mar 19 22:12:45 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
 [Sun, 17 Mar 19 22:12:45 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 05 Apr 19 09:54:49 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 05 Apr 19 09:54:49 +0000][INFO] DESCRIBE `category`
+[Fri, 05 Apr 19 09:57:20 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 05 Apr 19 09:57:20 +0000][INFO] DESCRIBE `category`
+[Fri, 05 Apr 19 09:58:03 +0000][INFO] SELECT c0.category_id,c0.category_parent_id,c0.category_name,c0.category_order,c0.category_vendor_id,c0.category_user_id,c0.category_url,c0.created_at,c0.updated_at,c0.deleted_at,c0.is_deleted FROM category AS c0
+ WHERE c0.is_deleted = :QHP0 AND c0.category_id = :KJQ0 AND c0.category_vendor_id = :CMK0 ORDER BY c0.category_order ASC;
+[Fri, 05 Apr 19 09:58:17 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 05 Apr 19 09:58:17 +0000][INFO] DESCRIBE `category`
+[Fri, 05 Apr 19 09:58:17 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 05 Apr 19 09:58:17 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 05 Apr 19 09:58:17 +0000][INFO] INSERT INTO `category` (`category_id`, `category_parent_id`, `category_name`, `category_order`, `category_vendor_id`, `category_user_id`, `category_url`, `created_at`, `updated_at`, `deleted_at`, `is_deleted`) VALUES (?, DEFAULT, ?, ?, ?, ?, DEFAULT, ?, DEFAULT, DEFAULT, DEFAULT)
+[Fri, 05 Apr 19 09:58:38 +0000][INFO] SELECT c5.category_id,c5.category_parent_id,c5.category_name,c5.category_order,c5.category_vendor_id,c5.category_user_id,c5.category_url,c5.created_at,c5.updated_at,c5.deleted_at,c5.is_deleted FROM category AS c5
+ WHERE c5.is_deleted = :DQO0 AND c5.category_id = :OER0 AND c5.category_vendor_id = :TGD0 ORDER BY c5.category_order ASC;
