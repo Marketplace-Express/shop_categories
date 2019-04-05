@@ -3,7 +3,6 @@
 namespace Shop_categories\Models;
 
 use Phalcon\Config;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\AlphaNumericValidator;
 use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
@@ -25,7 +24,8 @@ class Category extends Base
         'categoryVendorId',
         'categoryUserId',
         'categoryName',
-        'categoryOrder'
+        'categoryOrder',
+        'categoryUrl'
     ];
 
     /**

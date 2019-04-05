@@ -8,6 +8,8 @@
 
 namespace Shop_categories\RequestHandler\Category;
 
+use Phalcon\Exception;
+use Phalcon\Utils\Slug;
 use Phalcon\Validation;
 use Shop_categories\Controllers\BaseController;
 use Shop_categories\Exceptions\ArrayOfStringsException;
@@ -135,6 +137,21 @@ class UpdateRequestHandler extends BaseController implements RequestHandlerInter
             ])
         );
 
+        // Validate English input
+        $validator->add(
+            'name',
+            new Validation\Validator\Callback([
+                'callback' => function ($data) {
+                    $name = preg_replace('/[\d\s_]/i', '', $data['name']); // clean string
+                    if (preg_match('/[a-z]/i', $name) == false) {
+                        return false;
+                    }
+                    return true;
+                },
+                'message' => 'English language only supported'
+            ])
+        );
+
         // Fields to be validated
         $fields = [
             'name'      => $this->getName(),
@@ -198,6 +215,7 @@ class UpdateRequestHandler extends BaseController implements RequestHandlerInter
 
     /**
      * @return array
+     * @throws Exception
      */
     public function toArray(): array
     {
@@ -205,6 +223,8 @@ class UpdateRequestHandler extends BaseController implements RequestHandlerInter
 
         if (!empty($this->getName())) {
             $result['categoryName'] = $this->getName();
+            $result['categoryUrl'] = (new Slug())->generate($this->name);
+
         }
 
         if (!empty($this->getParentId())) {

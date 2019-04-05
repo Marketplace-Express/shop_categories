@@ -7,13 +7,14 @@
 
 namespace Shop_categories\RequestHandler\Category;
 
+use Exception;
 use Phalcon\Config;
+use Phalcon\Utils\Slug;
 use Phalcon\Validation;
 use Shop_categories\Controllers\BaseController;
 use Shop_categories\Exceptions\ArrayOfStringsException;
 use Shop_categories\RequestHandler\RequestHandlerInterface;
 use Shop_categories\Utils\UuidUtil;
-use Shop_categories\Validators\ExistenceValidator;
 
 class CreateRequestHandler extends BaseController implements RequestHandlerInterface
 {
@@ -35,7 +36,7 @@ class CreateRequestHandler extends BaseController implements RequestHandlerInter
 
     /**
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function getCategoryId()
     {
@@ -115,13 +116,13 @@ class CreateRequestHandler extends BaseController implements RequestHandlerInter
             'name',
             new Validation\Validator\Callback([
                 'callback' => function ($data) {
-                    $name = preg_replace('/[\d\s_]/i', '', $data['name']);
-                    if (preg_match('/[a-z]/i', $name) == false) {
+                    $name = preg_replace('/[\d\s_]/i', '', $data['name']); // clean string
+                    if (preg_match('/[a-z]/i', $name) === false) {
                         return false;
                     }
                     return true;
                 },
-                'message' => 'We only support English category name'
+                'message' => 'English language only supported'
             ])
         );
 
@@ -218,16 +219,16 @@ class CreateRequestHandler extends BaseController implements RequestHandlerInter
 
     /**
      * @param string $message
-     * @throws \Exception
+     * @throws Exception
      */
     public function notFound($message = 'Not Found')
     {
-        throw new \Exception($message, 404);
+        throw new Exception($message, 404);
     }
 
     /**
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function toArray(): array
     {
@@ -237,7 +238,8 @@ class CreateRequestHandler extends BaseController implements RequestHandlerInter
             'categoryName' => $this->getName(),
             'categoryOrder' => $this->getOrder(),
             'categoryVendorId' => $this->request->getQuery('vendorId'),
-            'categoryUserId' => 'fded67e4-9fcd-4a2d-ae2e-de15d70a8bb5'
+            'categoryUserId' => 'fded67e4-9fcd-4a2d-ae2e-de15d70a8bb5',
+            'categoryUrl' => (new Slug())->generate($this->name)
         ];
 
         return $result;

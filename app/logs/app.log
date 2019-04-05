@@ -5,3 +5,7 @@
 [Fri, 05 Apr 19 09:57:08 +0000][ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c8.category_tiny_name' in 'field list'
 [Fri, 05 Apr 19 09:57:20 +0000][ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c5.category_url' in 'field list'
 [Fri, 05 Apr 19 09:58:03 +0000][ERROR] Category not found or maybe deleted
+[Fri, 05 Apr 19 10:06:15 +0000][ERROR] intl module not loaded
+[Fri, 05 Apr 19 10:10:59 +0000][ERROR] {"categoryName":"Category name already exists"}
+[Fri, 05 Apr 19 10:11:43 +0000][ERROR] {"name":"Invalid category name"}
+[Fri, 05 Apr 19 11:00:02 +0000][ERROR] {"name":"We only support English category name"}
