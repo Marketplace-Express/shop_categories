@@ -8,6 +8,7 @@
 namespace Shop_categories\Services\Cache;
 
 use Ehann\RediSearch\RediSearchRedisClient;
+use Phalcon\Di;
 use Shop_categories\Enums\QueueNamesEnum;
 use Shop_categories\Helpers\ArrayHelper;
 use Shop_categories\Interfaces\CategoryDataSourceInterface;
@@ -47,8 +48,8 @@ class CategoryCache implements CategoryDataSourceInterface
      */
     public static function establishCacheConnection(): void
     {
-        self::$categoryCacheInstance = \Phalcon\Di::getDefault()->getShared('categoryCache');
-        self::$cacheIndexInstance = \Phalcon\Di::getDefault()->getShared('categoryCacheIndex');
+        self::$categoryCacheInstance = Di::getDefault()->getShared('categoryCache');
+        self::$cacheIndexInstance = Di::getDefault()->getShared('categoryCacheIndex');
     }
 
     /**
@@ -218,6 +219,29 @@ class CategoryCache implements CategoryDataSourceInterface
             ->setQueueName(QueueNamesEnum::CATEGORY_ASYNC_QUEUE)
             ->setService('indexing')
             ->setMethod('add')
+            ->setData([
+                'id' => $category['categoryId'],
+                'vendorId' => $category['categoryVendorId'],
+                'name' => $category['categoryName'],
+                'url' => $category['categoryUrl']
+            ])
+            ->sendAsync();
+    }
+
+    /**
+     * @param array $category
+     * @throws \Shop_categories\Exceptions\ArrayOfStringsException
+     */
+    public function updateCategoryIndex(array $category)
+    {
+        if (empty($category)) {
+            return;
+        }
+
+        (new QueueRequestHandler())
+            ->setQueueName(QueueNamesEnum::CATEGORY_ASYNC_QUEUE)
+            ->setService('indexing')
+            ->setMethod('update')
             ->setData([
                 'id' => $category['categoryId'],
                 'vendorId' => $category['categoryVendorId'],

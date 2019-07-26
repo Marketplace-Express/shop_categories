@@ -7,8 +7,8 @@
 
 namespace Shop_categories\Services;
 
-use RedisException;
 use Shop_categories\Models\Category;
+use Shop_categories\Repositories\CategoryRepository;
 
 class CategoryService extends AbstractService
 {
@@ -32,14 +32,14 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @return \Shop_categories\Repositories\CategoryRepository|Cache\CategoryCache
+     * @return CategoryRepository|Cache\CategoryCache
      * @throws \Exception
      */
     public static function getDataSource()
     {
         try {
             return self::getCategoryCache();
-        } catch (RedisException $exception) {
+        } catch (\RedisException $exception) {
             return self::getCategoryRepository();
         } catch (\Throwable $exception) {
             throw new \Exception($exception->getMessage() ?: 'No data source available for categories');
@@ -163,13 +163,14 @@ class CategoryService extends AbstractService
      */
     public function update(string $categoryId, array $data): array
     {
-        $category = self::getCategoryRepository()->update($categoryId, self::getVendorId(), $data);
+        $category = self::getCategoryRepository()->update($categoryId, self::getVendorId(), $data)->toApiArray();
         try {
             self::getCategoryCache()->invalidateCache();
+            self::getCategoryCache()->updateCategoryIndex($category);
         } catch (\RedisException $exception) {
             // do nothing
         }
-        return $category->toApiArray();
+        return $category;
     }
 
     /**

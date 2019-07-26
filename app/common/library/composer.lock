@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e6e389c3658db65e04de53b7a75466ca",
+    "content-hash": "7f9ce160787f0a945334eed7ecd9fd7b",
     "packages": [
         {
             "name": "ethanhann/redis-raw",
@@ -454,6 +454,51 @@
                 "uuid"
             ],
             "time": "2018-07-19T23:38:55+00:00"
+        },
+        {
+            "name": "sidroberts/phalcon-authmiddleware",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SidRoberts/phalcon-authmiddleware.git",
+                "reference": "61b05bb3f7b7c23c8a3761c50b4d35c247c2cf64"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SidRoberts/phalcon-authmiddleware/zipball/61b05bb3f7b7c23c8a3761c50b4d35c247c2cf64",
+                "reference": "61b05bb3f7b7c23c8a3761c50b4d35c247c2cf64",
+                "shasum": ""
+            },
+            "require": {
+                "ext-phalcon": "~3.0",
+                "php": "~7.1"
+            },
+            "require-dev": {
+                "codeception/codeception": "~2.5",
+                "codeclimate/php-test-reporter": "0.4.4",
+                "phpunit/php-code-coverage": "~6.0",
+                "squizlabs/php_codesniffer": "~3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sid\\Phalcon\\AuthMiddleware\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sid Roberts",
+                    "email": "Sid@SidRoberts.co.uk",
+                    "homepage": "http://www.SidRoberts.co.uk",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Auth Middleware component for Phalcon.",
+            "time": "2019-03-23T11:34:52+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -1934,8 +1979,9 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.2",
+        "ext-phalcon": "^3.4",
         "ext-pdo": "*",
+        "ext-intl": "*",
         "ext-json": "*",
         "ext-redis": "*",
         "ext-mongodb": "*"

@@ -10,6 +10,8 @@ namespace Shop_categories\Services\Cache\Utils;
 
 class CategoryCacheUtils
 {
+    const SUB_ITEMS_SLUG = 'children';
+
     /**
      * @var array $array
      */
@@ -26,7 +28,7 @@ class CategoryCacheUtils
     }
 
     /**
-     * @return \RecursiveIteratorIterator
+     * @return \RecursiveIteratorIterator|\ArrayIterator
      */
     private function getIterator()
     {
@@ -38,7 +40,7 @@ class CategoryCacheUtils
         $tree = [];
         foreach ($array as $key => $item) {
             unset($array[$key]);
-            $item['children'] = (!empty($children = $this->toTree($array))) ? $children : null;
+            $item[self::SUB_ITEMS_SLUG] = (!empty($children = $this->toTree($array))) ? $children : null;
             $tree[] = $item;
         }
         return array_slice($tree, 0, 1);
@@ -54,12 +56,10 @@ class CategoryCacheUtils
         $iterator = $this->getIterator();
         while ($iterator->valid()) {
             if ($iterator->key() == 'categoryId' && $iterator->current() == $categoryId) {
-                return (array) $iterator->getInnerIterator();
+                return $iterator->offsetGet('children');
             }
-
             $iterator->next();
         }
-
         return [];
     }
 
@@ -81,13 +81,13 @@ class CategoryCacheUtils
             $iterator->next();
         }
 
-        if (array_key_exists('children', $category)) {
-            $keyToRemove = array_flip(['children']);
-            $category['children'] = array_map(function ($item) use($keyToRemove) {
+        if (array_key_exists(self::SUB_ITEMS_SLUG, $category)) {
+            $keyToRemove = array_flip([self::SUB_ITEMS_SLUG]);
+            $category[self::SUB_ITEMS_SLUG] = array_map(function ($item) use($keyToRemove) {
                 // This will remove children from subset categories
                 return array_diff_key($item, $keyToRemove);
-            }, $category['children']);
-            return $category['children'];
+            }, $category[self::SUB_ITEMS_SLUG]);
+            return $category[self::SUB_ITEMS_SLUG];
         }
         return [];
     }
@@ -164,7 +164,7 @@ class CategoryCacheUtils
 
             $iterator->next();
         }
-        unset($category['children']);
+        unset($category[self::SUB_ITEMS_SLUG]);
         return $category;
     }
 
@@ -174,7 +174,7 @@ class CategoryCacheUtils
     public function getRoots(): array
     {
         foreach ($this->array as &$item) {
-            unset($item['children']);
+            unset($item[self::SUB_ITEMS_SLUG]);
         }
         return $this->array;
     }

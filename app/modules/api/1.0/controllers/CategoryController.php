@@ -9,8 +9,6 @@ use Shop_categories\RequestHandler\Category\{
     UpdateRequestHandler
 };
 use Shop_categories\Services\CategoryService;
-use stdClass;
-use Throwable;
 
 /**
  * Class CategoryController
@@ -45,9 +43,9 @@ class CategoryController extends BaseController
     {
         try {
             /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new stdClass(), new GetRequestHandler());
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->getService()->getRoots());
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
@@ -60,9 +58,9 @@ class CategoryController extends BaseController
     {
         try {
             /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new stdClass(), new GetRequestHandler());
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->toTree($this->getService()->getAll()));
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
@@ -77,10 +75,10 @@ class CategoryController extends BaseController
     {
         try {
             /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new stdClass(), new GetRequestHandler());
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $category = $this->getService()->getCategory($categoryId);
             $request->successRequest($category);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
@@ -94,10 +92,10 @@ class CategoryController extends BaseController
     {
         try {
             /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new stdClass(), new GetRequestHandler());
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $descendants = $this->getService()->getDescendants($categoryId);
             $request->successRequest($this->toTree($descendants));
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
@@ -111,9 +109,9 @@ class CategoryController extends BaseController
     {
         try {
             /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new stdClass(), new GetRequestHandler());
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->getService()->getChildren($categoryId));
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
@@ -127,10 +125,10 @@ class CategoryController extends BaseController
     {
         try {
             /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new stdClass(), new GetRequestHandler());
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $parents = $this->getService()->getParents($categoryId);
             $request->successRequest($this->toTree($parents));
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
@@ -144,9 +142,9 @@ class CategoryController extends BaseController
     {
         try {
             /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new stdClass(), new GetRequestHandler());
+            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
             $request->successRequest($this->getService()->getParent($categoryId));
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
@@ -167,7 +165,7 @@ class CategoryController extends BaseController
             }
 
             $request->successRequest($this->getService()->create($request->toArray()));
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
@@ -188,7 +186,7 @@ class CategoryController extends BaseController
             }
 
             $request->successRequest($this->getService()->update($categoryId, $request->toArray()));
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
@@ -202,10 +200,10 @@ class CategoryController extends BaseController
     {
         try {
             /** @var DeleteRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new stdClass(), new DeleteRequestHandler());
+            $request = $this->getJsonMapper()->map(new \stdClass(), new DeleteRequestHandler());
             $this->getService()->delete($categoryId);
             $request->successRequest('Deleted');
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }

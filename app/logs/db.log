@@ -4031,3 +4031,198 @@ UNION ALL SELECT c.category_id,c.category_parent_id,c.category_name,c.category_o
  WHERE c7.is_deleted = :EFY0 AND c7.category_id = :ORN0 AND c7.category_vendor_id = :LFW0 ORDER BY c7.category_order ASC;
 [Fri, 05 Apr 19 10:41:42 +0000][INFO] SELECT c6.category_id,c6.category_parent_id,c6.category_name,c6.category_order,c6.category_vendor_id,c6.category_user_id,c6.category_url,c6.created_at,c6.updated_at,c6.deleted_at,c6.is_deleted FROM category AS c6
  WHERE c6.is_deleted = :FQC0 AND c6.category_id = :LZE0 AND c6.category_vendor_id = :MUI0 ORDER BY c6.category_order ASC;
+[Fri, 05 Apr 19 11:08:45 +0000][INFO] SELECT c9.category_id,c9.category_parent_id,c9.category_name,c9.category_order,c9.category_vendor_id,c9.category_user_id,c9.category_url,c9.created_at,c9.updated_at,c9.deleted_at,c9.is_deleted FROM category AS c9
+ WHERE c9.is_deleted = :KUE0 AND c9.category_id = :EUG0 AND c9.category_vendor_id = :VPM0 ORDER BY c9.category_order ASC;
+[Fri, 05 Apr 19 11:08:49 +0000][INFO] SELECT c2.category_id,c2.category_parent_id,c2.category_name,c2.category_order,c2.category_vendor_id,c2.category_user_id,c2.category_url,c2.created_at,c2.updated_at,c2.deleted_at,c2.is_deleted FROM category AS c2
+ WHERE c2.is_deleted = :JNY0 AND c2.category_id = :CKY0 AND c2.category_vendor_id = :XVN0 ORDER BY c2.category_order ASC;
+[Fri, 05 Apr 19 11:08:54 +0000][INFO] SELECT c7.category_id,c7.category_parent_id,c7.category_name,c7.category_order,c7.category_vendor_id,c7.category_user_id,c7.category_url,c7.created_at,c7.updated_at,c7.deleted_at,c7.is_deleted FROM category AS c7
+ WHERE c7.is_deleted = :LBK0 AND c7.category_id = :CGQ0 AND c7.category_vendor_id = :GSZ0 ORDER BY c7.category_order ASC;
+[Fri, 05 Apr 19 11:10:28 +0000][INFO] SELECT c5.category_id,c5.category_parent_id,c5.category_name,c5.category_order,c5.category_vendor_id,c5.category_user_id,c5.category_url,c5.created_at,c5.updated_at,c5.deleted_at,c5.is_deleted FROM category AS c5
+ WHERE c5.is_deleted = :WAO0 AND c5.category_id = :GQU0 AND c5.category_vendor_id = :YWH0 ORDER BY c5.category_order ASC;
+[Fri, 05 Apr 19 11:10:31 +0000][INFO] SELECT c6.category_id,c6.category_parent_id,c6.category_name,c6.category_order,c6.category_vendor_id,c6.category_user_id,c6.category_url,c6.created_at,c6.updated_at,c6.deleted_at,c6.is_deleted FROM category AS c6
+ WHERE c6.is_deleted = :UNB0 AND c6.category_id = :THD0 AND c6.category_vendor_id = :DFW0 ORDER BY c6.category_order ASC;
+[Fri, 05 Apr 19 11:11:11 +0000][INFO] SELECT c7.category_id,c7.category_parent_id,c7.category_name,c7.category_order,c7.category_vendor_id,c7.category_user_id,c7.category_url,c7.created_at,c7.updated_at,c7.deleted_at,c7.is_deleted FROM category AS c7
+ WHERE c7.is_deleted = :VZN0 AND c7.category_id = :QBX0 AND c7.category_vendor_id = :GEM0 ORDER BY c7.category_order ASC;
+[Fri, 05 Apr 19 11:11:56 +0000][INFO] SELECT c8.category_id,c8.category_parent_id,c8.category_name,c8.category_order,c8.category_vendor_id,c8.category_user_id,c8.category_url,c8.created_at,c8.updated_at,c8.deleted_at,c8.is_deleted FROM category AS c8
+ WHERE c8.is_deleted = :BHW0 AND c8.category_id = :YZP0 AND c8.category_vendor_id = :TWQ0 ORDER BY c8.category_order ASC;
+[Fri, 05 Apr 19 11:13:39 +0000][INFO] SELECT c3.category_id,c3.category_parent_id,c3.category_name,c3.category_order,c3.category_vendor_id,c3.category_user_id,c3.category_url,c3.created_at,c3.updated_at,c3.deleted_at,c3.is_deleted FROM category AS c3
+ WHERE c3.is_deleted = :JFE0 AND c3.category_id = :SJP0 AND c3.category_vendor_id = :LMF0 ORDER BY c3.category_order ASC;
+[Fri, 05 Apr 19 21:43:57 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 05 Apr 19 21:43:57 +0000][INFO] DESCRIBE `category`
+[Fri, 05 Apr 19 21:43:57 +0000][INFO] SELECT c6.category_id,c6.category_parent_id,c6.category_name,c6.category_order,c6.category_vendor_id,c6.category_user_id,c6.category_url,c6.created_at,c6.updated_at,c6.deleted_at,c6.is_deleted FROM category AS c6
+ WHERE c6.is_deleted = :JPX0 AND c6.category_id = :FEW0 AND c6.category_vendor_id = :HRS0 ORDER BY c6.category_order ASC;
+[Fri, 05 Apr 19 21:44:55 +0000][INFO] SELECT c6.category_id,c6.category_parent_id,c6.category_name,c6.category_order,c6.category_vendor_id,c6.category_user_id,c6.category_url,c6.created_at,c6.updated_at,c6.deleted_at,c6.is_deleted FROM category AS c6
+ WHERE c6.is_deleted = :GRJ0 AND c6.category_id = :YEK0 AND c6.category_vendor_id = :FLY0 ORDER BY c6.category_order ASC;
+[Fri, 05 Apr 19 21:45:47 +0000][INFO] SELECT c5.category_id,c5.category_parent_id,c5.category_name,c5.category_order,c5.category_vendor_id,c5.category_user_id,c5.category_url,c5.created_at,c5.updated_at,c5.deleted_at,c5.is_deleted FROM category AS c5
+ WHERE c5.is_deleted = :MZE0 AND c5.category_id = :VYE0 AND c5.category_vendor_id = :ACY0 ORDER BY c5.category_order ASC;
+[Fri, 05 Apr 19 21:46:39 +0000][INFO] SELECT c4.category_id,c4.category_parent_id,c4.category_name,c4.category_order,c4.category_vendor_id,c4.category_user_id,c4.category_url,c4.created_at,c4.updated_at,c4.deleted_at,c4.is_deleted FROM category AS c4
+ WHERE c4.is_deleted = :PAT0 AND c4.category_id = :WDK0 AND c4.category_vendor_id = :JWZ0 ORDER BY c4.category_order ASC;
+[Fri, 05 Apr 19 21:47:10 +0000][INFO] SELECT c3.category_id,c3.category_parent_id,c3.category_name,c3.category_order,c3.category_vendor_id,c3.category_user_id,c3.category_url,c3.created_at,c3.updated_at,c3.deleted_at,c3.is_deleted FROM category AS c3
+ WHERE c3.is_deleted = :HJZ0 AND c3.category_id = :MPF0 AND c3.category_vendor_id = :GVC0 ORDER BY c3.category_order ASC;
+[Fri, 05 Apr 19 21:47:41 +0000][INFO] SELECT c6.category_id,c6.category_parent_id,c6.category_name,c6.category_order,c6.category_vendor_id,c6.category_user_id,c6.category_url,c6.created_at,c6.updated_at,c6.deleted_at,c6.is_deleted FROM category AS c6
+ WHERE c6.is_deleted = :GMC0 AND c6.category_id = :KZR0 AND c6.category_vendor_id = :LDK0 ORDER BY c6.category_order ASC;
+[Fri, 05 Apr 19 21:48:27 +0000][INFO] SELECT c9.category_id,c9.category_parent_id,c9.category_name,c9.category_order,c9.category_vendor_id,c9.category_user_id,c9.category_url,c9.created_at,c9.updated_at,c9.deleted_at,c9.is_deleted FROM category AS c9
+ WHERE c9.is_deleted = :DBI0 AND c9.category_id = :PAF0 AND c9.category_vendor_id = :LJT0 ORDER BY c9.category_order ASC;
+[Fri, 05 Apr 19 21:48:57 +0000][INFO] SELECT c7.category_id,c7.category_parent_id,c7.category_name,c7.category_order,c7.category_vendor_id,c7.category_user_id,c7.category_url,c7.created_at,c7.updated_at,c7.deleted_at,c7.is_deleted FROM category AS c7
+ WHERE c7.is_deleted = :FHN0 AND c7.category_id = :PKV0 AND c7.category_vendor_id = :OYC0 ORDER BY c7.category_order ASC;
+[Fri, 05 Apr 19 21:50:25 +0000][INFO] SELECT c5.category_id,c5.category_parent_id,c5.category_name,c5.category_order,c5.category_vendor_id,c5.category_user_id,c5.category_url,c5.created_at,c5.updated_at,c5.deleted_at,c5.is_deleted FROM category AS c5
+ WHERE c5.is_deleted = :DGE0 AND c5.category_id = :TAK0 AND c5.category_vendor_id = :QLP0 ORDER BY c5.category_order ASC;
+[Fri, 05 Apr 19 21:51:56 +0000][INFO] SELECT c2.category_id,c2.category_parent_id,c2.category_name,c2.category_order,c2.category_vendor_id,c2.category_user_id,c2.category_url,c2.created_at,c2.updated_at,c2.deleted_at,c2.is_deleted FROM category AS c2
+ WHERE c2.is_deleted = :ZKB0 AND c2.category_id = :OLF0 AND c2.category_vendor_id = :STU0 ORDER BY c2.category_order ASC;
+[Fri, 05 Apr 19 21:56:08 +0000][INFO] SELECT c6.category_id,c6.category_parent_id,c6.category_name,c6.category_order,c6.category_vendor_id,c6.category_user_id,c6.category_url,c6.created_at,c6.updated_at,c6.deleted_at,c6.is_deleted FROM category AS c6
+ WHERE c6.is_deleted = :YPA0 AND c6.category_id = :VUE0 AND c6.category_vendor_id = :VPJ0 ORDER BY c6.category_order ASC;
+[Sat, 06 Apr 19 06:41:42 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Sat, 06 Apr 19 06:41:42 +0000][INFO] DESCRIBE `category`
+[Sat, 06 Apr 19 06:41:42 +0000][INFO] SELECT c4.category_id,c4.category_parent_id,c4.category_name,c4.category_order,c4.category_vendor_id,c4.category_user_id,c4.category_url,c4.created_at,c4.updated_at,c4.deleted_at,c4.is_deleted FROM category AS c4
+ WHERE c4.is_deleted = :QAL0 AND c4.category_id = :CGA0 AND c4.category_vendor_id = :NYJ0 ORDER BY c4.category_order ASC;
+[Sat, 06 Apr 19 06:41:58 +0000][INFO] SELECT c9.category_id,c9.category_parent_id,c9.category_name,c9.category_order,c9.category_vendor_id,c9.category_user_id,c9.category_url,c9.created_at,c9.updated_at,c9.deleted_at,c9.is_deleted FROM category AS c9
+ WHERE c9.is_deleted = :QDV0 AND c9.category_id = :CFR0 AND c9.category_vendor_id = :DEJ0 ORDER BY c9.category_order ASC;
+[Sat, 06 Apr 19 06:44:32 +0000][INFO] SELECT c9.category_id,c9.category_parent_id,c9.category_name,c9.category_order,c9.category_vendor_id,c9.category_user_id,c9.category_url,c9.created_at,c9.updated_at,c9.deleted_at,c9.is_deleted FROM category AS c9
+ WHERE c9.is_deleted = :YJF0 AND c9.category_id = :HPC0 AND c9.category_vendor_id = :XBQ0 ORDER BY c9.category_order ASC;
+[Sat, 06 Apr 19 06:44:44 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Sat, 06 Apr 19 06:44:44 +0000][INFO] DESCRIBE `category`
+[Sat, 06 Apr 19 06:44:44 +0000][INFO] SELECT c7.category_id,c7.category_parent_id,c7.category_name,c7.category_order,c7.category_vendor_id,c7.category_user_id,c7.category_url,c7.created_at,c7.updated_at,c7.deleted_at,c7.is_deleted FROM category AS c7
+ WHERE c7.is_deleted = :ONB0 AND c7.category_id = :SAG0 AND c7.category_vendor_id = :ZEI0 ORDER BY c7.category_order ASC;
+[Sat, 06 Apr 19 06:45:46 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Sat, 06 Apr 19 06:45:46 +0000][INFO] DESCRIBE `category`
+[Sat, 06 Apr 19 06:45:46 +0000][INFO] SELECT c1.category_id,c1.category_parent_id,c1.category_name,c1.category_order,c1.category_vendor_id,c1.category_user_id,c1.category_url,c1.created_at,c1.updated_at,c1.deleted_at,c1.is_deleted FROM category AS c1
+ WHERE c1.is_deleted = :ATH0 AND c1.category_id = :DJY0 AND c1.category_vendor_id = :QFK0 ORDER BY c1.category_order ASC;
+[Sat, 06 Apr 19 06:46:28 +0000][INFO] SELECT c3.category_id,c3.category_parent_id,c3.category_name,c3.category_order,c3.category_vendor_id,c3.category_user_id,c3.category_url,c3.created_at,c3.updated_at,c3.deleted_at,c3.is_deleted FROM category AS c3
+ WHERE c3.is_deleted = :QIC0 AND c3.category_id = :HGX0 AND c3.category_vendor_id = :FOR0 ORDER BY c3.category_order ASC;
+[Sat, 06 Apr 19 06:47:15 +0000][INFO] SELECT c0.category_id,c0.category_parent_id,c0.category_name,c0.category_order,c0.category_vendor_id,c0.category_user_id,c0.category_url,c0.created_at,c0.updated_at,c0.deleted_at,c0.is_deleted FROM category AS c0
+ WHERE c0.is_deleted = :BPY0 AND c0.category_id = :KRE0 AND c0.category_vendor_id = :URW0 ORDER BY c0.category_order ASC;
+[Sat, 06 Apr 19 06:52:43 +0000][INFO] SELECT c6.category_id,c6.category_parent_id,c6.category_name,c6.category_order,c6.category_vendor_id,c6.category_user_id,c6.category_url,c6.created_at,c6.updated_at,c6.deleted_at,c6.is_deleted FROM category AS c6
+ WHERE c6.is_deleted = :IJQ0 AND c6.category_id = :ZRP0 AND c6.category_vendor_id = :OEF0 ORDER BY c6.category_order ASC;
+[Sat, 06 Apr 19 06:53:37 +0000][INFO] SELECT c9.category_id,c9.category_parent_id,c9.category_name,c9.category_order,c9.category_vendor_id,c9.category_user_id,c9.category_url,c9.created_at,c9.updated_at,c9.deleted_at,c9.is_deleted FROM category AS c9
+ WHERE c9.is_deleted = :IDK0 AND c9.category_id = :LXN0 AND c9.category_vendor_id = :PRH0 ORDER BY c9.category_order ASC;
+[Sat, 06 Apr 19 06:53:54 +0000][INFO] SELECT c1.category_id,c1.category_parent_id,c1.category_name,c1.category_order,c1.category_vendor_id,c1.category_user_id,c1.category_url,c1.created_at,c1.updated_at,c1.deleted_at,c1.is_deleted FROM category AS c1
+ WHERE c1.is_deleted = :KRZ0 AND c1.category_id = :ZRO0 AND c1.category_vendor_id = :EDO0 ORDER BY c1.category_order ASC;
+[Sat, 06 Apr 19 06:55:24 +0000][INFO] SELECT c2.category_id,c2.category_parent_id,c2.category_name,c2.category_order,c2.category_vendor_id,c2.category_user_id,c2.category_url,c2.created_at,c2.updated_at,c2.deleted_at,c2.is_deleted FROM category AS c2
+ WHERE c2.is_deleted = :YQF0 AND c2.category_id = :OUT0 AND c2.category_vendor_id = :XNU0 ORDER BY c2.category_order ASC;
+[Sat, 06 Apr 19 06:56:37 +0000][INFO] SELECT c8.category_id,c8.category_parent_id,c8.category_name,c8.category_order,c8.category_vendor_id,c8.category_user_id,c8.category_url,c8.created_at,c8.updated_at,c8.deleted_at,c8.is_deleted FROM category AS c8
+ WHERE c8.is_deleted = :NDK0 AND c8.category_id = :LEA0 AND c8.category_vendor_id = :UNX0 ORDER BY c8.category_order ASC;
+[Sat, 06 Apr 19 07:15:12 +0000][INFO] SELECT c7.category_id,c7.category_parent_id,c7.category_name,c7.category_order,c7.category_vendor_id,c7.category_user_id,c7.category_url,c7.created_at,c7.updated_at,c7.deleted_at,c7.is_deleted FROM category AS c7
+ WHERE c7.is_deleted = :NHV0 AND c7.category_id = :MSW0 AND c7.category_vendor_id = :HKI0 ORDER BY c7.category_order ASC;
+[Sat, 06 Apr 19 08:15:41 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Sat, 06 Apr 19 08:15:41 +0000][INFO] DESCRIBE `category`
+[Sat, 06 Apr 19 08:15:41 +0000][INFO] SELECT c5.category_id,c5.category_parent_id,c5.category_name,c5.category_order,c5.category_vendor_id,c5.category_user_id,c5.category_url,c5.created_at,c5.updated_at,c5.deleted_at,c5.is_deleted FROM category AS c5
+ WHERE c5.is_deleted = :VAI0 AND c5.category_id = :OTC0 AND c5.category_vendor_id = :NTA0 ORDER BY c5.category_order ASC;
+[Sat, 06 Apr 19 08:20:16 +0000][INFO] SELECT c1.category_id,c1.category_parent_id,c1.category_name,c1.category_order,c1.category_vendor_id,c1.category_user_id,c1.category_url,c1.created_at,c1.updated_at,c1.deleted_at,c1.is_deleted FROM category AS c1
+ WHERE c1.is_deleted = :ETY0 AND c1.category_id = :HKT0 AND c1.category_vendor_id = :HBK0 ORDER BY c1.category_order ASC;
+[Sat, 06 Apr 19 08:33:26 +0000][INFO] SELECT c7.category_id,c7.category_parent_id,c7.category_name,c7.category_order,c7.category_vendor_id,c7.category_user_id,c7.category_url,c7.created_at,c7.updated_at,c7.deleted_at,c7.is_deleted FROM category AS c7
+ WHERE c7.is_deleted = :UFI0 AND c7.category_id = :FPV0 AND c7.category_vendor_id = :ZKI0 ORDER BY c7.category_order ASC;
+[Sat, 06 Apr 19 14:39:55 +0000][INFO] SELECT c9.category_id,c9.category_parent_id,c9.category_name,c9.category_order,c9.category_vendor_id,c9.category_user_id,c9.category_url,c9.created_at,c9.updated_at,c9.deleted_at,c9.is_deleted FROM category AS c9
+ WHERE c9.is_deleted = :QIP0 AND c9.category_id = :PXZ0 AND c9.category_vendor_id = :LNX0 ORDER BY c9.category_order ASC;
+[Sat, 06 Apr 19 14:57:21 +0000][INFO] SELECT c4.category_id,c4.category_parent_id,c4.category_name,c4.category_order,c4.category_vendor_id,c4.category_user_id,c4.category_url,c4.created_at,c4.updated_at,c4.deleted_at,c4.is_deleted FROM category AS c4
+ WHERE c4.is_deleted = :QBD0 AND c4.category_id = :UZY0 AND c4.category_vendor_id = :KOU0 ORDER BY c4.category_order ASC;
+[Sat, 06 Apr 19 15:04:00 +0000][INFO] SELECT c0.category_id,c0.category_parent_id,c0.category_name,c0.category_order,c0.category_vendor_id,c0.category_user_id,c0.category_url,c0.created_at,c0.updated_at,c0.deleted_at,c0.is_deleted FROM category AS c0
+ WHERE c0.is_deleted = :VHU0 AND c0.category_id = :BNA0 AND c0.category_vendor_id = :EXJ0 ORDER BY c0.category_order ASC;
+[Sat, 06 Apr 19 15:04:08 +0000][INFO] SELECT c4.category_id,c4.category_parent_id,c4.category_name,c4.category_order,c4.category_vendor_id,c4.category_user_id,c4.category_url,c4.created_at,c4.updated_at,c4.deleted_at,c4.is_deleted FROM category AS c4
+ WHERE c4.is_deleted = :HBL0 AND c4.category_id = :LJX0 AND c4.category_vendor_id = :PGH0 ORDER BY c4.category_order ASC;
+[Sat, 06 Apr 19 15:04:15 +0000][INFO] SELECT c6.category_id,c6.category_parent_id,c6.category_name,c6.category_order,c6.category_vendor_id,c6.category_user_id,c6.category_url,c6.created_at,c6.updated_at,c6.deleted_at,c6.is_deleted FROM category AS c6
+ WHERE c6.is_deleted = :IWU0 AND c6.category_id = :ABS0 AND c6.category_vendor_id = :WQB0 ORDER BY c6.category_order ASC;
+[Sat, 06 Apr 19 15:04:26 +0000][INFO] SELECT c7.category_id,c7.category_parent_id,c7.category_name,c7.category_order,c7.category_vendor_id,c7.category_user_id,c7.category_url,c7.created_at,c7.updated_at,c7.deleted_at,c7.is_deleted FROM category AS c7
+ WHERE c7.is_deleted = :HXQ0 AND c7.category_id = :TPL0 AND c7.category_vendor_id = :MKS0 ORDER BY c7.category_order ASC;
+[Sat, 06 Apr 19 20:45:09 +0000][INFO] SELECT c3.category_id,c3.category_parent_id,c3.category_name,c3.category_order,c3.category_vendor_id,c3.category_user_id,c3.category_url,c3.created_at,c3.updated_at,c3.deleted_at,c3.is_deleted FROM category AS c3
+ WHERE c3.is_deleted = :PAF0 AND c3.category_id = :LCK0 AND c3.category_vendor_id = :BXE0 ORDER BY c3.category_order ASC;
+[Mon, 08 Apr 19 21:26:23 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Mon, 08 Apr 19 21:26:23 +0000][INFO] DESCRIBE `category`
+[Mon, 08 Apr 19 21:26:23 +0000][INFO] SELECT c8.category_id,c8.category_parent_id,c8.category_name,c8.category_order,c8.category_vendor_id,c8.category_user_id,c8.category_url,c8.created_at,c8.updated_at,c8.deleted_at,c8.is_deleted FROM category AS c8
+ WHERE c8.is_deleted = :VFU0 AND c8.category_vendor_id = :OCS0 ORDER BY c8.category_order ASC;
+[Wed, 17 Apr 19 17:16:30 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Wed, 17 Apr 19 17:16:30 +0000][INFO] DESCRIBE `category`
+[Wed, 17 Apr 19 17:16:30 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Wed, 17 Apr 19 17:16:30 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Wed, 17 Apr 19 17:16:30 +0000][INFO] INSERT INTO `category` (`category_id`, `category_parent_id`, `category_name`, `category_order`, `category_vendor_id`, `category_user_id`, `category_url`, `created_at`, `updated_at`, `deleted_at`, `is_deleted`) VALUES (?, DEFAULT, ?, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT)
+[Wed, 17 Apr 19 17:31:12 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Wed, 17 Apr 19 17:31:12 +0000][INFO] DESCRIBE `category`
+[Wed, 17 Apr 19 17:31:12 +0000][INFO] SELECT c8.category_id,c8.category_parent_id,c8.category_name,c8.category_order,c8.category_vendor_id,c8.category_user_id,c8.category_url,c8.created_at,c8.updated_at,c8.deleted_at,c8.is_deleted FROM category AS c8
+ WHERE c8.is_deleted = :LNG0 AND c8.category_vendor_id = :XHC0 ORDER BY c8.category_order ASC;
+[Fri, 26 Jul 19 16:02:05 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:02:05 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:02:05 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 16:02:05 +0000][INFO] SELECT `category`.`category_id`, `category`.`category_parent_id`, `category`.`category_name`, `category`.`category_order`, `category`.`category_vendor_id`, `category`.`category_user_id`, `category`.`category_url`, `category`.`created_at`, `category`.`updated_at`, `category`.`deleted_at`, `category`.`is_deleted` FROM `category` WHERE (`category`.`category_id` = :value) AND (`category`.`category_vendor_id` = :vendorId)
+[Fri, 26 Jul 19 16:02:05 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 16:02:05 +0000][INFO] INSERT INTO `category` (`category_id`, `category_parent_id`, `category_name`, `category_order`, `category_vendor_id`, `category_user_id`, `category_url`, `created_at`, `updated_at`, `deleted_at`, `is_deleted`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT)
+[Fri, 26 Jul 19 16:02:11 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:02:11 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:02:11 +0000][INFO] SELECT c0.category_id,c0.category_parent_id,c0.category_name,c0.category_order,c0.category_vendor_id,c0.category_user_id,c0.category_url,c0.created_at,c0.updated_at,c0.deleted_at,c0.is_deleted FROM category AS c0
+ WHERE c0.is_deleted = :CWB0 AND c0.category_vendor_id = :VHD0 ORDER BY c0.category_order ASC;
+[Fri, 26 Jul 19 16:11:46 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:11:46 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:11:46 +0000][INFO] SELECT c1.category_id,c1.category_parent_id,c1.category_name,c1.category_order,c1.category_vendor_id,c1.category_user_id,c1.category_url,c1.created_at,c1.updated_at,c1.deleted_at,c1.is_deleted FROM category AS c1
+ WHERE c1.is_deleted = :UBY0 AND c1.category_vendor_id = :BGP0 ORDER BY c1.category_order ASC;
+[Fri, 26 Jul 19 16:21:05 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:21:05 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:21:05 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 16:21:05 +0000][INFO] SELECT `category`.`category_id`, `category`.`category_parent_id`, `category`.`category_name`, `category`.`category_order`, `category`.`category_vendor_id`, `category`.`category_user_id`, `category`.`category_url`, `category`.`created_at`, `category`.`updated_at`, `category`.`deleted_at`, `category`.`is_deleted` FROM `category` WHERE (`category`.`category_id` = :value) AND (`category`.`category_vendor_id` = :vendorId)
+[Fri, 26 Jul 19 16:21:05 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 16:21:05 +0000][INFO] INSERT INTO `category` (`category_id`, `category_parent_id`, `category_name`, `category_order`, `category_vendor_id`, `category_user_id`, `category_url`, `created_at`, `updated_at`, `deleted_at`, `is_deleted`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT)
+[Fri, 26 Jul 19 16:21:08 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:21:08 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:21:08 +0000][INFO] SELECT c1.category_id,c1.category_parent_id,c1.category_name,c1.category_order,c1.category_vendor_id,c1.category_user_id,c1.category_url,c1.created_at,c1.updated_at,c1.deleted_at,c1.is_deleted FROM category AS c1
+ WHERE c1.is_deleted = :BCA0 AND c1.category_vendor_id = :PYD0 ORDER BY c1.category_order ASC;
+[Fri, 26 Jul 19 16:27:52 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:27:52 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:27:52 +0000][INFO] SELECT c5.category_id,c5.category_parent_id,c5.category_name,c5.category_order,c5.category_vendor_id,c5.category_user_id,c5.category_url,c5.created_at,c5.updated_at,c5.deleted_at,c5.is_deleted FROM category AS c5
+ WHERE c5.is_deleted = :DJY0 AND c5.category_id = :YDT0 AND c5.category_vendor_id = :YSK0 ORDER BY c5.category_order ASC;
+[Fri, 26 Jul 19 16:27:52 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 16:27:52 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 16:27:52 +0000][INFO] UPDATE `category` SET `category_parent_id` = null, `category_name` = ?, `category_order` = ?, `category_vendor_id` = ?, `category_user_id` = ?, `category_url` = ?, `created_at` = ?, `updated_at` = ?, `deleted_at` = null, `is_deleted` = ? WHERE `category_id` = ?
+[Fri, 26 Jul 19 16:28:05 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:28:05 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:28:05 +0000][INFO] SELECT c7.category_id,c7.category_parent_id,c7.category_name,c7.category_order,c7.category_vendor_id,c7.category_user_id,c7.category_url,c7.created_at,c7.updated_at,c7.deleted_at,c7.is_deleted FROM category AS c7
+ WHERE c7.is_deleted = :DHC0 AND c7.category_vendor_id = :NWV0 ORDER BY c7.category_order ASC;
+[Fri, 26 Jul 19 16:43:49 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:43:49 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:43:49 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 16:43:49 +0000][INFO] SELECT `category`.`category_id`, `category`.`category_parent_id`, `category`.`category_name`, `category`.`category_order`, `category`.`category_vendor_id`, `category`.`category_user_id`, `category`.`category_url`, `category`.`created_at`, `category`.`updated_at`, `category`.`deleted_at`, `category`.`is_deleted` FROM `category` WHERE (`category`.`category_id` = :value) AND (`category`.`category_vendor_id` = :vendorId)
+[Fri, 26 Jul 19 16:43:49 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 16:43:57 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:43:57 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:43:57 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 16:43:57 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 16:43:57 +0000][INFO] INSERT INTO `category` (`category_id`, `category_parent_id`, `category_name`, `category_order`, `category_vendor_id`, `category_user_id`, `category_url`, `created_at`, `updated_at`, `deleted_at`, `is_deleted`) VALUES (?, DEFAULT, ?, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT)
+[Fri, 26 Jul 19 16:44:17 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:44:17 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:44:17 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 16:44:17 +0000][INFO] SELECT `category`.`category_id`, `category`.`category_parent_id`, `category`.`category_name`, `category`.`category_order`, `category`.`category_vendor_id`, `category`.`category_user_id`, `category`.`category_url`, `category`.`created_at`, `category`.`updated_at`, `category`.`deleted_at`, `category`.`is_deleted` FROM `category` WHERE (`category`.`category_id` = :value) AND (`category`.`category_vendor_id` = :vendorId)
+[Fri, 26 Jul 19 16:44:17 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 16:44:17 +0000][INFO] INSERT INTO `category` (`category_id`, `category_parent_id`, `category_name`, `category_order`, `category_vendor_id`, `category_user_id`, `category_url`, `created_at`, `updated_at`, `deleted_at`, `is_deleted`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT)
+[Fri, 26 Jul 19 16:44:20 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 16:44:20 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 16:44:20 +0000][INFO] SELECT c5.category_id,c5.category_parent_id,c5.category_name,c5.category_order,c5.category_vendor_id,c5.category_user_id,c5.category_url,c5.created_at,c5.updated_at,c5.deleted_at,c5.is_deleted FROM category AS c5
+ WHERE c5.is_deleted = :VPF0 AND c5.category_vendor_id = :IZB0 ORDER BY c5.category_order ASC;
+[Fri, 26 Jul 19 18:08:17 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 18:08:17 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 18:08:17 +0000][INFO] SELECT c5.category_id,c5.category_parent_id,c5.category_name,c5.category_order,c5.category_vendor_id,c5.category_user_id,c5.category_url,c5.created_at,c5.updated_at,c5.deleted_at,c5.is_deleted FROM category AS c5
+ WHERE c5.is_deleted = :VGM0 AND c5.category_id = :UEO0 AND c5.category_vendor_id = :VLH0 ORDER BY c5.category_order ASC;
+[Fri, 26 Jul 19 18:08:17 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 18:08:17 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 18:08:17 +0000][INFO] UPDATE `category` SET `category_parent_id` = null, `category_name` = ?, `category_order` = ?, `category_vendor_id` = ?, `category_user_id` = ?, `category_url` = ?, `created_at` = ?, `updated_at` = ?, `deleted_at` = null, `is_deleted` = ? WHERE `category_id` = ?
+[Fri, 26 Jul 19 18:08:33 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 18:08:33 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 18:08:33 +0000][INFO] SELECT c9.category_id,c9.category_parent_id,c9.category_name,c9.category_order,c9.category_vendor_id,c9.category_user_id,c9.category_url,c9.created_at,c9.updated_at,c9.deleted_at,c9.is_deleted FROM category AS c9
+ WHERE c9.is_deleted = :QFG0 AND c9.category_id = :HZV0 AND c9.category_vendor_id = :JBA0 ORDER BY c9.category_order ASC;
+[Fri, 26 Jul 19 18:08:33 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 18:08:33 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 18:08:33 +0000][INFO] UPDATE `category` SET `category_parent_id` = null, `category_name` = ?, `category_order` = ?, `category_vendor_id` = ?, `category_user_id` = ?, `category_url` = ?, `created_at` = ?, `updated_at` = ?, `deleted_at` = null, `is_deleted` = ? WHERE `category_id` = ?
+[Fri, 26 Jul 19 18:10:25 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 18:10:25 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 18:10:25 +0000][INFO] SELECT c1.category_id,c1.category_parent_id,c1.category_name,c1.category_order,c1.category_vendor_id,c1.category_user_id,c1.category_url,c1.created_at,c1.updated_at,c1.deleted_at,c1.is_deleted FROM category AS c1
+ WHERE c1.is_deleted = :HKF0 AND c1.category_id = :LJS0 AND c1.category_vendor_id = :NKY0 ORDER BY c1.category_order ASC;
+[Fri, 26 Jul 19 18:10:25 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 18:10:25 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 18:10:33 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 18:10:33 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 18:10:33 +0000][INFO] SELECT c4.category_id,c4.category_parent_id,c4.category_name,c4.category_order,c4.category_vendor_id,c4.category_user_id,c4.category_url,c4.created_at,c4.updated_at,c4.deleted_at,c4.is_deleted FROM category AS c4
+ WHERE c4.is_deleted = :RTV0 AND c4.category_id = :DUN0 AND c4.category_vendor_id = :FDV0 ORDER BY c4.category_order ASC;
+[Fri, 26 Jul 19 18:10:33 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 18:10:33 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 18:10:47 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 18:10:47 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 18:10:47 +0000][INFO] SELECT c0.category_id,c0.category_parent_id,c0.category_name,c0.category_order,c0.category_vendor_id,c0.category_user_id,c0.category_url,c0.created_at,c0.updated_at,c0.deleted_at,c0.is_deleted FROM category AS c0
+ WHERE c0.is_deleted = :PCF0 AND c0.category_id = :WBE0 AND c0.category_vendor_id = :MHL0 ORDER BY c0.category_order ASC;
+[Fri, 26 Jul 19 18:10:47 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 18:10:47 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 18:10:47 +0000][INFO] UPDATE `category` SET `category_parent_id` = null, `category_name` = ?, `category_order` = ?, `category_vendor_id` = ?, `category_user_id` = ?, `category_url` = ?, `created_at` = ?, `updated_at` = ?, `deleted_at` = null, `is_deleted` = ? WHERE `category_id` = ?

@@ -38,7 +38,7 @@ return new Config([
 
     'cache' => [
         'category_cache' => [
-            'host' => '172.17.0.4',
+            'host' => '172.17.0.2',
             'port' => 6379,
             'auth' => '',
             'persistent' => true,
@@ -47,7 +47,7 @@ return new Config([
         ],
 
         'attributes_cache' => [
-            'host' => '172.17.0.4',
+            'host' => '172.17.0.2',
             'port' => 6379,
             'auth' => '',
             'persistent' => true,

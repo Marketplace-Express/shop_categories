@@ -48,9 +48,9 @@ class DocumentMapper extends Document
      */
     public function makeDocument(string $vendorId, string $name, ?string $url)
     {
-        $this->vendorId = new TextField('vendor_id', $vendorId);
-        $this->name = new TextField('name', $name);
-        $this->url = new TextField('url', $url);
+        $this->vendorId = new TextField('categoryVendorId', $vendorId);
+        $this->name = new TextField('categoryName', $name);
+        $this->url = new TextField('categoryUrl', $url);
         return $this;
     }
 }

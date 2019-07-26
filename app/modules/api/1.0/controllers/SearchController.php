@@ -34,9 +34,9 @@ class SearchController extends BaseController
         try {
             /** @var AutocompleteRequestHandler $request */
             $request = $this->getJsonMapper()->map($this->queryStringToObject($this->request->getQuery()), new AutocompleteRequestHandler());
-            if (!$request->isValid()) {
-                $request->invalidRequest();
-            }
+//            if (!$request->isValid()) {
+//                $request->invalidRequest();
+//            }
             $request->successRequest($this->getService()->autocomplete($request->toArray()));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);

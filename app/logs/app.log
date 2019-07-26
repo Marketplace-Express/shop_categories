@@ -9,3 +9,20 @@
 [Fri, 05 Apr 19 10:10:59 +0000][ERROR] {"categoryName":"Category name already exists"}
 [Fri, 05 Apr 19 10:11:43 +0000][ERROR] {"name":"Invalid category name"}
 [Fri, 05 Apr 19 11:00:02 +0000][ERROR] {"name":"We only support English category name"}
+[Fri, 05 Apr 19 21:42:27 +0000][ERROR] SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+[Fri, 05 Apr 19 21:42:56 +0000][ERROR] SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+[Fri, 05 Apr 19 21:43:30 +0000][ERROR] SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+[Sat, 06 Apr 19 06:24:48 +0000][ERROR] SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+[Sat, 06 Apr 19 06:25:30 +0000][ERROR] SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+[Sat, 06 Apr 19 06:38:43 +0000][ERROR] SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+[Sat, 06 Apr 19 06:38:59 +0000][ERROR] SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+[Sat, 06 Apr 19 06:39:18 +0000][ERROR] SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+[Mon, 08 Apr 19 21:21:40 +0000][ERROR] Category not found
+[Mon, 08 Apr 19 21:22:57 +0000][ERROR] Category not found
+[Mon, 08 Apr 19 21:23:38 +0000][ERROR] Category not found
+[Wed, 17 Apr 19 17:16:24 +0000][ERROR] {"name":"Invalid category name"}
+[Sun, 19 May 19 18:43:44 +0000][ERROR] fwrite(): send of 12 bytes failed with errno=104 Connection reset by peer
+[Sun, 19 May 19 18:43:45 +0000][ERROR] fwrite(): send of 12 bytes failed with errno=104 Connection reset by peer
+[Fri, 26 Jul 19 16:43:49 +0000][ERROR] {"categoryParentId":"Parent category does not exist"}
+[Fri, 26 Jul 19 18:10:25 +0000][ERROR] {"categoryName":"Category name already exists"}
+[Fri, 26 Jul 19 18:10:33 +0000][ERROR] {"categoryName":"Category name already exists"}

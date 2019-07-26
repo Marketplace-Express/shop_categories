@@ -9,7 +9,6 @@ namespace Shop_categories\Tests\DBTools;
 
 use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
 use Shop_categories\DBTools\RecursiveQueryBuilder;
-use PDO;
 
 class RecursiveQueryBuilderTest extends \UnitTestCase
 {
@@ -17,14 +16,14 @@ class RecursiveQueryBuilderTest extends \UnitTestCase
     const ANOTHER_TABLE_NAME = 'test2';
     const COLUMNS = ['column1', 'column2'];
 
-    /** @var PDO $pdo */
+    /** @var \PDO $pdo */
     public $pdo;
 
     public function setUp()
     {
         parent::setUp();
-        $this->pdo = new PDO('mysql:dbname=test;host=127.0.0.1:3306', 'test', 'test', [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        $this->pdo = new \PDO('mysql:dbname=test;host=127.0.0.1:3306', 'test', 'test', [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
         ]);
     }
 

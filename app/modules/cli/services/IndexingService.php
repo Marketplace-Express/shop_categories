@@ -44,9 +44,9 @@ class IndexingService extends Injectable
     private function create()
     {
         $this->redisIndexing
-            ->addTextField('vendor_id', 1.0, false, true)
-            ->addTextField('name')
-            ->addTextField('url', 1.0, false, true)
+            ->addTextField('categoryVendorId', 1.0, false, true)
+            ->addTextField('categoryName')
+            ->addTextField('categoryUrl', 1.0, false, true)
             ->create();
     }
 
@@ -88,5 +88,25 @@ class IndexingService extends Injectable
             throw new \Exception('Missing argument');
         }
         $this->redisIndexing->delete($id);
+    }
+
+    /**
+     * Update document
+     *
+     * @param string $id
+     * @param string $vendorId
+     * @param string $name
+     * @param string|null $url
+     *
+     * @throws \Ehann\RediSearch\Exceptions\FieldNotInSchemaException
+     * @throws \Exception
+     */
+    public function update(string $id, string $vendorId, string $name, ?string $url)
+    {
+        if (empty($id)) {
+            throw new \Exception('Missing argument');
+        }
+        $this->delete($id);
+        $this->add($id, $vendorId, $name, $url);
     }
 }
