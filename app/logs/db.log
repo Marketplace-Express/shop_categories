@@ -4226,3 +4226,7 @@ UNION ALL SELECT c.category_id,c.category_parent_id,c.category_name,c.category_o
 [Fri, 26 Jul 19 18:10:47 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
 [Fri, 26 Jul 19 18:10:47 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
 [Fri, 26 Jul 19 18:10:47 +0000][INFO] UPDATE `category` SET `category_parent_id` = null, `category_name` = ?, `category_order` = ?, `category_vendor_id` = ?, `category_user_id` = ?, `category_url` = ?, `created_at` = ?, `updated_at` = ?, `deleted_at` = null, `is_deleted` = ? WHERE `category_id` = ?
+[Fri, 26 Jul 19 21:27:28 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 21:27:28 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 21:27:28 +0000][INFO] SELECT c4.category_id,c4.category_parent_id,c4.category_name,c4.category_order,c4.category_vendor_id,c4.category_user_id,c4.category_url,c4.created_at,c4.updated_at,c4.deleted_at,c4.is_deleted FROM category AS c4
+ WHERE c4.is_deleted = :HMI0 AND c4.category_vendor_id = :CQB0 ORDER BY c4.category_order ASC;

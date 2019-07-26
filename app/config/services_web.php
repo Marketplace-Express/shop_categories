@@ -61,6 +61,10 @@ $di->setShared('dispatcher', function() {
      */
     $evManager = $this->getEventsManager();
     $evManager->attach(
+        "dispatch:beforeExecuteRoute",
+        new \Sid\Phalcon\AuthMiddleware\Event()
+    );
+    $evManager->attach(
         "dispatch:beforeException",
         function ($event, $dispatcher, $exception) {
             /**

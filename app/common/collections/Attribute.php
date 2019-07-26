@@ -109,11 +109,11 @@ class Attribute extends BaseCollection
     public function toApiArray()
     {
         return [
-            'attribute_id' => (string) $this->_id,
-            'attribute_name' => $this->attribute_name,
-            'attribute_key' => $this->attribute_key,
-            'attribute_category_id' => $this->attribute_category_id,
-            'attribute_values' => $this->attribute_values
+            'attributeId' => (string) $this->_id,
+            'attributeName' => $this->attribute_name,
+            'attributeKey' => $this->attribute_key,
+            'attributeCategoryId' => $this->attribute_category_id,
+            'attributeValues' => $this->attribute_values
         ];
     }
 

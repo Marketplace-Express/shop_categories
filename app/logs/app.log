@@ -26,3 +26,13 @@
 [Fri, 26 Jul 19 16:43:49 +0000][ERROR] {"categoryParentId":"Parent category does not exist"}
 [Fri, 26 Jul 19 18:10:25 +0000][ERROR] {"categoryName":"Category name already exists"}
 [Fri, 26 Jul 19 18:10:33 +0000][ERROR] {"categoryName":"Category name already exists"}
+[Fri, 26 Jul 19 21:27:16 +0000][ERROR] No attributes found
+[Fri, 26 Jul 19 21:27:51 +0000][ERROR] Attribute 5d3b7057e4895300137c1852 not added/updated in cache.
+[Fri, 26 Jul 19 21:31:08 +0000][ERROR] Attribute 5d3b7057e4895300137c1852 not added/updated in cache.
+[Fri, 26 Jul 19 21:36:57 +0000][ERROR] Unauthorized action
+[Fri, 26 Jul 19 21:46:53 +0000][ERROR] Attribute 5d3b7057e4895300137c1852 not added/updated in cache.
+[Fri, 26 Jul 19 21:47:17 +0000][ERROR] Attribute 5d3b7057e4895300137c1852 not added/updated in cache.
+[Fri, 26 Jul 19 21:47:27 +0000][ERROR] Unauthorized action
+[Fri, 26 Jul 19 21:47:30 +0000][ERROR] Attribute 5d3b7057e4895300137c1852 not added/updated in cache.
+[Fri, 26 Jul 19 21:49:32 +0000][ERROR] Unauthorized action
+[Fri, 26 Jul 19 21:49:39 +0000][ERROR] Unauthorized action

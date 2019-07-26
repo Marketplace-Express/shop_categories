@@ -153,6 +153,7 @@ class CategoryController extends BaseController
      * Create category
      * Send response on success/fail
      * @Post('')
+     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
      */
     public function createAction()
     {
@@ -174,6 +175,7 @@ class CategoryController extends BaseController
      * Update category
      * @Put('/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}')
      * @param $categoryId
+     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
      */
     public function updateAction($categoryId)
     {
@@ -195,6 +197,7 @@ class CategoryController extends BaseController
      * Delete category
      * @Delete('/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}')
      * @param $categoryId
+     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
      */
     public function deleteAction($categoryId)
     {

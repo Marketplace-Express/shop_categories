@@ -72,6 +72,7 @@ class AttributesController extends BaseController
 
     /**
      * @Post('')
+     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
      */
     public function createAction()
     {
@@ -92,6 +93,7 @@ class AttributesController extends BaseController
     /**
      * @param $id
      * @Put('/{id:[0-9a-fA-F]{24}}')
+     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
      */
     public function updateAction($id)
     {
@@ -104,7 +106,7 @@ class AttributesController extends BaseController
             }
 
             $attribute = $this->getService()->update($id, $request->toArray());
-            $request->successRequest($attribute->toApiArray());
+            $request->successRequest($attribute);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -113,6 +115,7 @@ class AttributesController extends BaseController
     /**
      * @param $id
      * @Delete('/{id:[0-9a-fA-F]{24}}')
+     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
      */
     public function deleteAction($id)
     {
@@ -128,6 +131,7 @@ class AttributesController extends BaseController
     /**
      * @param $id
      * @Post('/{id:[0-9a-fA-F]{24}}/values')
+     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
      */
     public function updateValuesAction($id)
     {

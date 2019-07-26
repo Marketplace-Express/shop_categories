@@ -116,7 +116,11 @@ return new Config([
             'maxCategoryOrder' => 999,
             'allowFloat' => false,
             'allowSign' => false
-        ]
+        ],
+        'token' => [
+            'saltKey' => 'abc@123456789012',
+            'allowedAlg' => 'HS512'
+        ],
     ],
 
     /**

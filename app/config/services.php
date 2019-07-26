@@ -1,6 +1,7 @@
 <?php
 
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
+use Shop_categories\Services\User\UserService;
 
 /**
  * Shared configuration service
@@ -165,3 +166,8 @@ $di->setShared('queue', function () {
     );
     return $channel;
 });
+
+$di->setShared(
+    'userService',
+    UserService::class
+);
