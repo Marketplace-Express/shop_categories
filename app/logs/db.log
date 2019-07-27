@@ -4296,3 +4296,7 @@ UNION  SELECT c.category_id,c.category_parent_id,c.category_name,c.category_orde
 UNION  SELECT c.category_id,c.category_parent_id,c.category_name,c.category_order,c.category_vendor_id,c.category_user_id,c.category_url,c.created_at,c.updated_at,c.deleted_at,c.is_deleted FROM category_path AS cp
  JOIN category AS c ON c.category_id = cp.category_parent_id AND c.is_deleted = :TZP0)
                     SELECT * FROM category_path ORDER BY category_order ASC LIMIT 1 OFFSET 1;
+[Sat, 27 Jul 19 09:24:55 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Sat, 27 Jul 19 09:24:55 +0000][INFO] DESCRIBE `category`
+[Sat, 27 Jul 19 09:24:55 +0000][INFO] SELECT c4.category_id,c4.category_parent_id,c4.category_name,c4.category_order,c4.category_vendor_id,c4.category_user_id,c4.category_url,c4.created_at,c4.updated_at,c4.deleted_at,c4.is_deleted FROM category AS c4
+ WHERE c4.is_deleted = :NMI0 AND c4.category_vendor_id = :CAV0 ORDER BY c4.category_order ASC;

@@ -35,9 +35,6 @@ class CategoryService extends AbstractService
     public function getRoots()
     {
         $roots = CategoryCache::getInstance()->getRoots(self::getVendorId());
-        if (!$roots) {
-            $roots = CategoryRepository::getInstance()->getRoots(self::getVendorId());
-        }
         return $roots;
     }
 
@@ -48,9 +45,6 @@ class CategoryService extends AbstractService
     public function getAll(): array
     {
         $allCategories = CategoryCache::getInstance()->getAll(self::getVendorId());
-        if (!$allCategories) {
-            $allCategories = CategoryRepository::getInstance()->getAll(self::getVendorId());
-        }
         return $allCategories;
     }
 
@@ -65,7 +59,7 @@ class CategoryService extends AbstractService
     {
         $category = CategoryCache::getInstance()->getCategory($categoryId);
         if (!$category) {
-            $category = CategoryRepository::getInstance()->getCategory($categoryId, self::getVendorId())->toApiArray();
+            throw new NotFoundException('Category not found or maybe deleted');
         }
         return $category;
     }
@@ -78,9 +72,6 @@ class CategoryService extends AbstractService
     public function getDescendants($categoryId): array
     {
         $descendants = CategoryCache::getInstance()->getDescendants($categoryId, self::getVendorId());
-        if (!$descendants) {
-            $descendants = CategoryRepository::getInstance()->getDescendants($categoryId, self::getVendorId());
-        }
         return $descendants;
     }
 
@@ -92,9 +83,6 @@ class CategoryService extends AbstractService
     public function getChildren($categoryId): array
     {
         $children = CategoryCache::getInstance()->getChildren($categoryId, self::getVendorId());
-        if (!$children) {
-            $children = CategoryRepository::getInstance()->getChildren($categoryId, self::getVendorId());
-        }
         return $children;
     }
 
@@ -106,9 +94,6 @@ class CategoryService extends AbstractService
     public function getParent($categoryId): array
     {
         $parent = CategoryCache::getInstance()->getParent($categoryId, self::getVendorId());
-        if (1 || !$parent) {
-            $parent = CategoryRepository::getInstance()->getParent($categoryId, self::getVendorId())->toApiArray();
-        }
         return $parent;
     }
 
@@ -120,9 +105,6 @@ class CategoryService extends AbstractService
     public function getParents($categoryId): array
     {
         $parents = CategoryCache::getInstance()->getParents($categoryId, self::getVendorId());
-        if (!$parents) {
-            $parents = CategoryRepository::getInstance()->getParents($categoryId, self::getVendorId());
-        }
         return $parents;
     }
 
