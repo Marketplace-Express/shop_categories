@@ -5,12 +5,12 @@
  * Time: 11:53 م
  */
 
-namespace Shop_categories\Controllers;
+namespace app\common\controllers;
 
 use Phalcon\Mvc\Controller;
-use Shop_categories\Helpers\ArrayHelper;
-use Shop_categories\Services\BaseService;
-use Shop_categories\Utils\UuidUtil;
+use app\common\helpers\ArrayHelper;
+use app\common\services\BaseService;
+use app\common\utils\UuidUtil;
 
 class BaseController extends Controller
 {
@@ -85,7 +85,7 @@ class BaseController extends Controller
     public function handleError($errors, $code = 500)
     {
         $this->dispatcher->forward([
-            'namespace' => 'Shop_categories\Controllers',
+            'namespace' => 'app\common\controllers',
             'controller' => 'exceptionhandler',
             'action' => 'raiseError',
             'params' => [$errors, $code]

@@ -5,7 +5,7 @@
  * Time: 03:55 م
  */
 
-namespace Shop_categories\Enums;
+namespace app\common\enums;
 
 
 class LanguagesEnum

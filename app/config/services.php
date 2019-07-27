@@ -1,7 +1,7 @@
 <?php
 
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
-use Shop_categories\Services\User\UserService;
+use app\common\services\user\UserService;
 
 /**
  * Shared configuration service
@@ -107,7 +107,7 @@ $di->setShared('modelsMetadata', function () {
  */
 $di->setShared('cache', function(int $database = 0) {
     $config = $this->getConfig()->cache;
-    $redisInstance = new \Shop_categories\Redis\Connector();
+    $redisInstance = new \app\common\redis\Connector();
     $redisInstance->connect(
         $config->category_cache->host,
         $config->category_cache->port,
@@ -128,13 +128,13 @@ $di->setShared('categoryCache', function () {
 $di->setShared('categoryCacheIndex', function () {
     $config = $this->getConfig()->cache->category_cache;
     return new \Ehann\RediSearch\Index($this->get('cache', [$config->database])['adapter'],
-        \Shop_categories\Enums\CacheIndexesEnum::CATEGORY_INDEX_NAME);
+        \app\common\enums\CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });
 
 $di->setShared('categoryCacheSuggest', function() {
     $config = $this->getConfig()->cache->category_cache;
     return new \Ehann\RediSearch\Suggestion($this->getCache($config->database, true)['adapter'],
-        \Shop_categories\Enums\CacheIndexesEnum::CATEGORY_INDEX_NAME);
+        \app\common\enums\CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });
 
 $di->setShared('attributesCache', function () {
@@ -143,7 +143,7 @@ $di->setShared('attributesCache', function () {
 });
 
 $di->setShared('logger', function() {
-    return new \Shop_categories\Logger\ApplicationLogger();
+    return new \app\common\logger\ApplicationLogger();
 });
 
 /** RabbitMQ service */

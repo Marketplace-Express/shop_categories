@@ -5,16 +5,17 @@
  * Time: 05:34 م
  */
 
-namespace Shop_categories\Services\Cache;
+namespace app\common\services\cache;
 
 use Ehann\RediSearch\RediSearchRedisClient;
 use Phalcon\Di;
-use Shop_categories\Enums\QueueNamesEnum;
-use Shop_categories\Helpers\ArrayHelper;
-use Shop_categories\Interfaces\CategoryDataSourceInterface;
-use Shop_categories\RequestHandler\Queue\QueueRequestHandler;
-use Shop_categories\Services\Cache\Utils\CategoryCacheUtils;
-use Shop_categories\Services\CategoryService;
+use app\common\enums\QueueNamesEnum;
+use app\common\helpers\ArrayHelper;
+use app\common\interfaces\CategoryDataSourceInterface;
+use app\common\repositories\CategoryRepository;
+use app\common\requestHandler\queue\QueueRequestHandler;
+use app\common\services\cache\utils\CategoryCacheUtils;
+use app\common\services\CategoryService;
 
 class CategoryCache implements CategoryDataSourceInterface
 {
@@ -41,6 +42,15 @@ class CategoryCache implements CategoryDataSourceInterface
     {
         self::establishCacheConnection();
         self::$cacheKey = sprintf(self::$cacheKey, CategoryService::getVendorId());
+    }
+
+    /**
+     * @return CategoryCache
+     * @throws \RedisException
+     */
+    static public function getInstance()
+    {
+        return new self;
     }
 
     /**
@@ -101,7 +111,7 @@ class CategoryCache implements CategoryDataSourceInterface
     {
         if (!self::has(self::$cacheKey)) {
             // Get all categories from repository and set in cache
-            $categories = CategoryService::getCategoryRepository()->getAll(CategoryService::getVendorId());
+            $categories = CategoryRepository::getInstance()->getAll(CategoryService::getVendorId());
             $categories = (new ArrayHelper($categories, [
                 'itemIdAttribute' => 'categoryId',
                 'parentIdAttribute' => 'categoryParentId'
@@ -210,7 +220,7 @@ class CategoryCache implements CategoryDataSourceInterface
      * @param array $category
      * @throws \Exception
      */
-    public function indexCategory(array $category)
+    public function indexCategory(array $category): void
     {
         if (empty($category)) {
             return;
@@ -230,9 +240,9 @@ class CategoryCache implements CategoryDataSourceInterface
 
     /**
      * @param array $category
-     * @throws \Shop_categories\Exceptions\ArrayOfStringsException
+     * @throws \app\common\exceptions\ArrayOfStringsException
      */
-    public function updateCategoryIndex(array $category)
+    public function updateCategoryIndex(array $category): void
     {
         if (empty($category)) {
             return;
@@ -247,6 +257,22 @@ class CategoryCache implements CategoryDataSourceInterface
                 'vendorId' => $category['categoryVendorId'],
                 'name' => $category['categoryName'],
                 'url' => $category['categoryUrl']
+            ])
+            ->sendAsync();
+    }
+
+    /**
+     * @param string $categoryId
+     * @throws \app\common\exceptions\ArrayOfStringsException
+     */
+    public function deleteIndex(string $categoryId): void
+    {
+        (new QueueRequestHandler())
+            ->setQueueName(QueueNamesEnum::CATEGORY_ASYNC_QUEUE)
+            ->setService('indexing')
+            ->setMethod('delete')
+            ->setData([
+                'id' => $categoryId
             ])
             ->sendAsync();
     }

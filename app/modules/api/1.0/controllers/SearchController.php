@@ -5,17 +5,17 @@
  * Time: 03:48 م
  */
 
-namespace Shop_categories\Modules\Api\Controllers;
+namespace app\modules\api\controllers;
 
 
-use Shop_categories\Controllers\BaseController;
-use Shop_categories\RequestHandler\Category\AutocompleteRequestHandler;
-use Shop_categories\RequestHandler\Category\SearchRequestHandler;
-use Shop_categories\Services\SearchService;
+use app\common\controllers\BaseController;
+use app\common\requestHandler\category\AutocompleteRequestHandler;
+use app\common\requestHandler\category\SearchRequestHandler;
+use app\common\services\SearchService;
 
 /**
  * Class SearchController
- * @package Shop_categories\Modules\Api\Controllers
+ * @package app\modules\api\controllers
  * @RoutePrefix("/api/1.0/search")
  */
 class SearchController extends BaseController

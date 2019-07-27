@@ -1,18 +1,18 @@
 <?php
-namespace Shop_categories\Modules\Api\Controllers;
+namespace app\modules\api\controllers;
 
-use Shop_categories\Controllers\BaseController;
-use Shop_categories\RequestHandler\Category\{
+use app\common\controllers\BaseController;
+use app\common\requestHandler\category\{
     CreateRequestHandler,
     DeleteRequestHandler,
     GetRequestHandler,
     UpdateRequestHandler
 };
-use Shop_categories\Services\CategoryService;
+use app\common\services\CategoryService;
 
 /**
  * Class CategoryController
- * @package Shop_categories\Modules\Api\Controllers
+ * @package app\modules\api\controllers
  * @RoutePrefix("/api/1.0/categories")
  */
 class CategoryController extends BaseController
@@ -153,7 +153,7 @@ class CategoryController extends BaseController
      * Create category
      * Send response on success/fail
      * @Post('')
-     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
+     * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
      */
     public function createAction()
     {
@@ -175,7 +175,7 @@ class CategoryController extends BaseController
      * Update category
      * @Put('/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}')
      * @param $categoryId
-     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
+     * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
      */
     public function updateAction($categoryId)
     {
@@ -197,7 +197,7 @@ class CategoryController extends BaseController
      * Delete category
      * @Delete('/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}')
      * @param $categoryId
-     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
+     * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
      */
     public function deleteAction($categoryId)
     {

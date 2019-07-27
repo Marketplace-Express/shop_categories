@@ -1,6 +1,6 @@
 <?php
 
-namespace Shop_categories\Traits;
+namespace app\common\traits;
 
 use Phalcon\Di;
 use Phalcon\Events\Manager as EventsManager;

@@ -5,7 +5,7 @@
  * Time: 06:02 م
  */
 
-namespace Shop_categories\Enums;
+namespace app\common\enums;
 
 
 class CacheIndexesEnum

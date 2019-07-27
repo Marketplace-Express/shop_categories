@@ -5,10 +5,10 @@
  * Time: 11:29 م
  */
 
-namespace Shop_categories\Tests\Helpers;
+namespace tests\app\common\helpers;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use Shop_categories\Helpers\ArrayHelper;
+use app\common\helpers\ArrayHelper;
 
 class ArrayHelperTest extends \UnitTestCase
 {

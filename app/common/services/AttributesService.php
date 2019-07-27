@@ -5,28 +5,15 @@
  * Time: 03:11 م
  */
 
-namespace Shop_categories\Services;
+namespace app\common\services;
 
 use RedisException;
-use Shop_categories\Exceptions\ArrayOfStringsException;
+use app\common\exceptions\ArrayOfStringsException;
+use app\common\repositories\AttributesRepository;
+use app\common\services\cache\AttributesCache;
 
-class AttributesService extends AbstractService
+class AttributesService extends BaseService
 {
-    /**
-     * @return \Shop_categories\Repositories\AttributesRepository|Cache\AttributesCache
-     * @throws \Exception
-     */
-    static public function getDataSource()
-    {
-        try {
-            return self::getAttributesCache();
-        } catch (RedisException $exception) {
-            return self::getAttributesRepository();
-        } catch (\Throwable $exception) {
-            throw new \Exception('No data source available for attributes');
-        }
-    }
-
     /**
      * Get attribute by id
      *
@@ -37,7 +24,11 @@ class AttributesService extends AbstractService
      */
     public function getAttribute(string $attributeId): array
     {
-        return self::getDataSource()->getAttribute($attributeId);
+        $attribute = AttributesCache::getInstance()->getAttribute($attributeId);
+        if (!$attribute) {
+            $attribute = AttributesRepository::getInstance()->getAttribute($attributeId)->toApiArray();
+        }
+        return $attribute;
     }
 
     /**
@@ -50,7 +41,11 @@ class AttributesService extends AbstractService
      */
     public function getAll(string $categoryId)
     {
-        return self::getDataSource()->getAll($categoryId);
+        $attributes = AttributesCache::getInstance()->getAll($categoryId);
+        if (!$attributes) {
+            $attributes = AttributesRepository::getInstance()->getAll($categoryId);
+        }
+        return $attributes;
     }
 
     /**
@@ -65,9 +60,9 @@ class AttributesService extends AbstractService
     {
         // TODO: PREPARE ATTRIBUTE BEFORE CREATE
 
-        $attribute = self::getAttributesRepository()->create($data)->toApiArray();
+        $attribute = AttributesRepository::getInstance()->create($data)->toApiArray();
         try {
-            self::getAttributesCache()->updateCache($attribute['attributeId'], $attribute['attributeCategoryId'], $attribute);
+            AttributesCache::getInstance()->updateCache($attribute['attributeId'], $attribute['attributeCategoryId'], $attribute);
         } catch (\RedisException $exception) {
             // do nothing
         }
@@ -85,9 +80,9 @@ class AttributesService extends AbstractService
      */
     public function update(string $attributeId, array $data)
     {
-        $attribute = self::getAttributesRepository()->update($attributeId, $data)->toApiArray();
+        $attribute = AttributesRepository::getInstance()->update($attributeId, $data)->toApiArray();
         try {
-            self::getAttributesCache()->updateCache($attributeId, $attribute['attributeCategoryId'], $attribute);
+            AttributesCache::getInstance()->updateCache($attributeId, $attribute['attributeCategoryId'], $attribute);
         } catch (\RedisException $exception) {
             // do nothing
         }
@@ -104,9 +99,9 @@ class AttributesService extends AbstractService
      */
     public function delete(string $attributeId): bool
     {
-        if (self::getAttributesRepository()->delete($attributeId)) {
+        if (AttributesRepository::getInstance()->delete($attributeId)) {
             try {
-                self::getAttributesCache()->invalidateCache($attributeId);
+                AttributesCache::getInstance()->invalidateCache($attributeId);
             } catch (\RedisException $exception) {
                 // do nothing
             }
@@ -120,7 +115,7 @@ class AttributesService extends AbstractService
      *
      * @param string $attributeId
      * @param array $values
-     * @return bool|\Shop_categories\Collections\Attribute
+     * @return bool|\app\common\collections\Attribute
      *
      * @throws ArrayOfStringsException
      * @throws RedisException
@@ -129,10 +124,10 @@ class AttributesService extends AbstractService
      */
     public function updateValues(string $attributeId, array $values)
     {
-        if ($attribute = self::getAttributesRepository()->updateValues($attributeId, $values)) {
-            $categoryId = self::getAttributesCache()->getAttribute($attributeId)['attributeCategoryId'];
+        if ($attribute = AttributesRepository::getInstance()->updateValues($attributeId, $values)) {
+            $categoryId = AttributesCache::getInstance()->getAttribute($attributeId)['attributeCategoryId'];
             try {
-                self::getAttributesCache()->updateCache($attributeId, $categoryId, $attribute->toApiArray());
+                AttributesCache::getInstance()->updateCache($attributeId, $categoryId, $attribute->toApiArray());
             } catch (\RedisException $exception) {
                 // do nothing
             }
@@ -151,6 +146,10 @@ class AttributesService extends AbstractService
      */
     public function getValues(string $attributeId)
     {
-        return self::getDataSource()->getValues($attributeId);
+        $attributeValues = AttributesCache::getInstance()->getValues($attributeId);
+        if (!$attributeValues) {
+            $attributeValues = AttributesRepository::getInstance()->getValues($attributeId);
+        }
+        return $attributeValues;
     }
 }

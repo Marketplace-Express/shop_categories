@@ -5,12 +5,12 @@
  * Time: 06:35 م
  */
 
-namespace Shop_categories\Redis;
+namespace app\common\redis;
 
 
 use Ehann\RediSearch\Document\Document;
 use Ehann\RediSearch\Fields\TextField;
-use Shop_categories\Utils\UuidUtil;
+use app\common\utils\UuidUtil;
 
 class DocumentMapper extends Document
 {

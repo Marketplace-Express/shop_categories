@@ -5,10 +5,10 @@
  * Time: 10:32 م
  */
 
-namespace Shop_categories\Collections;
+namespace app\common\collections;
 
 use Phalcon\Validation;
-use Shop_categories\Utils\UuidUtil;
+use app\common\utils\UuidUtil;
 
 class Attribute extends BaseCollection
 {

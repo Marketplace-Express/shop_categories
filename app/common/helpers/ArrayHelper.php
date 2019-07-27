@@ -5,7 +5,7 @@
  * Time: 03:01 ص
  */
 
-namespace Shop_categories\Helpers;
+namespace app\common\helpers;
 
 class ArrayHelper
 {

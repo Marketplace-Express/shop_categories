@@ -5,7 +5,7 @@
  * Time: 10:10 م
  */
 
-namespace Shop_categories\DBTools\Enums;
+namespace app\common\dbTools\enums;
 
 class SchemaQueryOperatorsEnum
 {

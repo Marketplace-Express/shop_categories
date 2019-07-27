@@ -5,10 +5,10 @@
  * Time: 12:24 ص
  */
 
-namespace Shop_categories\Tests\DBTools;
+namespace tests\app\common\dbTools;
 
-use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
-use Shop_categories\DBTools\RecursiveQueryBuilder;
+use app\common\dbTools\enums\SchemaQueryOperatorsEnum;
+use app\common\dbTools\RecursiveQueryBuilder;
 
 class RecursiveQueryBuilderTest extends \UnitTestCase
 {

@@ -5,7 +5,7 @@
  * Time: 12:26 ص
  */
 
-namespace Shop_categories\Utils;
+namespace app\common\utils;
 
 use Ramsey\Uuid\Uuid;
 

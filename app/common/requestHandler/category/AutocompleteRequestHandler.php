@@ -5,8 +5,7 @@
  * Time: 09:24 م
  */
 
-namespace Shop_categories\RequestHandler\Category;
-
+namespace app\common\requestHandler\category;
 
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;

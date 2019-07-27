@@ -5,10 +5,10 @@
  * Time: 11:07 م
  */
 
-namespace Shop_categories\Tests\DBTools;
+namespace tests\app\common\dbTools;
 
-use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
-use Shop_categories\DBTools\QueryBuilder;
+use app\common\dbTools\enums\SchemaQueryOperatorsEnum;
+use app\common\dbTools\QueryBuilder;
 use PDO;
 
 class QueryBuilderTest extends \UnitTestCase

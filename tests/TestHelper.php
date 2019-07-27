@@ -31,29 +31,29 @@ $loader->registerDirs(
 );
 
 $loader->registerNamespaces([
-    'Shop_categories\Models' => ROOT_PATH . '/../app/common/models',
-    'Shop_categories\Controllers' => ROOT_PATH . '/../app/common/controllers',
-    'Shop_categories\Helpers' => ROOT_PATH . '/../app/common/helpers',
-    'Shop_categories\Repositories' => ROOT_PATH . '/../app/common/repositories',
-    'Shop_categories\Models\Behaviors' => ROOT_PATH . '/../app/common/models/behaviors',
-    'Shop_categories\Interfaces' => ROOT_PATH . '/../app/common/interfaces/',
-    'Shop_categories\DBTools' => ROOT_PATH . '/../app/common/db-tools',
-    'Shop_categories\DBTools\Enums' => ROOT_PATH . '/../app/common/db-tools/enums',
-    'Shop_categories\Traits' => ROOT_PATH . '/../app/common/traits',
-    'Shop_categories\Services' => ROOT_PATH . '/../app/common/services',
-    'Shop_categories\Services\Cache' => ROOT_PATH . '/../app/common/services/cache',
-    'Shop_categories\Services\Cache\Utils' => ROOT_PATH . '/../app/common/services/cache/utils',
-    'Shop_categories\RequestHandler' => ROOT_PATH . '/../app/common/request-handler',
-    'Shop_categories\RequestHandler\Category' => ROOT_PATH . '/../app/common/request-handler/category',
-    'Shop_categories\Modules\Api\Controllers' => ROOT_PATH . '/../app/modules/api/1.0/controllers',
-    'Shop_categories\Utils' => ROOT_PATH . '/../app/common/utils',
-    'Shop_categories\Logger' => ROOT_PATH . '/common/logger/'
+    'app\common\models' => ROOT_PATH . '/../app/common/models',
+    'app\common\controllers' => ROOT_PATH . '/../app/common/controllers',
+    'app\common\helpers' => ROOT_PATH . '/../app/common/helpers',
+    'app\common\repositories' => ROOT_PATH . '/../app/common/repositories',
+    'app\common\models\behaviors' => ROOT_PATH . '/../app/common/models/behaviors',
+    'app\common\interfaces' => ROOT_PATH . '/../app/common/interfaces/',
+    'app\common\dbTools' => ROOT_PATH . '/../app/common/dbTools',
+    'app\common\dbTools\enums' => ROOT_PATH . '/../app/common/dbTools/enums',
+    'app\common\traits' => ROOT_PATH . '/../app/common/traits',
+    'app\common\services' => ROOT_PATH . '/../app/common/services',
+    'app\common\services\cache' => ROOT_PATH . '/../app/common/services/cache',
+    'app\common\services\cache\utils' => ROOT_PATH . '/../app/common/services/cache/utils',
+    'app\common\requestHandler' => ROOT_PATH . '/../app/common/requestHandler',
+    'app\common\requestHandler\category' => ROOT_PATH . '/../app/common/requestHandler/category',
+    'app\modules\api\controllers' => ROOT_PATH . '/../app/modules/api/1.0/controllers',
+    'app\common\utils' => ROOT_PATH . '/../app/common/utils',
+    'app\common\logger' => ROOT_PATH . '/common/logger/'
 ]);
 
 $loader->registerClasses([
-    'Shop_categories\Tests\Mocks\RequestMock' => ROOT_PATH . '/mocks/RequestMock.php',
-    'Shop_categories\Tests\Mocks\ResponseMock' => ROOT_PATH . '/mocks/ResponseMock.php',
-    'Shop_categories\Exceptions\ArrayOfStringsException' => ROOT_PATH . '/../app/common/exceptions/ArrayOfStringsException.php'
+    'tests\mocks\RequestMock' => ROOT_PATH . '/mocks/RequestMock.php',
+    'tests\mocks\ResponseMock' => ROOT_PATH . '/mocks/ResponseMock.php',
+    'app\common\exceptions\ArrayOfStringsException' => ROOT_PATH . '/../app/common/exceptions/ArrayOfStringsException.php'
 ]);
 
 $loader->register();

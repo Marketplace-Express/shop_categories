@@ -1,50 +1,61 @@
 <?php
 /**
+
  * User: Wajdi Jurry
- * Date: 29/12/18
- * Time: 10:46 م
+ * Date: 17/08/18
+ * Time: 05:08 م
  */
 
-namespace Shop_categories\RequestHandler\Attribute;
-
+namespace app\common\requestHandler\category;
 
 use Phalcon\Validation\Message\Group;
-use Shop_categories\Controllers\BaseController;
-use Shop_categories\RequestHandler\RequestHandlerInterface;
+use app\common\controllers\BaseController;
+use app\common\exceptions\ArrayOfStringsException;
+use app\common\requestHandler\RequestHandlerInterface;
 
 class DeleteRequestHandler extends BaseController implements RequestHandlerInterface
 {
-
     /** Validate request fields using \Phalcon\Validation\Validator
      * @return Group
      */
     public function validate(): Group
     {
-        // TODO: Implement validate() method.
+        return new Group();
     }
 
     public function isValid(): bool
     {
-        // TODO: Implement isValid() method.
+        return true;
     }
 
+    /**
+     * @param string $message
+     * @throws \Exception
+     */
     public function notFound($message = 'Not Found')
     {
-        // TODO: Implement notFound() method.
+        throw new \Exception($message, 404);
     }
 
+    /**
+     * @param null $message
+     * @throws ArrayOfStringsException
+     */
     public function invalidRequest($message = null)
     {
-        // TODO: Implement invalidRequest() method.
+        throw new ArrayOfStringsException($message, 400);
     }
 
+    /**
+     * @param null $message
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     */
     public function successRequest($message = null)
     {
-        http_response_code(200);
         return $this->response
             ->setJsonContent([
                 'status' => 200,
-                'message' => 'Deleted'
+                'message' => $message
             ]);
     }
 

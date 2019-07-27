@@ -6,15 +6,15 @@
  * Time: 01:47 م
  */
 
-namespace Shop_categories\RequestHandler\Category;
+namespace app\common\requestHandler\category;
 
 use Phalcon\Exception;
 use Phalcon\Utils\Slug;
 use Phalcon\Validation;
-use Shop_categories\Controllers\BaseController;
-use Shop_categories\Exceptions\ArrayOfStringsException;
-use Shop_categories\RequestHandler\RequestHandlerInterface;
-use Shop_categories\Utils\UuidUtil;
+use app\common\controllers\BaseController;
+use app\common\exceptions\ArrayOfStringsException;
+use app\common\requestHandler\RequestHandlerInterface;
+use app\common\utils\UuidUtil;
 
 class UpdateRequestHandler extends BaseController implements RequestHandlerInterface
 {

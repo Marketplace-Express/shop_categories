@@ -5,8 +5,7 @@
  * Time: 06:52 م
  */
 
-namespace Shop_categories\Services\Cache\Utils;
-
+namespace app\common\services\cache\utils;
 
 class CategoryCacheUtils
 {

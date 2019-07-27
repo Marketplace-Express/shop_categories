@@ -12,9 +12,9 @@ use Phalcon\Flash\Direct as Flash;
 $di->setShared('router', function () {
     $config = $this->getConfig();
     $router = new Router\Annotations(false);
-    $router->addModuleResource('api', 'Shop_categories\Modules\Api\Controllers\Search', '/api/' . $config->api->version . '/search');
-    $router->addModuleResource('api', 'Shop_categories\Modules\Api\Controllers\Category', '/api/' . $config->api->version . '/categories');
-    $router->addModuleResource('api', 'Shop_categories\Modules\Api\Controllers\Attributes', '/api/' . $config->api->version . '/attributes');
+    $router->addModuleResource('api', 'app\modules\api\controllers\Search', '/api/' . $config->api->version . '/search');
+    $router->addModuleResource('api', 'app\modules\api\controllers\Category', '/api/' . $config->api->version . '/categories');
+    $router->addModuleResource('api', 'app\modules\api\controllers\Attributes', '/api/' . $config->api->version . '/attributes');
     return $router;
 });
 
@@ -76,7 +76,7 @@ $di->setShared('dispatcher', function() {
                 case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
                     $dispatcher->forward(
                         [
-                            'controller' => '\Shop_categories\Controllers\Notfound',
+                            'controller' => '\app\common\controllers\Notfound',
                             'action'     => 'index'
                         ]
                     );
@@ -88,7 +88,7 @@ $di->setShared('dispatcher', function() {
                 case $exception instanceof \Phalcon\Mvc\Model\Exception:
                 case $exception instanceof PDOException:
                     $dispatcher->forward([
-                        'controller' => '\Shop_categories\Controllers\exceptionHandler',
+                        'controller' => '\app\common\controllers\exceptionHandler',
                         'action' => 'serverError',
                         'params' => [$exception->getMessage()]
                     ]);

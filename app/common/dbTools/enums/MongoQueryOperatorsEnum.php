@@ -5,7 +5,7 @@
  * Time: 04:21 م
  */
 
-namespace Shop_categories\DBTools\Enums;
+namespace app\common\dbTools\enums;
 
 
 class MongoQueryOperatorsEnum

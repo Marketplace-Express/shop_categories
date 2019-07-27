@@ -5,7 +5,9 @@
  * Time: 11:22 م
  */
 
-namespace Shop_categories\DBTools;
+namespace app\common\dbTools;
+
+use app\common\exceptions\OperationFailedException;
 
 class RecursiveQueryBuilder extends QueryBuilder
 {
@@ -26,7 +28,10 @@ class RecursiveQueryBuilder extends QueryBuilder
      * @param array $options
      * @param array $recursionOrderBy
      * @param array $recursionLimit
-     * @throws \Exception Example:
+     *
+     * @throws OperationFailedException
+     *
+     * Example:
      * new RecursiveQueryBuilder(
      *      'table_name',
      *      ['column1', 'column2', 'column3'],
@@ -71,7 +76,7 @@ class RecursiveQueryBuilder extends QueryBuilder
     public function __construct(string $table, array $columns, string $recursionName, array $options = [], array $recursionOrderBy = [], array $recursionLimit = [])
     {
         if (empty($recursionName)) {
-            throw new \Exception('You have to define recursion name', 500);
+            throw new OperationFailedException('You have to define recursion name', 500);
         }
         $this->recursionName = $recursionName;
         $this->recursionOrderBy = $recursionOrderBy;

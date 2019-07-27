@@ -5,14 +5,23 @@
  * Time: 10:59 م
  */
 
-namespace Shop_categories\Repositories;
+namespace app\common\repositories;
 
-use Shop_categories\Exceptions\ArrayOfStringsException;
-use Shop_categories\Interfaces\AttributeDataSourceInterface;
-use Shop_categories\Collections\Attribute;
+use app\common\exceptions\NotFoundException;
+use app\common\exceptions\ArrayOfStringsException;
+use app\common\interfaces\AttributeDataSourceInterface;
+use app\common\collections\Attribute;
 
 class AttributesRepository implements AttributeDataSourceInterface
 {
+    /**
+     * @return AttributesRepository
+     */
+    static public function getInstance()
+    {
+        return new self;
+    }
+
     /**
      * @return Attribute
      */
@@ -34,7 +43,7 @@ class AttributesRepository implements AttributeDataSourceInterface
         /** @var Attribute $attribute */
         $attribute = self::getModel()::findById($attributeId);
         if (!$attribute) {
-            throw new \Exception('Attribute not found or maybe deleted', 404);
+            throw new NotFoundException('Attribute not found or maybe deleted');
         }
         return $attribute;
     }
@@ -45,16 +54,12 @@ class AttributesRepository implements AttributeDataSourceInterface
      * @param string $categoryId
      * @return array
      *
-     * @throws \Exception
      */
     public function getAll(string $categoryId): array
     {
         /** @var Attribute[] $attributes */
         $attributes = self::getModel()::find(['attribute_category_id' => $categoryId]);
 
-        if (!$attributes) {
-            throw new \Exception('No attributes found', 404);
-        }
         $result = [];
         foreach ($attributes as $attribute) {
             $result[] = $attribute->toApiArray();
@@ -95,7 +100,7 @@ class AttributesRepository implements AttributeDataSourceInterface
         /** @var Attribute $attribute */
         $attribute = self::getModel()::findById($attribute_id);
         if (!$attribute) {
-            throw new \Exception('Attribute not found or maybe deleted', 404);
+            throw new NotFoundException('Attribute not found or maybe deleted');
         }
         $attribute->setAttributes($data);
         if (!$attribute->save()) {
@@ -117,21 +122,21 @@ class AttributesRepository implements AttributeDataSourceInterface
         /** @var Attribute $attribute */
         $attribute = self::getModel()::findById($attribute_id);
         if (!$attribute) {
-            throw new \Exception('Attribute not found or maybe deleted', 404);
+            throw new NotFoundException('Attribute not found or maybe deleted');
         }
         return $attribute->delete();
     }
 
     /**
-     * @param string $attribute_id
+     * @param string $attributeId
      * @return array
      * @throws \Exception
      */
-    public function getValues(string $attribute_id): array
+    public function getValues(string $attributeId): array
     {
-        $attribute = self::getModel()::findById($attribute_id);
+        $attribute = self::getModel()::findById($attributeId);
         if (!$attribute) {
-            throw new \Exception('Attribute not found', 404);
+            throw new NotFoundException('Attribute not found');
         }
         return $attribute->attribute_values;
     }
@@ -151,7 +156,7 @@ class AttributesRepository implements AttributeDataSourceInterface
     {
         $attribute = self::getModel()::findById($attribute_id);
         if (!$attribute) {
-            throw new \Exception('Attribute not found', 404);
+            throw new NotFoundException('Attribute not found');
         }
         $attribute->attribute_values = array_unique($values);
         if (!$attribute->save()) {

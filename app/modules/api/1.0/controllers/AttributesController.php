@@ -5,29 +5,35 @@
  * Time: 10:36 م
  */
 
-namespace Shop_categories\Modules\Api\Controllers;
+namespace app\modules\api\controllers;
 
 
-use Shop_categories\Controllers\BaseController;
-use Shop_categories\RequestHandler\Attribute\{
+use app\common\controllers\BaseController;
+use app\common\requestHandler\attribute\{
     CreateRequestHandler,
     UpdateValuesRequestHandler,
     DeleteRequestHandler,
     GetRequestHandler,
     UpdateRequestHandler
 };
-use Shop_categories\Services\AttributesService;
+use app\common\services\AttributesService;
 
 /**
  * Class AttributesController
- * @package Shop_categories\Modules\Api\Controllers
+ * @package app\modules\api\controllers
  * @RoutePrefix("/api/1.0/attributes")
  */
 class AttributesController extends BaseController
 {
     public function initialize()
     {
-        $this->setService(new AttributesService());
+        $vendorId = $this->request->getQuery('vendorId');
+        if (!$vendorId) {
+            $this->sendResponse('Please provide a valid vendor Id', 400);
+        }
+        $service = new AttributesService();
+        $service::setVendorId($vendorId);
+        $this->setService($service);
     }
 
     /**
@@ -35,7 +41,7 @@ class AttributesController extends BaseController
      */
     private function getService(): AttributesService
     {
-        return $this->service;
+        return new AttributesService();
     }
 
     /**
@@ -72,7 +78,7 @@ class AttributesController extends BaseController
 
     /**
      * @Post('')
-     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
+     * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
      */
     public function createAction()
     {
@@ -93,7 +99,7 @@ class AttributesController extends BaseController
     /**
      * @param $id
      * @Put('/{id:[0-9a-fA-F]{24}}')
-     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
+     * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
      */
     public function updateAction($id)
     {
@@ -115,7 +121,7 @@ class AttributesController extends BaseController
     /**
      * @param $id
      * @Delete('/{id:[0-9a-fA-F]{24}}')
-     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
+     * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
      */
     public function deleteAction($id)
     {
@@ -131,7 +137,7 @@ class AttributesController extends BaseController
     /**
      * @param $id
      * @Post('/{id:[0-9a-fA-F]{24}}/values')
-     * @AuthMiddleware("\Shop_categories\Events\Middleware\RequestMiddlewareEvent")
+     * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
      */
     public function updateValuesAction($id)
     {

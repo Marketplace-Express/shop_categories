@@ -4230,3 +4230,69 @@ UNION ALL SELECT c.category_id,c.category_parent_id,c.category_name,c.category_o
 [Fri, 26 Jul 19 21:27:28 +0000][INFO] DESCRIBE `category`
 [Fri, 26 Jul 19 21:27:28 +0000][INFO] SELECT c4.category_id,c4.category_parent_id,c4.category_name,c4.category_order,c4.category_vendor_id,c4.category_user_id,c4.category_url,c4.created_at,c4.updated_at,c4.deleted_at,c4.is_deleted FROM category AS c4
  WHERE c4.is_deleted = :HMI0 AND c4.category_vendor_id = :CQB0 ORDER BY c4.category_order ASC;
+[Fri, 26 Jul 19 23:41:16 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 23:41:16 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 23:41:16 +0000][INFO] WITH RECURSIVE category_path (category_id,category_parent_id,category_name,category_order,category_vendor_id,category_user_id,category_url,created_at,updated_at,deleted_at,is_deleted)
+                AS (SELECT c1.category_id,c1.category_parent_id,c1.category_name,c1.category_order,c1.category_vendor_id,c1.category_user_id,c1.category_url,c1.created_at,c1.updated_at,c1.deleted_at,c1.is_deleted FROM category AS c1
+ WHERE c1.category_id = :GTX0 AND c1.category_parent_id IS NOT NULL AND c1.is_deleted = :WQA0 AND c1.category_vendor_id = :MWP0
+UNION  SELECT c.category_id,c.category_parent_id,c.category_name,c.category_order,c.category_vendor_id,c.category_user_id,c.category_url,c.created_at,c.updated_at,c.deleted_at,c.is_deleted FROM category_path AS cp
+ JOIN category AS c ON c.category_id = cp.category_parent_id AND c.is_deleted = :UNS0)
+                    SELECT * FROM category_path ORDER BY category_order ASC LIMIT 1 OFFSET 1;
+[Fri, 26 Jul 19 23:41:46 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 23:41:46 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 23:41:52 +0000][INFO] WITH RECURSIVE category_path (category_id,category_parent_id,category_name,category_order,category_vendor_id,category_user_id,category_url,created_at,updated_at,deleted_at,is_deleted)
+                AS (SELECT c9.category_id,c9.category_parent_id,c9.category_name,c9.category_order,c9.category_vendor_id,c9.category_user_id,c9.category_url,c9.created_at,c9.updated_at,c9.deleted_at,c9.is_deleted FROM category AS c9
+ WHERE c9.category_id = :ERG0 AND c9.category_parent_id IS NOT NULL AND c9.is_deleted = :WPU0 AND c9.category_vendor_id = :EBJ0
+UNION  SELECT c.category_id,c.category_parent_id,c.category_name,c.category_order,c.category_vendor_id,c.category_user_id,c.category_url,c.created_at,c.updated_at,c.deleted_at,c.is_deleted FROM category_path AS cp
+ JOIN category AS c ON c.category_id = cp.category_parent_id AND c.is_deleted = :RGW0)
+                    SELECT * FROM category_path ORDER BY category_order ASC LIMIT 1 OFFSET 1;
+[Fri, 26 Jul 19 23:42:12 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 23:42:12 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 23:42:19 +0000][INFO] WITH RECURSIVE category_path (category_id,category_parent_id,category_name,category_order,category_vendor_id,category_user_id,category_url,created_at,updated_at,deleted_at,is_deleted)
+                AS (SELECT c9.category_id,c9.category_parent_id,c9.category_name,c9.category_order,c9.category_vendor_id,c9.category_user_id,c9.category_url,c9.created_at,c9.updated_at,c9.deleted_at,c9.is_deleted FROM category AS c9
+ WHERE c9.category_id = :NGA0 AND c9.category_parent_id IS NOT NULL AND c9.is_deleted = :LYK0 AND c9.category_vendor_id = :QCW0
+UNION  SELECT c.category_id,c.category_parent_id,c.category_name,c.category_order,c.category_vendor_id,c.category_user_id,c.category_url,c.created_at,c.updated_at,c.deleted_at,c.is_deleted FROM category_path AS cp
+ JOIN category AS c ON c.category_id = cp.category_parent_id AND c.is_deleted = :KTH0)
+                    SELECT * FROM category_path ORDER BY category_order ASC LIMIT 1 OFFSET 1;
+[Fri, 26 Jul 19 23:42:57 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 23:42:57 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 23:42:57 +0000][INFO] WITH RECURSIVE category_path (category_id,category_parent_id,category_name,category_order,category_vendor_id,category_user_id,category_url,created_at,updated_at,deleted_at,is_deleted)
+                AS (SELECT c8.category_id,c8.category_parent_id,c8.category_name,c8.category_order,c8.category_vendor_id,c8.category_user_id,c8.category_url,c8.created_at,c8.updated_at,c8.deleted_at,c8.is_deleted FROM category AS c8
+ WHERE c8.category_id = :VKO0 AND c8.category_parent_id IS NOT NULL AND c8.is_deleted = :PEK0 AND c8.category_vendor_id = :UYD0
+UNION  SELECT c.category_id,c.category_parent_id,c.category_name,c.category_order,c.category_vendor_id,c.category_user_id,c.category_url,c.created_at,c.updated_at,c.deleted_at,c.is_deleted FROM category_path AS cp
+ JOIN category AS c ON c.category_id = cp.category_parent_id AND c.is_deleted = :KFT0)
+                    SELECT * FROM category_path ORDER BY category_order ASC LIMIT 1 OFFSET 1;
+[Fri, 26 Jul 19 23:44:02 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 23:44:02 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 23:44:02 +0000][INFO] WITH RECURSIVE category_path (category_id,category_parent_id,category_name,category_order,category_vendor_id,category_user_id,category_url,created_at,updated_at,deleted_at,is_deleted)
+                AS (SELECT c9.category_id,c9.category_parent_id,c9.category_name,c9.category_order,c9.category_vendor_id,c9.category_user_id,c9.category_url,c9.created_at,c9.updated_at,c9.deleted_at,c9.is_deleted FROM category AS c9
+ WHERE c9.category_id = :RDO0 AND c9.category_parent_id IS NOT NULL AND c9.is_deleted = :TBF0 AND c9.category_vendor_id = :EKM0
+UNION  SELECT c.category_id,c.category_parent_id,c.category_name,c.category_order,c.category_vendor_id,c.category_user_id,c.category_url,c.created_at,c.updated_at,c.deleted_at,c.is_deleted FROM category_path AS cp
+ JOIN category AS c ON c.category_id = cp.category_parent_id AND c.is_deleted = :TZH0)
+                    SELECT * FROM category_path ORDER BY category_order ASC LIMIT 1 OFFSET 1;
+[Fri, 26 Jul 19 23:45:15 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 23:45:15 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 23:45:15 +0000][INFO] SELECT COUNT(*) "rowcount" FROM `category` WHERE `category_id` = ?
+[Fri, 26 Jul 19 23:45:15 +0000][INFO] SELECT `category`.`category_id`, `category`.`category_parent_id`, `category`.`category_name`, `category`.`category_order`, `category`.`category_vendor_id`, `category`.`category_user_id`, `category`.`category_url`, `category`.`created_at`, `category`.`updated_at`, `category`.`deleted_at`, `category`.`is_deleted` FROM `category` WHERE (`category`.`category_id` = :value) AND (`category`.`category_vendor_id` = :vendorId)
+[Fri, 26 Jul 19 23:45:15 +0000][INFO] SELECT COUNT(*) AS `rowcount` FROM `category` WHERE `category`.`category_name` = :0 AND `category`.`category_vendor_id` = :1
+[Fri, 26 Jul 19 23:45:15 +0000][INFO] INSERT INTO `category` (`category_id`, `category_parent_id`, `category_name`, `category_order`, `category_vendor_id`, `category_user_id`, `category_url`, `created_at`, `updated_at`, `deleted_at`, `is_deleted`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT)
+[Fri, 26 Jul 19 23:45:28 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 23:45:28 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 23:45:28 +0000][INFO] SELECT c6.category_id,c6.category_parent_id,c6.category_name,c6.category_order,c6.category_vendor_id,c6.category_user_id,c6.category_url,c6.created_at,c6.updated_at,c6.deleted_at,c6.is_deleted FROM category AS c6
+ WHERE c6.is_deleted = :MFO0 AND c6.category_vendor_id = :HUD0 ORDER BY c6.category_order ASC;
+[Fri, 26 Jul 19 23:45:42 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 23:45:42 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 23:45:42 +0000][INFO] WITH RECURSIVE category_path (category_id,category_parent_id,category_name,category_order,category_vendor_id,category_user_id,category_url,created_at,updated_at,deleted_at,is_deleted)
+                AS (SELECT c4.category_id,c4.category_parent_id,c4.category_name,c4.category_order,c4.category_vendor_id,c4.category_user_id,c4.category_url,c4.created_at,c4.updated_at,c4.deleted_at,c4.is_deleted FROM category AS c4
+ WHERE c4.category_id = :KFM0 AND c4.category_parent_id IS NOT NULL AND c4.is_deleted = :RCB0 AND c4.category_vendor_id = :XKN0
+UNION  SELECT c.category_id,c.category_parent_id,c.category_name,c.category_order,c.category_vendor_id,c.category_user_id,c.category_url,c.created_at,c.updated_at,c.deleted_at,c.is_deleted FROM category_path AS cp
+ JOIN category AS c ON c.category_id = cp.category_parent_id AND c.is_deleted = :HYS0)
+                    SELECT * FROM category_path ORDER BY category_order ASC;
+[Fri, 26 Jul 19 23:45:58 +0000][INFO] SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = 'category' AND `TABLE_SCHEMA` = DATABASE()
+[Fri, 26 Jul 19 23:45:58 +0000][INFO] DESCRIBE `category`
+[Fri, 26 Jul 19 23:45:58 +0000][INFO] WITH RECURSIVE category_path (category_id,category_parent_id,category_name,category_order,category_vendor_id,category_user_id,category_url,created_at,updated_at,deleted_at,is_deleted)
+                AS (SELECT c1.category_id,c1.category_parent_id,c1.category_name,c1.category_order,c1.category_vendor_id,c1.category_user_id,c1.category_url,c1.created_at,c1.updated_at,c1.deleted_at,c1.is_deleted FROM category AS c1
+ WHERE c1.category_id = :HWC0 AND c1.category_parent_id IS NOT NULL AND c1.is_deleted = :TEL0 AND c1.category_vendor_id = :AJK0
+UNION  SELECT c.category_id,c.category_parent_id,c.category_name,c.category_order,c.category_vendor_id,c.category_user_id,c.category_url,c.created_at,c.updated_at,c.deleted_at,c.is_deleted FROM category_path AS cp
+ JOIN category AS c ON c.category_id = cp.category_parent_id AND c.is_deleted = :TZP0)
+                    SELECT * FROM category_path ORDER BY category_order ASC LIMIT 1 OFFSET 1;

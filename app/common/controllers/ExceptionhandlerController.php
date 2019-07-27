@@ -5,10 +5,10 @@
  * Time: 10:41 م
  */
 
-namespace Shop_categories\Controllers;
+namespace app\common\controllers;
 
 use Phalcon\Mvc\Controller;
-use Shop_categories\Logger\ApplicationLogger;
+use app\common\logger\ApplicationLogger;
 
 class ExceptionhandlerController extends Controller
 {

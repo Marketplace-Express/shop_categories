@@ -5,7 +5,7 @@
  * Time: 06:13 م
  */
 
-namespace Shop_categories\Enums;
+namespace app\common\enums;
 
 
 class QueueNamesEnum

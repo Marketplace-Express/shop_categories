@@ -5,12 +5,12 @@
  * Time: 12:15 م
  */
 
-namespace Shop_categories\Interfaces;
+namespace app\common\interfaces;
 
 
 interface CategoryDataSourceInterface
 {
-    public function getCategory(string $categoryId, string $vendorId): array;
+    public function getCategory(string $categoryId, string $vendorId);
 
     public function getRoots(string $vendorId): array;
 
@@ -20,7 +20,7 @@ interface CategoryDataSourceInterface
 
     public function getParents(string $categoryId, string $vendorId): array;
 
-    public function getParent(string $categoryId, string $vendorId): array;
+    public function getParent(string $categoryId, string $vendorId);
 
     public function getAll(string $vendorId): array;
 }

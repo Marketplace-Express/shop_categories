@@ -6,7 +6,7 @@
  * Time: 11:51 م
  */
 
-namespace Shop_categories\Controllers;
+namespace app\common\controllers;
 
 use Phalcon\Mvc\Controller;
 

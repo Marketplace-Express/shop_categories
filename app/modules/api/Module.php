@@ -1,6 +1,6 @@
 <?php
 
-namespace Shop_categories\Modules\Api;
+namespace app\modules\api;
 
 use Phalcon\DiInterface;
 use Phalcon\Loader;
@@ -17,7 +17,7 @@ class Module implements ModuleDefinitionInterface
     {
         $loader = new Loader();
         $loader->registerNamespaces([
-            'Shop_categories\Modules\Api\Controllers' => __DIR__ . '/controllers/',
+            'app\modules\api\controllers' => __DIR__ . '/controllers/',
         ]);
 
         $loader->register();

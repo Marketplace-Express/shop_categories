@@ -5,11 +5,11 @@
  * Time: 04:59 م
  */
 
-namespace Shop_categories\models;
+namespace app\common\models;
 
 use Phalcon\Mvc\Model;
-use Shop_categories\Interfaces\BaseModelInterface;
-use Shop_categories\Traits\ModelCollectionBehaviorTrait;
+use app\common\interfaces\BaseModelInterface;
+use app\common\traits\ModelCollectionBehaviorTrait;
 
 abstract class Base extends Model implements BaseModelInterface
 {

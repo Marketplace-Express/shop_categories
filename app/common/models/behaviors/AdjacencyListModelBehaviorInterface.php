@@ -5,18 +5,20 @@
  * Time: 04:31 م
  */
 
-namespace Shop_categories\Models\Behaviors;
+namespace app\common\models\behaviors;
 
+use app\common\exceptions\NotFoundException;
+use app\common\exceptions\OperationFailedException;
 use Phalcon\Db\AdapterInterface;
 use Phalcon\Mvc\Model\Behavior;
 use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\ModelInterface;
-use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
-use Shop_categories\DBTools\QueryBuilder;
-use Shop_categories\DBTools\RecursiveQueryBuilder;
-use Shop_categories\Traits\AdjacencyModelEventManagerTrait;
+use app\common\dbTools\enums\SchemaQueryOperatorsEnum;
+use app\common\dbTools\QueryBuilder;
+use app\common\dbTools\RecursiveQueryBuilder;
+use app\common\traits\AdjacencyModelEventManagerTrait;
 
-class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, BaseBehavior
+class AdjacencyListModelBehaviorInterface extends Behavior implements BehaviorInterface
 {
     use AdjacencyModelEventManagerTrait;
 
@@ -149,7 +151,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
      * @return array
      *
      * @codeCoverageIgnore
-     * @throws \Exception
+     * @throws OperationFailedException
      */
     private function getAttributes(): array
     {
@@ -159,7 +161,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
             return $this->getOwner()->getDi()->getShared('modelsMetadata')->readColumnMap($this->getOwner())[1];
         }
 
-        throw new \Exception('Model missing columnMap method');
+        throw new OperationFailedException('Model missing columnMap method');
     }
 
     /**
@@ -259,7 +261,11 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
         $query = $this->getOwner()->getReadConnection()->query($queryBuilder->getQuery(), $queryBuilder->getBinds());
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
-        $result = $query->fetchAll();
+        if ($oneParent) {
+            $result = $query->fetch();
+        } else {
+            $result = $query->fetchAll();
+        }
         return $result;
     }
 
@@ -268,7 +274,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
      * @param string $itemId
      * @param array $additionalConditions
      * @return array|bool
-     * @throws \Exception
+     * @throws OperationFailedException
      */
     public function descendants(string $itemId, array $additionalConditions = [])
     {
@@ -379,7 +385,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
      * @param string $itemId
      * @param array $additionalConditions
      * @return bool
-     * @throws \Exception
+     * @throws NotFoundException
+     * @throws OperationFailedException
      */
     public function deleteCascade(string $itemId, array $additionalConditions = [])
     {
@@ -389,11 +396,11 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface, 
             foreach ($descendants as $item) {
                 if (!$item->delete()) {
                     $this->db->rollback();
-                    throw new \Exception("Item {$item->{"get".ucfirst($this->itemIdAttribute)}()} could not be deleted");
+                    throw new OperationFailedException("Item {$item->{"get".ucfirst($this->itemIdAttribute)}()} could not be deleted");
                 }
             }
             return $this->db->commit();
         }
-        throw new \Exception("Item not found or maybe deleted", 404);
+        throw new NotFoundException("Item not found or maybe deleted");
     }
 }

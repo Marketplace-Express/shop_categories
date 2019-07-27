@@ -5,7 +5,7 @@
  * Time: 10:47 م
  */
 
-namespace Shop_categories\Services\User;
+namespace app\common\services\user;
 
 
 class UserService

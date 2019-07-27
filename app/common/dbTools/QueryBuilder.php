@@ -5,10 +5,10 @@
  * Time: 11:10 م
  */
 
-namespace Shop_categories\DBTools;
+namespace app\common\dbTools;
 
-
-use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
+use app\common\exceptions\OperationFailedException;
+use app\common\dbTools\enums\SchemaQueryOperatorsEnum;
 
 class QueryBuilder
 {
@@ -52,7 +52,8 @@ class QueryBuilder
      * @param array $options
      * @param array $orderBy
      * @param array $limit
-     * @throws \Exception Example:
+     * @throws OperationFailedException
+     * Example:
      * new QueryBuilder(
      *      'table_name',
      *      ['column1', 'column2', 'column3'],
@@ -95,7 +96,7 @@ class QueryBuilder
     public function __construct(string $table, array $columns, array $options = [], array $orderBy = [], array $limit = [])
     {
         if (empty($table)) {
-            throw new \Exception('Tale should be specified', 500);
+            throw new OperationFailedException('Table should be specified', 500);
         }
         $this->table = $table;
         $this->columns = $columns;
@@ -176,14 +177,14 @@ class QueryBuilder
     /**
      * Generate query join statement
      * @return string
-     * @throws \Exception
+     * @throws OperationFailedException
      */
     protected final function createJoin(): string
     {
         $joinStatement = '';
         if (is_array($this->join)) {
             if (empty($this->join['table'])) {
-                throw new \Exception('Check that all join attributes are set', 500);
+                throw new OperationFailedException('Check that all join attributes are set', 500);
             }
 
             if (!empty($this->join['side']) && !in_array(strtoupper($this->join['side']), ['LEFT', 'RIGHT', 'OUTER', 'INNER', 'FULL OUTER'])) {
@@ -211,17 +212,17 @@ class QueryBuilder
 
     /**
      * @return string
-     * @throws \Exception
+     * @throws OperationFailedException
      */
     protected final function createUnion(): string
     {
         if (!is_array($this->union) || empty($this->union)) {
-            throw new \Exception('You have to specify UNION options', 500);
+            throw new OperationFailedException('You have to specify UNION options', 500);
         }
         $unionStatement = '';
         $this->options = [];
         if (empty($this->union['table']))  {
-            throw new \Exception('Not allowed UNION without table name', 500);
+            throw new OperationFailedException('Not allowed UNION without table name', 500);
         }
         $this->orderBy = $this->limit = [];
         $this->table = $this->union['table'];
@@ -295,7 +296,7 @@ class QueryBuilder
      * Create query
      * @param bool $endStatement
      * @return string
-     * @throws \Exception
+     * @throws OperationFailedException
      */
     protected function createQuery(bool $endStatement = true)
     {

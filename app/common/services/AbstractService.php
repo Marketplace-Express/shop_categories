@@ -5,7 +5,7 @@
  * Time: 12:09 م
  */
 
-namespace Shop_categories\Services;
+namespace app\common\services;
 
 
 abstract class AbstractService extends BaseService

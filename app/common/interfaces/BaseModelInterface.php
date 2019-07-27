@@ -5,7 +5,7 @@
  * Time: 05:15 م
  */
 
-namespace Shop_categories\Interfaces;
+namespace app\common\interfaces;
 
 use Phalcon\Mvc\ModelInterface;
 

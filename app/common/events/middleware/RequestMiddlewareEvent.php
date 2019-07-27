@@ -5,11 +5,11 @@
  * Time: 07:59 م
  */
 
-namespace Shop_categories\Events\Middleware;
+namespace app\common\events\middleware;
 
-use Shop_categories\Controllers\BaseController;
-use Shop_categories\Services\User\Token;
-use Shop_categories\Services\User\UserService;
+use app\common\controllers\BaseController;
+use app\common\services\user\Token;
+use app\common\services\user\UserService;
 use Sid\Phalcon\AuthMiddleware\MiddlewareInterface;
 use Firebase\JWT\JWT;
 

@@ -5,19 +5,29 @@
  * Time: 11:53 م
  */
 
-namespace Shop_categories\Services\Cache;
+namespace app\common\services\cache;
 
-use Redis;
-use Shop_categories\Interfaces\AttributeDataSourceInterface;
-use Shop_categories\Services\AbstractService;
+use app\common\interfaces\AttributeDataSourceInterface;
 
-class AttributesCache extends AbstractService implements AttributeDataSourceInterface
+class AttributesCache implements AttributeDataSourceInterface
 {
-    /** @var Redis $attributesCacheInstance */
+    const ATTRIBUTES_CACHE_CONFIG_KEY = 'attributesCache';
+
+    /** @var \Redis $attributesCacheInstance */
     protected static $attributesCacheInstance;
 
     private static $attributeCacheKey = 'attribute:%s';
     private static $categoryCacheKey = 'category:%s';
+
+    /**
+     * @return AttributesCache
+     * @throws \RedisException
+     */
+    static public function getInstance()
+    {
+        self::establishCacheConnection();
+        return new self;
+    }
 
     public function getAttributeCacheKey(string $attributeId)
     {
@@ -141,12 +151,6 @@ class AttributesCache extends AbstractService implements AttributeDataSourceInte
     public function getAttribute(string $attributeId)
     {
         $cacheKey = $this->getAttributeCacheKey($attributeId);
-        if (!self::exists($cacheKey)) {
-            $attribute = self::getAttributesRepository()->getAttribute($attributeId)->toApiArray();
-            self::set($this->getAttributeCacheKey($attributeId), $attribute);
-            self::hSet($this->getCategoryCacheKey($attribute['attribute_category_id']), $attribute['attribute_id'], $attribute);
-            return $attribute;
-        }
         return self::get($cacheKey);
     }
 
@@ -158,31 +162,24 @@ class AttributesCache extends AbstractService implements AttributeDataSourceInte
      */
     public function getAll(string $categoryId): array
     {
-        if (!self::exists($this->getCategoryCacheKey($categoryId))) {
-            $attributes = self::getAttributesRepository()->getAll($categoryId);
-            foreach ($attributes as $attribute) {
-                self::hSet($this->getCategoryCacheKey($categoryId), $attribute['attribute_id'], $attribute);
-            }
-        }
         return self::hGetAll($this->getCategoryCacheKey($categoryId));
     }
 
     /**
      * Get attribute values
      *
-     * @param string $attribute_id
+     * @param string $attributeId
      * @return array
      *
      * @throws \Exception
      */
-    public function getValues(string $attribute_id): array
+    public function getValues(string $attributeId): array
     {
-        return $this->getAttribute($attribute_id)['attribute_values'];
-    }
-
-    public function updateValues(string $attribute_id, array $values)
-    {
-        // TODO: Implement addValue() method.
+        $attribute = $this->getAttribute($attributeId);
+        if ($attribute) {
+            return $attribute['attributeValues'];
+        }
+        return null;
     }
 
     /**
@@ -212,7 +209,7 @@ class AttributesCache extends AbstractService implements AttributeDataSourceInte
         if (self::exists($attributeCacheKey)) {
             $attribute = self::get($attributeCacheKey);
             $deleteAttribute =  self::$attributesCacheInstance->delete($attributeCacheKey);
-            $deleteFromCategory = self::hDelete($this->getCategoryCacheKey($attribute['attribute_category_id']), $attributeId);
+            $deleteFromCategory = self::hDelete($this->getCategoryCacheKey($attribute['attributeCategoryId']), $attributeId);
             if ($deleteAttribute && $deleteFromCategory) {
                 return true;
             }

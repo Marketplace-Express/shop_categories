@@ -5,8 +5,7 @@
  * Time: 10:22 م
  */
 
-namespace Shop_categories\Redis;
-
+namespace app\common\redis;
 
 use Ehann\RedisRaw\PhpRedisAdapter;
 use Ehann\RedisRaw\RedisRawClientInterface;
@@ -14,7 +13,7 @@ use Redis;
 
 /**
  * Class Connector
- * @package Shop_categories\Redis
+ * @package app\common\redis
  *
  * Implement Ehann\RedisRaw\PhpRedisAdapter
  * To enable persistent connection To Redis

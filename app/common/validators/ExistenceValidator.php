@@ -5,7 +5,7 @@
  * Time: 08:15 م
  */
 
-namespace Shop_categories\Validators;
+namespace app\common\validators;
 
 use Phalcon\Mvc\Model;
 use Phalcon\Validation\Message;

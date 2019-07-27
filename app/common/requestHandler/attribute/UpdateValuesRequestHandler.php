@@ -5,14 +5,14 @@
  * Time: 08:12 م
  */
 
-namespace Shop_categories\RequestHandler\Attribute;
+namespace app\common\requestHandler\attribute;
 
 
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
-use Shop_categories\Controllers\BaseController;
-use Shop_categories\Exceptions\ArrayOfStringsException;
-use Shop_categories\RequestHandler\RequestHandlerInterface;
+use app\common\controllers\BaseController;
+use app\common\exceptions\ArrayOfStringsException;
+use app\common\requestHandler\RequestHandlerInterface;
 
 class UpdateValuesRequestHandler extends BaseController implements RequestHandlerInterface
 {

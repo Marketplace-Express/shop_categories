@@ -5,7 +5,7 @@
  * Time: 12:31 ص
  */
 
-namespace Shop_categories\Events\Listeners;
+namespace app\common\events\listeners;
 
 
 use Phalcon\Events\Event;

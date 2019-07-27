@@ -5,7 +5,7 @@
  * Time: 04:40 م
  */
 
-namespace Shop_categories\Modules\Cli\Request;
+namespace app\modules\cli\request;
 
 use Phalcon\Di\Injectable;
 

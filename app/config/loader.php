@@ -8,36 +8,36 @@ $loader = new Loader();
  * Register Namespaces
  */
 $loader->registerNamespaces([
-    'Shop_categories\Models' => APP_PATH . '/common/models/',
-    'Shop_categories\Collections' => APP_PATH . '/common/collections/',
-    'Shop_categories\Interfaces' => APP_PATH . '/common/interfaces/',
-    'Shop_categories\Controllers' => APP_PATH . '/common/controllers/',
-    'Shop_categories\Models\Behaviors' => APP_PATH . '/common/models/behaviors/',
-    'Shop_categories\Helpers' => APP_PATH . '/common/helpers/',
-    'Shop_categories\Traits' => APP_PATH . '/common/traits/',
-    'Shop_categories\Events' => APP_PATH . '/common/events/',
-    'Shop_categories\Events\Listeners' => APP_PATH . '/common/events/listeners/',
-    'Shop_categories\Events\Middleware' => APP_PATH . '/common/events/middleware/',
-    'Shop_categories\Utils' => APP_PATH . '/common/utils/',
-    'Shop_categories\Validators' => APP_PATH . '/common/validators/',
-    'Shop_categories\Logger' => APP_PATH . '/common/logger/',
-    'Shop_categories\Exceptions' => APP_PATH . '/common/exceptions/',
-    'Shop_categories\Repositories' => APP_PATH . '/common/repositories/',
-    'Shop_categories\RequestHandler' => APP_PATH . '/common/request-handler/',
-    'Shop_categories\RequestHandler\Attribute' => APP_PATH . '/common/request-handler/attribute/',
-    'Shop_categories\RequestHandler\Category' => APP_PATH . '/common/request-handler/category/',
-    'Shop_categories\RequestHandler\Queue' => APP_PATH . '/common/request-handler/queue/',
-    'Shop_categories\Services' => APP_PATH . '/common/services/',
-    'Shop_categories\Services\Cache' => APP_PATH . '/common/services/cache/',
-    'Shop_categories\Services\Cache\Utils' => APP_PATH . '/common/services/cache/utils/',
-    'Shop_categories\Services\User' => APP_PATH . '/common/services/user/',
-    'Shop_categories\DBTools' => APP_PATH . '/common/db-tools/',
-    'Shop_categories\DBTools\Enums' => APP_PATH . '/common/db-tools/enums/',
-    'Shop_categories\Enums' => APP_PATH . '/common/enums/',
-    'Shop_categories\Modules\Api\Controllers' => APP_PATH . '/modules/api/' . $config->api->version . '/controllers/',
-    'Shop_categories\Modules\Cli\Request' => APP_PATH . '/modules/cli/request/',
-    'Shop_categories\Modules\Cli\Services' => APP_PATH . '/modules/cli/services/',
-    'Shop_categories\Redis' => APP_PATH . '/common/redis/',
+    'app\common\models' => APP_PATH . '/common/models/',
+    'app\common\collections' => APP_PATH . '/common/collections/',
+    'app\common\interfaces' => APP_PATH . '/common/interfaces/',
+    'app\common\controllers' => APP_PATH . '/common/controllers/',
+    'app\common\models\behaviors' => APP_PATH . '/common/models/behaviors/',
+    'app\common\helpers' => APP_PATH . '/common/helpers/',
+    'app\common\traits' => APP_PATH . '/common/traits/',
+    'app\common\events' => APP_PATH . '/common/events/',
+    'app\common\events\listeners' => APP_PATH . '/common/events/listeners/',
+    'app\common\events\middleware' => APP_PATH . '/common/events/middleware/',
+    'app\common\utils' => APP_PATH . '/common/utils/',
+    'app\common\validators' => APP_PATH . '/common/validators/',
+    'app\common\logger' => APP_PATH . '/common/logger/',
+    'app\common\exceptions' => APP_PATH . '/common/exceptions/',
+    'app\common\repositories' => APP_PATH . '/common/repositories/',
+    'app\common\requestHandler' => APP_PATH . '/common/requestHandler/',
+    'app\common\requestHandler\attribute' => APP_PATH . '/common/requestHandler/attribute/',
+    'app\common\requestHandler\category' => APP_PATH . '/common/requestHandler/category/',
+    'app\common\requestHandler\queue' => APP_PATH . '/common/requestHandler/queue/',
+    'app\common\services' => APP_PATH . '/common/services/',
+    'app\common\services\cache' => APP_PATH . '/common/services/cache/',
+    'app\common\services\cache\utils' => APP_PATH . '/common/services/cache/utils/',
+    'app\common\services\user' => APP_PATH . '/common/services/user/',
+    'app\common\dbTools' => APP_PATH . '/common/dbTools/',
+    'app\common\dbTools\enums' => APP_PATH . '/common/dbTools/enums/',
+    'app\common\enums' => APP_PATH . '/common/enums/',
+    'app\modules\api\controllers' => APP_PATH . '/modules/api/' . $config->api->version . '/controllers/',
+    'app\modules\cli\request' => APP_PATH . '/modules/cli/request/',
+    'app\modules\cli\services' => APP_PATH . '/modules/cli/services/',
+    'app\common\redis' => APP_PATH . '/common/redis/',
 ]);
 
 /**
@@ -51,8 +51,8 @@ $loader->registerFiles([
  * Register module classes
  */
 $loader->registerClasses([
-    'Shop_categories\Modules\Api\Module' => APP_PATH . '/modules/api/Module.php',
-    'Shop_categories\Modules\Cli\Module'      => APP_PATH . '/modules/cli/Module.php'
+    'app\modules\api\Module' => APP_PATH . '/modules/api/Module.php',
+    'app\modules\cli\Module'      => APP_PATH . '/modules/cli/Module.php'
 ]);
 
 $loader->register();

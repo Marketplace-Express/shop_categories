@@ -5,16 +5,16 @@
  * Time: 12:21 م
  */
 
-namespace Shop_categories\Tests\Modules\Api\Controllers;
+namespace tests\app\modules\api\controllers;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use Shop_categories\Exceptions\ArrayOfStringsException;
-use Shop_categories\Modules\Api\Controllers\CategoryController;
-use Shop_categories\RequestHandler\Category\CreateRequestHandler;
-use Shop_categories\RequestHandler\Category\DeleteRequestHandler;
-use Shop_categories\RequestHandler\Category\GetRequestHandler;
-use Shop_categories\RequestHandler\Category\UpdateRequestHandler;
-use Shop_categories\Services\CategoryService;
+use app\common\exceptions\ArrayOfStringsException;
+use app\modules\api\controllers\CategoryController;
+use app\common\requestHandler\category\CreateRequestHandler;
+use app\common\requestHandler\category\DeleteRequestHandler;
+use app\common\requestHandler\category\GetRequestHandler;
+use app\common\requestHandler\category\UpdateRequestHandler;
+use app\common\services\CategoryService;
 use stdClass;
 use JsonMapper;
 

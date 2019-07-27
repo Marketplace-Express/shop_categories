@@ -5,19 +5,29 @@
  * Time: 06:13 م
  */
 
-namespace Shop_categories\Repositories;
+namespace app\common\repositories;
 
-use Shop_categories\DBTools\Enums\SchemaQueryOperatorsEnum;
-use Shop_categories\Exceptions\ArrayOfStringsException;
-use Shop_categories\Interfaces\CategoryDataSourceInterface;
-use Shop_categories\Models\Behaviors\AdjacencyListModelBehavior;
-use Shop_categories\Models\Category;
+use app\common\exceptions\NotFoundException;
+use app\common\exceptions\OperationFailedException;
+use app\common\dbTools\enums\SchemaQueryOperatorsEnum;
+use app\common\exceptions\ArrayOfStringsException;
+use app\common\interfaces\CategoryDataSourceInterface;
+use app\common\models\behaviors\AdjacencyListModelBehaviorInterface;
+use app\common\models\Category;
 
 class CategoryRepository implements CategoryDataSourceInterface
 {
     /**
+     * @return CategoryRepository
+     */
+    static public function getInstance()
+    {
+        return new self;
+    }
+
+    /**
      * @param bool $new
-     * @return Category|AdjacencyListModelBehavior
+     * @return Category|AdjacencyListModelBehaviorInterface
      */
     public static function getModel(bool $new = false): Category
     {
@@ -73,12 +83,17 @@ class CategoryRepository implements CategoryDataSourceInterface
      * Get category by Id
      * @param string $categoryId
      * @param string $vendorId
-     * @return array
+     * @return Category
+     * @throws NotFoundException
      * @throws \Exception
      */
-    public function getCategory(string $categoryId, string $vendorId): array
+    public function getCategory(string $categoryId, string $vendorId): ?Category
     {
-        return self::findById($categoryId, $vendorId)->toApiArray();
+        $category = self::findById($categoryId, $vendorId);
+        if (!$category) {
+            throw new NotFoundException('Category not found or maybe deleted');
+        }
+        return $category;
     }
 
     /**
@@ -179,22 +194,22 @@ class CategoryRepository implements CategoryDataSourceInterface
      * Get ancestor of node
      * @param string $categoryId
      * @param string $vendorId
-     * @return array|bool
+     * @return Category
      *
      * @throws \Exception
      */
-    public function getParent(string $categoryId, string $vendorId): array
+    public function getParent(string $categoryId, string $vendorId): Category
     {
-        /** @var Category[] $parent */
-        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var Category $parent */
         $parent = self::getModel()->parents($categoryId, [
             'categoryVendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ], true);
 
-        return array_map(function($category) {
-            /** @var Category $category */
-            return $category->toApiArray();
-            }, $parent);
+        if (!$parent) {
+            throw new NotFoundException('No parent category');
+        }
+
+        return $parent;
     }
 
     /**
@@ -261,7 +276,9 @@ class CategoryRepository implements CategoryDataSourceInterface
      * @param string $vendorId
      * @return bool
      *
-     * @throws \Exception
+     * @throws OperationFailedException
+     * @throws NotFoundException
+     *
      */
     public function delete(string $categoryId, string $vendorId)
     {

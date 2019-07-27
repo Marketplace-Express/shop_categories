@@ -5,14 +5,13 @@
  * Time: 06:27 م
  */
 
-namespace Shop_categories\RequestHandler\Queue;
-
+namespace app\common\requestHandler\queue;
 
 use Phalcon\Di\Injectable;
 use Phalcon\Validation;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
-use Shop_categories\Exceptions\ArrayOfStringsException;
+use app\common\exceptions\ArrayOfStringsException;
 
 class QueueRequestHandler extends Injectable
 {

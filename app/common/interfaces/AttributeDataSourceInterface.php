@@ -5,7 +5,7 @@
  * Time: 12:19 م
  */
 
-namespace Shop_categories\Interfaces;
+namespace app\common\interfaces;
 
 
 interface AttributeDataSourceInterface
@@ -22,7 +22,9 @@ interface AttributeDataSourceInterface
      */
     public function getAttribute(string $attribute_id);
 
-    public function getValues(string $attribute_id): array;
-
-    public function updateValues(string $attribute_id, array $values);
+    /**
+     * @param string $attributeId
+     * @return array
+     */
+    public function getValues(string $attributeId): array;
 }

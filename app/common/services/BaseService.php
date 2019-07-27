@@ -5,81 +5,28 @@
  * Time: 12:07 ص
  */
 
-namespace Shop_categories\Services;
-
-use Phalcon\Cache\Backend\Redis;
-use Shop_categories\Repositories\AttributesRepository;
-use Shop_categories\Repositories\CategoryRepository;
-use Shop_categories\Services\Cache\AttributesCache;
-use Shop_categories\Services\Cache\CategoryCache;
+namespace app\common\services;
 
 class BaseService
 {
-    const CATEGORY_CACHE_CONFIG_KEY = 'categoryCache';
-    const ATTRIBUTES_CACHE_CONFIG_KEY = 'attributesCache';
     /**
-     * @var Redis $categoryCacheInstance
+     * @var string $vendorId
      */
-    protected static $categoryCacheInstance;
+    protected static $vendorId;
 
     /**
-     * @var CategoryCache $categoryCacheService
+     * @param string $vendorId
      */
-    public static $categoryCacheService;
-
-    /**
-     * @var AttributesCache $attributesCacheService
-     */
-    public static $attributesCacheService;
-
-    /**
-     * @var CategoryRepository $categoryRepository
-     */
-    public static $categoryRepository;
-
-    /**
-     * @var AttributesRepository $attributesRepository
-     */
-    public static $attributesRepository;
-
-    /**
-     * @return CategoryRepository
-     */
-    public static function getCategoryRepository(): CategoryRepository
+    public static function setVendorId(string $vendorId): void
     {
-        return self::$categoryRepository ?? new CategoryRepository();
+        self::$vendorId = $vendorId;
     }
 
     /**
-     * @return AttributesRepository
+     * @return string
      */
-    public static function getAttributesRepository(): AttributesRepository
+    public static function getVendorId(): string
     {
-        return self::$attributesRepository ?? new AttributesRepository();
-    }
-
-    /**
-     * @return CategoryCache
-     * @throws \Exception
-     * @throws \RedisException
-     */
-    public static function getCategoryCache(): CategoryCache
-    {
-        if (!self::$categoryCacheService) {
-            self::$categoryCacheService = new CategoryCache();
-        }
-        return self::$categoryCacheService;
-    }
-
-    /**
-     * @return AttributesCache
-     * @throws \RedisException
-     */
-    public static function getAttributesCache(): AttributesCache
-    {
-        if (!self::$attributesCacheService) {
-            self::$attributesCacheService = new AttributesCache();
-        }
-        return self::$attributesCacheService;
+        return self::$vendorId;
     }
 }
