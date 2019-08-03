@@ -82,12 +82,22 @@ class CategoryMigration_100 extends Migration
                         ]
                     ),
                     new Column(
+                        'category_depth',
+                        [
+                            'type' => Column::TYPE_INTEGER,
+                            'size' => 2,
+                            'after' => 'category_url',
+                            'default' => "0"
+                        ]
+                    ),
+                    new Column(
                         'created_at',
                         [
                             'type' => Column::TYPE_DATETIME,
                             'notNull' => true,
                             'size' => 1,
-                            'after' => 'category_url'
+                            'after' => 'category_depth',
+                            'default' => new \Phalcon\Db\RawValue('CURRENT_TIMESTAMP')
                         ]
                     ),
                     new Column(

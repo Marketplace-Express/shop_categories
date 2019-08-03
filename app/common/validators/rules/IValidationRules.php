@@ -10,5 +10,5 @@ namespace app\common\validators\rules;
 
 interface IValidationRules
 {
- public function toArray(): array;
+    public function toArray(): array;
 }
