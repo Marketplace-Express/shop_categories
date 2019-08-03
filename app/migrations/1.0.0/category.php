@@ -96,8 +96,8 @@ class CategoryMigration_100 extends Migration
                         [
                             'type' => Column::TYPE_DATETIME,
                             'notNull' => true,
-                            'size' => 1,
-                            'after' => 'category_depth'
+                            'after' => 'category_depth',
+                            'default' => new \Phalcon\Db\RawValue('CURRENT_TIMESTAMP')
                         ]
                     ),
                     new Column(
@@ -129,8 +129,8 @@ class CategoryMigration_100 extends Migration
                 ],
                 'indexes' => [
                     new Index('PRIMARY', ['category_id'], 'PRIMARY'),
-                    new Index('category_id_uindex', ['category_id'], 'UNIQUE'),
-                    new Index('category_parent_id_index', ['category_parent_id'], null)
+                    new Index('category_parent_id_index', ['category_parent_id'], null),
+                    new Index('category_id-category_parent_id-unique', ['category_id', 'category_parent_id'], 'UNIQUE')
                 ],
                 'references' => [
                     new Reference(

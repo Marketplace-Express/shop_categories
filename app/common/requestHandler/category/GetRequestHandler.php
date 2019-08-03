@@ -10,9 +10,9 @@ namespace app\common\requestHandler\category;
 
 use Phalcon\Validation\Message\Group;
 use app\common\controllers\BaseController;
-use app\common\requestHandler\RequestHandlerInterface;
+use app\common\requestHandler\IRequestHandler;
 
-class GetRequestHandler extends BaseController implements RequestHandlerInterface
+class GetRequestHandler extends BaseController implements IRequestHandler
 {
     /** Validate request fields using \Phalcon\Validation\Validator
      * @return Group
@@ -62,5 +62,10 @@ class GetRequestHandler extends BaseController implements RequestHandlerInterfac
     public function toArray(): array
     {
         // TODO: Implement toArray() method.
+    }
+
+    public function getValidationRules()
+    {
+        // TODO: Implement getValidationRules() method.
     }
 }

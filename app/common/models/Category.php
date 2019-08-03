@@ -2,6 +2,7 @@
 
 namespace app\common\models;
 
+use app\common\validators\rules\CategoryRules;
 use Phalcon\Config;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\AlphaNumericValidator;
@@ -34,209 +35,73 @@ class Category extends Base
      * @Primary
      * @Column(column="category_id", type="string", length=36, nullable=false)
      */
-    protected $categoryId;
+    public $categoryId;
 
     /**
      * @var string
      * @Column(column="category_parent_id", type="string", length=36)
      */
-    protected $categoryParentId;
+    public $categoryParentId;
 
     /**
      * @var string
      * @Column(column="category_vendor_id", type="string", length=36, nullable=false)
      */
-    protected $categoryVendorId;
+    public $categoryVendorId;
 
     /**
      * @var string $categoryUserId
      * @Column(column="category_user_id", type="string", length=36, nullable=false)
      */
-    protected $categoryUserId;
+    public $categoryUserId;
 
     /**
      * @var integer $categoryOrder
      * @Column(column="category_order", type="integer", length=3, nullable=false)
      */
-    protected $categoryOrder = 0;
+    public $categoryOrder = 0;
 
     /**
      * @var string
      * @Column(column="category_name", type="string", length=100, nullable=false)
      */
-    protected $categoryName;
+    public $categoryName;
 
     /**
      * @var string
      * @Column(column="category_url", type="string", length=255)
      */
-    protected $categoryUrl;
+    public $categoryUrl;
 
     /**
-     * @var string
-     * @Column(column="category_depth", type="integer", length=2, nullable=false)
+     * @var int
+     * @Column(column="category_depth", type="integer", size=2, nullable=false)
      */
-    public $categoryDepth;
+    public $categoryDepth = 0;
 
     /**
      * @var string
      * @Column(column="created_at", type="string", nullable=false)
      */
-    protected $createdAt;
+    public $createdAt;
 
     /**
      * @var string
      * @Column(column="updated_at", type="string")
      */
-    protected $updatedAt;
+    public $updatedAt;
 
     /**
      * @var string
      * @Column(column="deleted_at", type="string")
      */
-    protected $deletedAt;
+    public $deletedAt;
 
     /**
      * @var integer
      * @Column(column="is_deleted", type="integer", length=1, nullable=false)
      */
-    protected $isDeleted;
-
-    /**
-     * @param string $categoryVendorId
-     */
-    public function setCategoryVendorId($categoryVendorId)
-    {
-        $this->categoryVendorId = $categoryVendorId;
-    }
-
-    /**
-     * @param $categoryUserId
-     */
-    public function setCategoryUserId($categoryUserId)
-    {
-        $this->categoryUserId = $categoryUserId;
-    }
-
-    /**
-     * @param string $createdAt
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @param string $updatedAt
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
-     * @param string $deletedAt
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-    }
-
-    /**
-     * @param integer $isDeleted
-     */
-    public function setIsDeleted($isDeleted)
-    {
-        $this->isDeleted = $isDeleted;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryId()
-    {
-        return $this->categoryId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryParentId()
-    {
-        return $this->categoryParentId;
-    }
-
-    /**
-     * @return null|int
-     */
-    public function getCategoryOrder(): int
-    {
-        return $this->categoryOrder;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryVendorId()
-    {
-        return $this->categoryVendorId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryUserId()
-    {
-        return $this->categoryUserId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryName()
-    {
-        return $this->categoryName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryUrl()
-    {
-        return $this->categoryUrl;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getIsDeleted()
-    {
-        return $this->isDeleted;
-    }
+    public $isDeleted = false;
 
     /**
      * @throws \Exception
@@ -287,6 +152,7 @@ class Category extends Base
             'category_vendor_id' => 'categoryVendorId',
             'category_user_id' => 'categoryUserId',
             'category_url' => 'categoryUrl',
+            'category_depth' => 'categoryDepth',
             'created_at' => 'createdAt',
             'updated_at' => 'updatedAt',
             'deleted_at' => 'deletedAt',
@@ -301,32 +167,13 @@ class Category extends Base
     public function toApiArray()
     {
         return [
-            'categoryId' => $this->getCategoryId(),
-            'categoryParentId' => $this->getCategoryParentId(),
-            'categoryVendorId' => $this->getCategoryVendorId(),
-            'categoryName' => $this->getCategoryName(),
-            'categoryUrl' => $this->getCategoryUrl(),
-            'categoryOrder' => $this->getCategoryOrder()
-        ];
-    }
-
-    /**
-     * Returns model as an array (internal usage)
-     * @param null $columns
-     * @return array
-     */
-    public function toArray($columns = null)
-    {
-        return [
-            'categoryId' => $this->getCategoryId(),
-            'categoryParentId' => $this->getCategoryParentId(),
-            'categoryName' => $this->getCategoryName(),
-            'categoryOrder' => $this->getCategoryOrder(),
-            'categoryUserId' => $this->getCategoryUserId(),
-            'categoryVendorId' => $this->getCategoryVendorId(),
-            'categoryUrl' => $this->getCategoryUrl(),
-            'createdAt' => $this->getCreatedAt(),
-            'updatedAt' => $this->getUpdatedAt()
+            'categoryId' => $this->categoryId,
+            'categoryParentId' => $this->categoryParentId,
+            'categoryVendorId' => $this->categoryVendorId,
+            'categoryName' => $this->categoryName,
+            'categoryUrl' => $this->categoryUrl,
+            'categoryOrder' => $this->categoryOrder,
+            'categoryDepth' => $this->categoryDepth
         ];
     }
 
@@ -336,11 +183,11 @@ class Category extends Base
     }
 
     /**
-     * @return Config
+     * @return CategoryRules
      */
-    private function getValidationConfig(): Config
+    private function getValidationRules(): CategoryRules
     {
-        return $this->getDI()->getConfig()->application->validation;
+        return new CategoryRules();
     }
 
     /**
@@ -373,10 +220,10 @@ class Category extends Base
         $validator->add(
             'categoryName',
             new AlphaNumericValidator([
-                'whiteSpace' => $this->getValidationConfig()->categoryNameValidationConfig->allowWhiteSpace,
-                'underscore' => $this->getValidationConfig()->categoryNameValidationConfig->allowUnderscore,
-                'min' => $this->getValidationConfig()->categoryNameValidationConfig->minNameLength,
-                'max' => $this->getValidationConfig()->categoryNameValidationConfig->maxNameLength,
+                'whiteSpace' => $this->getValidationRules()->allowNameWhiteSpace,
+                'underscore' => $this->getValidationRules()->allowNameUnderscore,
+                'min' => $this->getValidationRules()->minNameLength,
+                'max' => $this->getValidationRules()->maxNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters'
@@ -424,18 +271,18 @@ class Category extends Base
         $validator->add(
             'categoryOrder',
             new Validation\Validator\NumericValidator([
-                'min' => $this->getValidationConfig()->categoryOrderValidationConfig->minCategoryOrder,
-                'max' => $this->getValidationConfig()->categoryOrderValidationConfig->maxCategoryOrder,
+                'min' => $this->getValidationRules()->minOrder,
+                'max' => $this->getValidationRules()->maxOrder,
                 'message' => 'Category order should be a number'
             ])
         );
 
         $this->_errorMessages = $messages = $validator->validate([
-            'categoryName' => $this->getCategoryName(),
-            'categoryParentId' => $this->getCategoryParentId(),
-            'categoryOrder' => $this->getCategoryOrder()
+            'categoryName' => $this->categoryName,
+            'categoryParentId' => $this->categoryParentId,
+            'categoryOrder' => $this->categoryOrder
         ]);
 
-        return $messages->count() ? false : true;
+        return !$messages->count();
     }
 }

@@ -8,13 +8,14 @@
 namespace app\common\requestHandler\attribute;
 
 
+use app\common\validators\rules\AttributeRules;
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
 use app\common\controllers\BaseController;
 use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\RequestHandlerInterface;
+use app\common\requestHandler\IRequestHandler;
 
-class UpdateValuesRequestHandler extends BaseController implements RequestHandlerInterface
+class UpdateValuesRequestHandler extends BaseController implements IRequestHandler
 {
     /** @var array $values */
     private $values;
@@ -37,9 +38,12 @@ class UpdateValuesRequestHandler extends BaseController implements RequestHandle
         $this->values = $values;
     }
 
-    private function getValueConfig()
+    /**
+     * @return AttributeRules
+     */
+    public function getValidationRules(): AttributeRules
     {
-        return $this->getDI()->getConfig()->application->attributeValueValidationConfig;
+        return new AttributeRules();
     }
 
     /** Validate request fields using \Phalcon\Validation\Validator

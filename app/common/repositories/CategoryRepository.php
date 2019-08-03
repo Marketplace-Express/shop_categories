@@ -241,10 +241,15 @@ class CategoryRepository implements CategoryDataSourceInterface
      * @param array $data
      * @return Category
      * @throws ArrayOfStringsException
+     * @throws \Exception
      */
     public function create(array $data): Category
     {
         $category = self::getModel(true);
+        if (!empty($data['categoryParentId'])) {
+            $parent = $this->getParent($data['categoryParentId'], $data['categoryVendorId']);
+            $data['categoryDepth'] = $parent->categoryDepth + 1;
+        }
         if (!$category->save($data, Category::WHITE_LIST)) {
             throw new ArrayOfStringsException($category->getMessages(), 400);
         }

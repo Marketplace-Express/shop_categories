@@ -10,7 +10,7 @@ namespace app\common\requestHandler;
 
 use Phalcon\Validation\Message\Group;
 
-interface RequestHandlerInterface
+interface IRequestHandler
 {
     /** Validate request fields using \Phalcon\Validation\Validator
      * @return Group
@@ -45,4 +45,6 @@ interface RequestHandlerInterface
      * @return array
      */
     public function toArray(): array;
+
+    public function getValidationRules();
 }

@@ -7,13 +7,14 @@
 
 namespace app\common\requestHandler\attribute;
 
+use app\common\validators\rules\AttributeRules;
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
 use app\common\controllers\BaseController;
 use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\RequestHandlerInterface;
+use app\common\requestHandler\IRequestHandler;
 
-class UpdateRequestHandler extends BaseController implements RequestHandlerInterface
+class UpdateRequestHandler extends BaseController implements IRequestHandler
 {
     /** @var string $name */
     private $name;
@@ -55,9 +56,12 @@ class UpdateRequestHandler extends BaseController implements RequestHandlerInter
         $this->categoryId = $categoryId;
     }
 
-    private function getAppConfig()
+    /**
+     * @return AttributeRules
+     */
+    public function getValidationRules(): AttributeRules
     {
-        return $this->getDI()->getConfig()->application->attributeNameValidationConfig;
+        return new AttributeRules();
     }
 
     /** Validate request fields using \Phalcon\Validation\Validator
@@ -69,10 +73,10 @@ class UpdateRequestHandler extends BaseController implements RequestHandlerInter
         $validator->add(
             'name',
             new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => $this->getAppConfig()->allowWhiteSpace,
-                'underscore' => $this->getAppConfig()->allowUnderscore,
-                'min' => $this->getAppConfig()->minNameLength,
-                'max' => $this->getAppConfig()->maxNameLength,
+                'whiteSpace' => $this->getValidationRules()->allowAttrNameWhiteSpace,
+                'underscore' => $this->getValidationRules()->allowAttrNameUnderscore,
+                'min' => $this->getValidationRules()->minAttrNameLength,
+                'max' => $this->getValidationRules()->maxAttrNameLength,
                 'message' => 'Invalid attribute name',
                 'messageMinimum' => 'Attribute name should be at least 3 characters',
                 'messageMaximum' => 'Attribute name should not exceed 50 characters',

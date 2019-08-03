@@ -11,9 +11,9 @@ namespace app\common\requestHandler\category;
 use Phalcon\Validation\Message\Group;
 use app\common\controllers\BaseController;
 use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\RequestHandlerInterface;
+use app\common\requestHandler\IRequestHandler;
 
-class DeleteRequestHandler extends BaseController implements RequestHandlerInterface
+class DeleteRequestHandler extends BaseController implements IRequestHandler
 {
     /** Validate request fields using \Phalcon\Validation\Validator
      * @return Group
@@ -62,5 +62,10 @@ class DeleteRequestHandler extends BaseController implements RequestHandlerInter
     public function toArray(): array
     {
         // TODO: Implement toArray() method.
+    }
+
+    public function getValidationRules()
+    {
+        // TODO: Implement getValidationRules() method.
     }
 }
