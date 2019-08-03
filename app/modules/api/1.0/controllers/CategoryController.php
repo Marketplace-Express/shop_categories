@@ -6,14 +6,11 @@ use app\common\graphqlTypes\QueryType;
 use app\common\requestHandler\category\{
     CreateRequestHandler,
     DeleteRequestHandler,
-    GetRequestHandler,
     UpdateRequestHandler
 };
 use app\common\services\CategoryService;
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
-use GraphQL\Validator\DocumentValidator;
-use GraphQL\Validator\Rules\QueryDepth;
 
 /**
  * Class CategoryController

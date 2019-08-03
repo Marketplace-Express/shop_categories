@@ -8,13 +8,15 @@
 namespace app\common\graphqlTypes;
 
 
+use app\common\services\AttributesService;
 use app\common\services\CategoryService;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 
 class CategoryType extends ObjectType
 {
-    private $service;
+    private $categoryService;
+    private $attributeService;
 
     public function __construct()
     {
@@ -24,7 +26,8 @@ class CategoryType extends ObjectType
                     'id' => self::id(),
                     'name' => self::string(),
                     'children' => self::listOf(TypeRegistry::category()),
-                    'parent' => self::listOf(TypeRegistry::category())
+                    'parent' => self::listOf(TypeRegistry::category()),
+                    'attributes' => self::listOf(TypeRegistry::attribute())
                 ];
             },
             'resolveField' => function ($rootValue, $args, $context, ResolveInfo $info) {
@@ -34,9 +37,14 @@ class CategoryType extends ObjectType
         parent::__construct($config);
     }
 
-    private function getService(): CategoryService
+    private function getCategoryService(): CategoryService
     {
-        return $this->service ?? $this->service = new CategoryService();
+        return $this->categoryService ?? $this->categoryService = new CategoryService();
+    }
+
+    public function getAttributeService(): AttributesService
+    {
+        return $this->attributeService ?? $this->attributeService = new AttributesService();
     }
 
     public function resolveId($category)
@@ -56,6 +64,11 @@ class CategoryType extends ObjectType
 
     public function resolveParent($category)
     {
-        return $this->getService()->getParent($category['categoryId']);
+        return $this->getCategoryService()->getParent($category['categoryId']);
+    }
+
+    public function resolveAttributes($category)
+    {
+        return $this->getAttributeService()->getAll($category['categoryId']);
     }
 }
