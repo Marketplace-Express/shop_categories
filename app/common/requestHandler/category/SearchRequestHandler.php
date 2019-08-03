@@ -12,9 +12,9 @@ use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
 use app\common\controllers\BaseController;
 use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\RequestHandlerInterface;
+use app\common\requestHandler\IRequestHandler;
 
-class SearchRequestHandler extends BaseController implements RequestHandlerInterface
+class SearchRequestHandler extends BaseController implements IRequestHandler
 {
 
     /** @var string */
@@ -107,5 +107,10 @@ class SearchRequestHandler extends BaseController implements RequestHandlerInter
         return [
             'keyword' => $this->keyword . '*'
         ];
+    }
+
+    public function getValidationRules()
+    {
+        // TODO: Implement getValidationRules() method.
     }
 }

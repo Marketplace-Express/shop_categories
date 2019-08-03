@@ -7,6 +7,7 @@
 
 namespace app\common\collections;
 
+use app\common\validators\rules\AttributeRules;
 use Phalcon\Validation;
 use app\common\utils\UuidUtil;
 
@@ -118,6 +119,14 @@ class Attribute extends BaseCollection
     }
 
     /**
+     * @return AttributeRules
+     */
+    protected function getValidationRules(): AttributeRules
+    {
+        return new AttributeRules();
+    }
+
+    /**
      * Validate model
      * @return bool
      */
@@ -132,14 +141,14 @@ class Attribute extends BaseCollection
         $validator->add(
             'attribute_name',
             new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => $this->getDI()->getConfig()->application->attributeNameValidationConfig->allowWhiteSpace,
-                'underscore' => $this->getDI()->getConfig()->application->attributeNameValidationConfig->allowUnderscore,
-                'min' => $this->getDI()->getConfig()->application->attributeNameValidationConfig->minNameLength,
-                'max' => $this->getDI()->getConfig()->application->attributeNameValidationConfig->maxNameLength,
+                'whiteSpace' => $this->getValidationRules()->allowAttrNameWhiteSpace,
+                'underscore' => $this->getValidationRules()->allowAttrNameUnderscore,
+                'min' => $this->getValidationRules()->minAttrNameLength,
+                'max' => $this->getValidationRules()->maxAttrNameLength,
                 'message' => 'Invalid attribute name',
                 'messageMinimum' => 'Attribute name should be at least 3 characters',
                 'messageMaximum' => 'Attribute name should not exceed 50 characters',
-                'allowEmpty' => true
+                'allowEmpty' => false
             ])
         );
 

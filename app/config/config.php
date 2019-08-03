@@ -87,36 +87,6 @@ return new Config([
         // possibly if the web server rewrite rules are changed. This can also be set to a static path.
         'baseUri'        => preg_replace('/public([\/\\\\])index.php$/', '', $_SERVER["PHP_SELF"]),
 
-        // Category name validation config
-        'categoryNameValidationConfig' => [
-            'minNameLength' => 3,
-            'maxNameLength' => 100,
-            'allowWhiteSpace' => true,
-            'allowUnderscore' => true
-        ],
-
-        // Attribute name validation config
-        'attributeNameValidationConfig' => [
-            'minNameLength' => 3,
-            'maxNameLength' => 50,
-            'allowWhiteSpace' => true,
-            'allowUnderscore' => true
-        ],
-
-        'attributeValueValidationConfig' => [
-            'minNameLength' => 3,
-            'maxNameLength' => 50,
-            'allowWhiteSpace' => false,
-            'allowUnderscore' => false
-        ],
-
-        // Category order validation config
-        'categoryOrderValidationConfig' => [
-            'minCategoryOrder' => 0,
-            'maxCategoryOrder' => 999,
-            'allowFloat' => false,
-            'allowSign' => false
-        ],
         'token' => [
             'saltKey' => 'abc@123456789012',
             'allowedAlg' => 'HS512'

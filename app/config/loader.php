@@ -20,6 +20,7 @@ $loader->registerNamespaces([
     'app\common\events\middleware' => APP_PATH . '/common/events/middleware/',
     'app\common\utils' => APP_PATH . '/common/utils/',
     'app\common\validators' => APP_PATH . '/common/validators/',
+    'app\common\validators\rules' => APP_PATH . '/common/validators/rules/',
     'app\common\logger' => APP_PATH . '/common/logger/',
     'app\common\exceptions' => APP_PATH . '/common/exceptions/',
     'app\common\repositories' => APP_PATH . '/common/repositories/',

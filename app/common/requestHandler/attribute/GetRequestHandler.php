@@ -11,9 +11,9 @@ use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
 use app\common\controllers\BaseController;
 use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\RequestHandlerInterface;
+use app\common\requestHandler\IRequestHandler;
 
-class GetRequestHandler extends BaseController implements RequestHandlerInterface
+class GetRequestHandler extends BaseController implements IRequestHandler
 {
     /** @var string $categoryId */
     private $categoryId;
@@ -105,5 +105,10 @@ class GetRequestHandler extends BaseController implements RequestHandlerInterfac
     public function toArray(): array
     {
         // TODO: Implement toArray() method.
+    }
+
+    public function getValidationRules()
+    {
+        // TODO: Implement getValidationRules() method.
     }
 }

@@ -7,16 +7,17 @@
 
 namespace app\common\requestHandler\category;
 
+use app\common\validators\rules\CategoryRules;
 use Exception;
 use Phalcon\Config;
 use Phalcon\Utils\Slug;
 use Phalcon\Validation;
 use app\common\controllers\BaseController;
 use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\RequestHandlerInterface;
+use app\common\requestHandler\IRequestHandler;
 use app\common\utils\UuidUtil;
 
-class CreateRequestHandler extends BaseController implements RequestHandlerInterface
+class CreateRequestHandler extends BaseController implements IRequestHandler
 {
     /** @var string $categoryId */
     public $categoryId;
@@ -99,9 +100,12 @@ class CreateRequestHandler extends BaseController implements RequestHandlerInter
         return $this->uuidUtil;
     }
 
-    private function getConfig(): Config
+    /**
+     * @return CategoryRules
+     */
+    public function getValidationRules(): CategoryRules
     {
-        return $this->getDI()->getConfig()->application;
+        return new CategoryRules();
     }
 
     /**
@@ -129,10 +133,10 @@ class CreateRequestHandler extends BaseController implements RequestHandlerInter
         $validator->add(
             'name',
             new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => $this->getConfig()->categoryNameValidationConfig->allowWhiteSpace,
-                'underscore' => $this->getConfig()->categoryNameValidationConfig->allowUnderscore,
-                'min' => $this->getConfig()->categoryNameValidationConfig->minNameLength,
-                'max' => $this->getConfig()->categoryNameValidationConfig->maxNameLength,
+                'whiteSpace' => $this->getValidationRules()->allowNameWhiteSpace,
+                'underscore' => $this->getValidationRules()->allowNameUnderscore,
+                'min' => $this->getValidationRules()->minNameLength,
+                'max' => $this->getValidationRules()->maxNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters',
@@ -156,8 +160,8 @@ class CreateRequestHandler extends BaseController implements RequestHandlerInter
         $validator->add(
             'order',
             new Validation\Validator\NumericValidator([
-                'min' => $this->getConfig()->categoryOrderValidationConfig->minCategoryOrder,
-                'max' => $this->getConfig()->categoryOrderValidationConfig->maxCategoryOrder,
+                'min' => $this->getValidationRules()->minOrder,
+                'max' => $this->getValidationRules()->maxOrder,
                 'message' => 'Category order should be a number',
                 'allowEmpty' => true
             ])
