@@ -163,7 +163,7 @@ class CategoryCacheUtils
 
             $iterator->next();
         }
-        unset($category[self::SUB_ITEMS_SLUG]);
+        //unset($category[self::SUB_ITEMS_SLUG]);
         return $category;
     }
 

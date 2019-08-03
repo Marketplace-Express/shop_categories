@@ -127,6 +127,7 @@ class CategoryCache implements CategoryDataSourceInterface
      * @param string $vendorId
      * @return array
      *
+     * @throws \Exception
      */
     public function getCategory(string $categoryId, ?string $vendorId = null): array
     {
