@@ -192,7 +192,7 @@ class Category extends Base
     {
         $this->isDeleted = $isDeleted;
     }
-    
+
     /**
      * @throws \Exception
      */
