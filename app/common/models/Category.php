@@ -104,6 +104,96 @@ class Category extends Base
     public $isDeleted = false;
 
     /**
+     * @param string $categoryId
+     */
+    public function setCategoryId(string $categoryId)
+    {
+        $this->categoryId = $categoryId;
+    }
+
+    /**
+     * @param string|null $categoryParentId
+     */
+    public function setCategoryParentId(?string $categoryParentId)
+    {
+        $this->categoryParentId = $categoryParentId;
+    }
+
+    /**
+     * @param string $categoryName
+     */
+    public function setCategoryName(string $categoryName)
+    {
+        $this->categoryName = $categoryName;
+    }
+
+    /**
+     * @param int $categoryOrder
+     */
+    public function setCategoryOrder(?int $categoryOrder): void
+    {
+        $this->categoryOrder = $categoryOrder;
+    }
+
+    /**
+     * @param string $categoryVendorId
+     */
+    public function setCategoryVendorId(string $categoryVendorId)
+    {
+        $this->categoryVendorId = $categoryVendorId;
+    }
+
+    /**
+     * @param $categoryUserId
+     */
+    public function setCategoryUserId(string $categoryUserId)
+    {
+        $this->categoryUserId = $categoryUserId;
+    }
+
+    public function setCategoryUrl(?string $categoryUrl)
+    {
+        $this->categoryUrl = $categoryUrl;
+    }
+
+    public function setCategoryDepth(int $categoryDepth = 0)
+    {
+        $this->categoryDepth = $categoryDepth;
+    }
+
+    /**
+     * @param string $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @param string $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @param string $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @param bool $isDeleted
+     */
+    public function setIsDeleted(bool $isDeleted)
+    {
+        $this->isDeleted = $isDeleted;
+    }
+    
+    /**
      * @throws \Exception
      */
     public function initialize()
