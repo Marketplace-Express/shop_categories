@@ -74,7 +74,7 @@ class Category extends Base
     public $categoryUrl;
 
     /**
-     * @var string
+     * @var int
      * @Column(column="category_depth", type="integer", size=2, nullable=false)
      */
     public $categoryDepth = 0;
