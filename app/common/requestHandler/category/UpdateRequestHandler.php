@@ -89,9 +89,9 @@ class UpdateRequestHandler extends BaseController implements RequestHandlerInter
         return $this->uuidUtil;
     }
 
-    private function getAppConfig()
+    private function getValidationConfig()
     {
-        return $this->di->getConfig()->application;
+        return $this->di->getConfig()->application->validation;
     }
 
     /**
@@ -116,8 +116,8 @@ class UpdateRequestHandler extends BaseController implements RequestHandlerInter
         $validator->add(
             'order',
             new Validation\Validator\NumericValidator([
-                'min' => $this->getAppConfig()->categoryOrderValidationConfig->minCategoryOrder,
-                'max' => $this->getAppConfig()->categoryOrderValidationConfig->maxCategoryOrder,
+                'min' => $this->getValidationConfig()->categoryOrderValidationConfig->minCategoryOrder,
+                'max' => $this->getValidationConfig()->categoryOrderValidationConfig->maxCategoryOrder,
                 'message' => 'Category order should be a number',
                 'allowEmpty' => true
             ])
@@ -126,10 +126,10 @@ class UpdateRequestHandler extends BaseController implements RequestHandlerInter
         $validator->add(
             'name',
             new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => $this->getAppConfig()->categoryNameValidationConfig->allowWhiteSpace,
-                'underscore' => $this->getAppConfig()->categoryNameValidationConfig->allowUnderscore,
-                'min' => $this->getAppConfig()->categoryNameValidationConfig->minNameLength,
-                'max' => $this->getAppConfig()->categoryNameValidationConfig->maxNameLength,
+                'whiteSpace' => $this->getValidationConfig()->categoryNameValidationConfig->allowWhiteSpace,
+                'underscore' => $this->getValidationConfig()->categoryNameValidationConfig->allowUnderscore,
+                'min' => $this->getValidationConfig()->categoryNameValidationConfig->minNameLength,
+                'max' => $this->getValidationConfig()->categoryNameValidationConfig->maxNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters',

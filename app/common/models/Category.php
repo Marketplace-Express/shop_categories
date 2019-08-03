@@ -25,7 +25,8 @@ class Category extends Base
         'categoryUserId',
         'categoryName',
         'categoryOrder',
-        'categoryUrl'
+        'categoryUrl',
+        'categoryDepth'
     ];
 
     /**
@@ -37,7 +38,7 @@ class Category extends Base
 
     /**
      * @var string
-     * @Column(column="category_parent_id", type="string", length=36, nullable=true)
+     * @Column(column="category_parent_id", type="string", length=36)
      */
     protected $categoryParentId;
 
@@ -67,9 +68,15 @@ class Category extends Base
 
     /**
      * @var string
-     * @Column(column="category_url", type="string", length=255, nullable=true)
+     * @Column(column="category_url", type="string", length=255)
      */
     protected $categoryUrl;
+
+    /**
+     * @var string
+     * @Column(column="category_depth", type="integer", length=2, nullable=false)
+     */
+    public $categoryDepth;
 
     /**
      * @var string
@@ -79,13 +86,13 @@ class Category extends Base
 
     /**
      * @var string
-     * @Column(column="updated_at", type="string", nullable=true)
+     * @Column(column="updated_at", type="string")
      */
     protected $updatedAt;
 
     /**
      * @var string
-     * @Column(column="deleted_at", type="string", nullable=true)
+     * @Column(column="deleted_at", type="string")
      */
     protected $deletedAt;
 
@@ -94,38 +101,6 @@ class Category extends Base
      * @Column(column="is_deleted", type="integer", length=1, nullable=false)
      */
     protected $isDeleted;
-
-    /**
-     * @param string $categoryId
-     */
-    public function setCategoryId($categoryId)
-    {
-        $this->categoryId = $categoryId;
-    }
-
-    /**
-     * @param string $categoryParentId
-     */
-    public function setCategoryParentId($categoryParentId)
-    {
-        $this->categoryParentId = $categoryParentId;
-    }
-
-    /**
-     * @param string $categoryName
-     */
-    public function setCategoryName($categoryName)
-    {
-        $this->categoryName = $categoryName;
-    }
-
-    /**
-     * @param int $categoryOrder
-     */
-    public function setCategoryOrder(?int $categoryOrder): void
-    {
-        $this->categoryOrder = $categoryOrder;
-    }
 
     /**
      * @param string $categoryVendorId
@@ -363,9 +338,9 @@ class Category extends Base
     /**
      * @return Config
      */
-    private function getConfig(): Config
+    private function getValidationConfig(): Config
     {
-        return $this->getDI()->getConfig()->application;
+        return $this->getDI()->getConfig()->application->validation;
     }
 
     /**
@@ -398,10 +373,10 @@ class Category extends Base
         $validator->add(
             'categoryName',
             new AlphaNumericValidator([
-                'whiteSpace' => $this->getConfig()->categoryNameValidationConfig->allowWhiteSpace,
-                'underscore' => $this->getConfig()->categoryNameValidationConfig->allowUnderscore,
-                'min' => $this->getConfig()->categoryNameValidationConfig->minNameLength,
-                'max' => $this->getConfig()->categoryNameValidationConfig->maxNameLength,
+                'whiteSpace' => $this->getValidationConfig()->categoryNameValidationConfig->allowWhiteSpace,
+                'underscore' => $this->getValidationConfig()->categoryNameValidationConfig->allowUnderscore,
+                'min' => $this->getValidationConfig()->categoryNameValidationConfig->minNameLength,
+                'max' => $this->getValidationConfig()->categoryNameValidationConfig->maxNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters'
@@ -449,8 +424,8 @@ class Category extends Base
         $validator->add(
             'categoryOrder',
             new Validation\Validator\NumericValidator([
-                'min' => $this->getConfig()->categoryOrderValidationConfig->minCategoryOrder,
-                'max' => $this->getConfig()->categoryOrderValidationConfig->maxCategoryOrder,
+                'min' => $this->getValidationConfig()->categoryOrderValidationConfig->minCategoryOrder,
+                'max' => $this->getValidationConfig()->categoryOrderValidationConfig->maxCategoryOrder,
                 'message' => 'Category order should be a number'
             ])
         );

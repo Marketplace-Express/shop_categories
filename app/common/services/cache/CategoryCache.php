@@ -27,9 +27,6 @@ class CategoryCache implements CategoryDataSourceInterface
     /** @var \Redis $categoryCacheInstance */
     private static $categoryCacheInstance;
 
-    /** @var RediSearchRedisClient */
-    private static $cacheIndexInstance;
-
     /** @var CategoryCacheUtils $categoryCacheUtils */
     private $categoryCacheUtils;
 
@@ -59,7 +56,6 @@ class CategoryCache implements CategoryDataSourceInterface
     public static function establishCacheConnection(): void
     {
         self::$categoryCacheInstance = Di::getDefault()->getShared('categoryCache');
-        self::$cacheIndexInstance = Di::getDefault()->getShared('categoryCacheIndex');
     }
 
     /**

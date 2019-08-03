@@ -28,10 +28,7 @@ class CategoryType extends ObjectType
                 ];
             },
             'resolveField' => function ($rootValue, $args, $context, ResolveInfo $info) {
-                if ($info->fieldName == 'id') {
-                    return $rootValue['categoryId'];
-                }
-                return $this->{$info->fieldName}($rootValue, $args, $context, $info);
+                return $this->{'resolve'.ucfirst($info->fieldName)}($rootValue, $args, $context, $info);
             }
         ];
         parent::__construct($config);
@@ -42,17 +39,22 @@ class CategoryType extends ObjectType
         return $this->service ?? $this->service = new CategoryService();
     }
 
-    public function name($category)
+    public function resolveId($category)
+    {
+        return $category['categoryId'];
+    }
+
+    public function resolveName($category)
     {
         return $category['categoryName'];
     }
 
-    public function children($category)
+    public function resolveChildren($category)
     {
         return !empty($category['children']) ? $category['children'] : [];
     }
 
-    public function parent($category)
+    public function resolveParent($category)
     {
         return $this->getService()->getParent($category['categoryId']);
     }

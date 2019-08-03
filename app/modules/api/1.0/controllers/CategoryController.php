@@ -12,6 +12,8 @@ use app\common\requestHandler\category\{
 use app\common\services\CategoryService;
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
+use GraphQL\Validator\DocumentValidator;
+use GraphQL\Validator\Rules\QueryDepth;
 
 /**
  * Class CategoryController
@@ -31,125 +33,21 @@ class CategoryController extends BaseController
     }
 
     /**
+     * @return Schema
+     */
+    protected function getSchema(): Schema
+    {
+        return new Schema([
+            'query' => new QueryType()
+        ]);
+    }
+
+    /**
      * @return CategoryService
      */
     private function getService(): CategoryService
     {
         return $this->service;
-    }
-
-    /**
-     * Get all roots
-     * @Get('/roots')
-     */
-    public function rootsAction()
-    {
-        try {
-            /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $request->successRequest($this->getService()->getRoots());
-        } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
-        }
-    }
-
-    /**
-     * Get all categories related to vendor
-     * @Get('')
-     */
-    public function getAllAction()
-    {
-        try {
-            /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $request->successRequest($this->toTree($this->getService()->getAll()));
-        } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
-        }
-    }
-
-
-    /**
-     * Get category by Id
-     * @Get('/{categoryId:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}')
-     * @param $categoryId
-     */
-    public function getAction($categoryId)
-    {
-        try {
-            /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $category = $this->getService()->getCategory($categoryId);
-            $request->successRequest($category);
-        } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
-        }
-    }
-
-    /**
-     * Get category descendants
-     * @Get('/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/descendants')
-     * @param $categoryId
-     */
-    public function descendantsAction($categoryId)
-    {
-        try {
-            /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $descendants = $this->getService()->getDescendants($categoryId);
-            $request->successRequest($this->toTree($descendants));
-        } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
-        }
-    }
-
-    /**
-     * Get category children
-     * @Get('/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/children')
-     * @param $categoryId
-     */
-    public function childrenAction($categoryId)
-    {
-        try {
-            /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $request->successRequest($this->getService()->getChildren($categoryId));
-        } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
-        }
-    }
-
-    /**
-     * Get category parents
-     * @Get('/{id}/parents')
-     * @param $categoryId
-     */
-    public function parentsAction($categoryId)
-    {
-        try {
-            /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $parents = $this->getService()->getParents($categoryId);
-            $request->successRequest($this->toTree($parents));
-        } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
-        }
-    }
-
-    /**
-     * Get category parent
-     * @Get('/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/parent')
-     * @param $categoryId
-     */
-    public function parentAction($categoryId)
-    {
-        try {
-            /** @var GetRequestHandler $request */
-            $request = $this->getJsonMapper()->map(new \stdClass(), new GetRequestHandler());
-            $request->successRequest($this->getService()->getParent($categoryId));
-        } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
-        }
     }
 
     /**
@@ -215,22 +113,24 @@ class CategoryController extends BaseController
     }
 
     /**
-     * @Post('/graphql')
+     * @Post('/fetch')
      */
-    public function graphqlAction()
+    public function fetchAction()
     {
         try {
-            $schema = new Schema([
-                'query' => new QueryType()
-            ]);
-            $output = GraphQL::executeQuery($schema, $this->request->getJsonRawBody(true)['query']);
+            // TODO: ADD QUERY VALIDATION RULES
+            // NOTE: THIS RULES SHOULD BE DYNAMIC PER USER (PER ROLE)
+            $output = GraphQL::executeQuery(
+                $this->getSchema(),
+                $this->request->getJsonRawBody(true)['query']
+            );
             if ($output->errors) {
                 if ($output->errors[0]->getPrevious() instanceof \Throwable) {
                     throw $output->errors[0]->getPrevious();
                 }
                 throw new \Exception($output->errors[0]->getMessage(), 500);
             }
-            $this->sendResponse($output->toArray(), 200);
+            $this->sendResponse($output->toArray()['data'], 200);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode());
         }

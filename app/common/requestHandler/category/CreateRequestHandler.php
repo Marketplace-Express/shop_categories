@@ -99,9 +99,9 @@ class CreateRequestHandler extends BaseController implements RequestHandlerInter
         return $this->uuidUtil;
     }
 
-    private function getConfig(): Config
+    private function getValidationConfig(): Config
     {
-        return $this->getDI()->getConfig()->application;
+        return $this->getDI()->getConfig()->application->validation;
     }
 
     /**
@@ -129,10 +129,10 @@ class CreateRequestHandler extends BaseController implements RequestHandlerInter
         $validator->add(
             'name',
             new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => $this->getConfig()->categoryNameValidationConfig->allowWhiteSpace,
-                'underscore' => $this->getConfig()->categoryNameValidationConfig->allowUnderscore,
-                'min' => $this->getConfig()->categoryNameValidationConfig->minNameLength,
-                'max' => $this->getConfig()->categoryNameValidationConfig->maxNameLength,
+                'whiteSpace' => $this->getValidationConfig()->categoryNameValidationConfig->allowWhiteSpace,
+                'underscore' => $this->getValidationConfig()->categoryNameValidationConfig->allowUnderscore,
+                'min' => $this->getValidationConfig()->categoryNameValidationConfig->minNameLength,
+                'max' => $this->getValidationConfig()->categoryNameValidationConfig->maxNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters',
@@ -156,8 +156,8 @@ class CreateRequestHandler extends BaseController implements RequestHandlerInter
         $validator->add(
             'order',
             new Validation\Validator\NumericValidator([
-                'min' => $this->getConfig()->categoryOrderValidationConfig->minCategoryOrder,
-                'max' => $this->getConfig()->categoryOrderValidationConfig->maxCategoryOrder,
+                'min' => $this->getValidationConfig()->categoryOrderValidationConfig->minCategoryOrder,
+                'max' => $this->getValidationConfig()->categoryOrderValidationConfig->maxCategoryOrder,
                 'message' => 'Category order should be a number',
                 'allowEmpty' => true
             ])
