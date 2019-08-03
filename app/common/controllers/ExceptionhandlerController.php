@@ -45,8 +45,7 @@ class ExceptionhandlerController extends Controller
         http_response_code($code);
         return $this->response
             ->setJsonContent([
-                'status' => $code,
-                'message' => $errors
+                'errors' => $errors
             ]);
     }
 }

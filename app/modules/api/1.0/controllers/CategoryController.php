@@ -2,6 +2,7 @@
 namespace app\modules\api\controllers;
 
 use app\common\controllers\BaseController;
+use app\common\graphqlTypes\QueryType;
 use app\common\requestHandler\category\{
     CreateRequestHandler,
     DeleteRequestHandler,
@@ -9,6 +10,8 @@ use app\common\requestHandler\category\{
     UpdateRequestHandler
 };
 use app\common\services\CategoryService;
+use GraphQL\GraphQL;
+use GraphQL\Type\Schema;
 
 /**
  * Class CategoryController
@@ -208,6 +211,28 @@ class CategoryController extends BaseController
             $request->successRequest('Deleted');
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
+        }
+    }
+
+    /**
+     * @Post('/graphql')
+     */
+    public function graphqlAction()
+    {
+        try {
+            $schema = new Schema([
+                'query' => new QueryType()
+            ]);
+            $output = GraphQL::executeQuery($schema, $this->request->getJsonRawBody(true)['query']);
+            if ($output->errors) {
+                if ($output->errors[0]->getPrevious() instanceof \Throwable) {
+                    throw $output->errors[0]->getPrevious();
+                }
+                throw new \Exception($output->errors[0]->getMessage(), 500);
+            }
+            $this->sendResponse($output->toArray(), 200);
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage(), $exception->getCode());
         }
     }
 }

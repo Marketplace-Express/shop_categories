@@ -39,6 +39,7 @@ $loader->registerNamespaces([
     'app\modules\cli\request' => APP_PATH . '/modules/cli/request/',
     'app\modules\cli\services' => APP_PATH . '/modules/cli/services/',
     'app\common\redis' => APP_PATH . '/common/redis/',
+    'app\common\graphqlTypes' => APP_PATH . '/common/graphqlTypes'
 ]);
 
 /**

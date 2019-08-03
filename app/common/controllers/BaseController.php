@@ -102,10 +102,7 @@ class BaseController extends Controller
     {
         http_response_code($code);
         $this->response
-            ->setJsonContent([
-                'status' => $code,
-                'message' => $message
-            ])->send();
+            ->setJsonContent($message)->send();
         exit;
     }
 
