@@ -152,6 +152,7 @@ class Category extends Base
             'category_vendor_id' => 'categoryVendorId',
             'category_user_id' => 'categoryUserId',
             'category_url' => 'categoryUrl',
+            'category_depth' => 'categoryDepth',
             'created_at' => 'createdAt',
             'updated_at' => 'updatedAt',
             'deleted_at' => 'deletedAt',
