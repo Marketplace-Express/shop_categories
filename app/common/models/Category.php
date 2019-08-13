@@ -193,6 +193,78 @@ class Category extends Base
         $this->isDeleted = $isDeleted;
     }
 
+    /** @return string */
+    public function getCategoryId()
+    {
+        return $this->categoryId;
+    }
+
+    /** @return string */
+    public function getCategoryParentId()
+    {
+        return $this->categoryParentId;
+    }
+
+    /** @return string */
+    public function getCategoryVendorId()
+    {
+        return $this->categoryVendorId;
+    }
+
+    /**@return string */
+    public function getCategoryUserId()
+    {
+        return $this->categoryUserId;
+    }
+
+    /**@return int */
+    public function getCategoryOrder()
+    {
+        return $this->categoryOrder;
+    }
+
+    /**@return string */
+    public function getCategoryName()
+    {
+        return $this->categoryName;
+    }
+
+    /**@return string */
+    public function getCategoryUrl()
+    {
+        return $this->categoryUrl;
+    }
+
+    /**@return int */
+    public function getCategoryDepth()
+    {
+        return $this->categoryDepth;
+    }
+
+    /**@return string */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**@return string|null */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**@return string|null */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**@return bool */
+    public function getIsDeleted()
+    {
+        return $this->isDeleted;
+    }
+
     /**
      * @throws \Exception
      */
