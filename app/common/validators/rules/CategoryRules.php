@@ -8,7 +8,7 @@
 namespace app\common\validators\rules;
 
 
-class CategoryRules implements IValidationRules
+class CategoryRules extends RulesAbstract
 {
     /** @var int */
     public $minNameLength = 3;

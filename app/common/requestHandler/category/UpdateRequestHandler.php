@@ -8,6 +8,7 @@
 
 namespace app\common\requestHandler\category;
 
+use app\common\requestHandler\RequestAbstract;
 use app\common\validators\rules\CategoryRules;
 use Phalcon\Exception;
 use Phalcon\Utils\Slug;
@@ -17,51 +18,33 @@ use app\common\exceptions\ArrayOfStringsException;
 use app\common\requestHandler\IRequestHandler;
 use app\common\utils\UuidUtil;
 
-class UpdateRequestHandler extends BaseController implements IRequestHandler
+class UpdateRequestHandler extends RequestAbstract
 {
-    /**
-     * @var string $name
-     */
+    /** @var string */
+    private $id;
+
+    /** @var string */
     private $name;
 
-    /**
-     * @var string|null $parentId
-     */
+    /** @var string|null */
     private $parentId;
 
-    /** @var int $order */
+    /** @var int|null */
     private $order;
-
 
     public $validator;
     public $errorMessages = [];
     public $uuidUtil;
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function setId($id)
     {
-        return $this->name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getParentId()
-    {
-        return $this->parentId;
-    }
-
-    public function getOrder()
-    {
-        return $this->order;
+        $this->id = $id;
     }
 
     /**
      * @param string $name
      */
-    public function setName(string $name)
+    public function setName($name)
     {
         $this->name = $name;
     }
@@ -69,7 +52,7 @@ class UpdateRequestHandler extends BaseController implements IRequestHandler
     /**
      * @param null|string $parentId
      */
-    public function setParentId(?string $parentId)
+    public function setParentId($parentId)
     {
         $this->parentId = $parentId;
     }
@@ -157,63 +140,12 @@ class UpdateRequestHandler extends BaseController implements IRequestHandler
 
         // Fields to be validated
         $fields = [
-            'name'      => $this->getName(),
-            'parentId'  => $this->getParentId(),
-            'order'     => $this->getOrder()
+            'name'      => $this->name,
+            'parentId'  => $this->parentId,
+            'order'     => $this->order
         ];
 
         return $validator->validate($fields);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValid() : bool
-    {
-        $messages = $this->validate();
-
-        if (count($messages)) {
-            foreach ($messages as $message) {
-                $this->errorMessages[$message->getField()] = $message->getMessage();
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param string $message
-     * @throws \Exception
-     */
-    public function notFound($message = 'Not Found!')
-    {
-        throw new \Exception($message, 404);
-    }
-
-    /**
-     * @param null $message
-     * @throws ArrayOfStringsException
-     */
-    public function invalidRequest($message = null)
-    {
-        if (is_null($message)) {
-            $message = $this->errorMessages;
-        }
-        throw new ArrayOfStringsException($message, 400);
-    }
-
-    /**
-     * @param null $message
-     */
-    public function successRequest($message = null)
-    {
-        $this->response
-            ->setJsonContent([
-                'status' => 200,
-                'message' => $message
-            ]);
     }
 
     /**
@@ -222,20 +154,22 @@ class UpdateRequestHandler extends BaseController implements IRequestHandler
      */
     public function toArray(): array
     {
-        $result = [];
+        $result = [
+            'categoryId' => $this->id
+        ];
 
-        if (!empty($this->getName())) {
-            $result['categoryName'] = $this->getName();
+        if (!empty($this->name)) {
+            $result['categoryName'] = $this->name;
             $result['categoryUrl'] = (new Slug())->generate($this->name);
 
         }
 
-        if (!empty($this->getParentId())) {
-            $result['categoryParentId'] = $this->getParentId();
+        if (!empty($this->parentId)) {
+            $result['categoryParentId'] = $this->parentId;
         }
 
-        if (!empty($this->getOrder())) {
-            $result['categoryOrder'] = $this->getOrder();
+        if (!empty($this->order) && $this->order !== null) {
+            $result['categoryOrder'] = $this->order;
         }
 
         return $result;

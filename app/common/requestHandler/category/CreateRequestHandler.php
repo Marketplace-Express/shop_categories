@@ -7,65 +7,46 @@
 
 namespace app\common\requestHandler\category;
 
+use app\common\requestHandler\RequestAbstract;
+use app\common\services\user\UserService;
 use app\common\validators\rules\CategoryRules;
-use Exception;
-use Phalcon\Config;
+use app\common\validators\UuidValidator;
+use Phalcon\Mvc\Controller;
 use Phalcon\Utils\Slug;
 use Phalcon\Validation;
-use app\common\controllers\BaseController;
 use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\IRequestHandler;
-use app\common\utils\UuidUtil;
+use Ramsey\Uuid\Uuid;
 
-class CreateRequestHandler extends BaseController implements IRequestHandler
+class CreateRequestHandler extends RequestAbstract
 {
-    /** @var string $categoryId */
-    public $categoryId;
-
-    /** @var string $name */
+    /** @var string */
     private $name;
 
-    /** @var int $order */
+    /** @var int */
     private $order = 0;
 
-    /** @var string $parentId */
+    /** @var string */
     private $parentId;
 
-    public $uuidUtil;
-    public $validator;
-    public $errorMessages = [];
+    /** @var string */
+    private $userId;
 
-    /**
-     * @return string
-     * @throws Exception
-     */
-    public function getCategoryId()
+    /** @var string */
+    private $vendorId;
+
+    public function __construct(Controller $controller)
     {
-        return $this->getUuidUtil()->uuid();
+        parent::__construct($controller, new CategoryRules());
+        $this->setVendorId($controller->request->getQuery('vendorId'));
+        $this->setUserId($this->getUserService()->userId);
     }
 
     /**
-     * @return string
+     * @return UserService
      */
-    public function getName()
+    private function getUserService()
     {
-        return $this->name;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getParentId()
-    {
-        return $this->parentId;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getOrder()
-    {
-        return $this->order;
+        return $this->controller->getDI()->get('userService');
     }
 
     /**
@@ -89,23 +70,14 @@ class CreateRequestHandler extends BaseController implements IRequestHandler
         $this->order = $order;
     }
 
-    /**
-     * @return UuidUtil
-     */
-    private function getUuidUtil(): UuidUtil
+    public function setUserId($userId)
     {
-        if (!$this->uuidUtil) {
-            $this->uuidUtil = new UuidUtil();
-        }
-        return $this->uuidUtil;
+        $this->userId = $userId;
     }
 
-    /**
-     * @return CategoryRules
-     */
-    public function getValidationRules(): CategoryRules
+    public function setVendorId($vendorId)
     {
-        return new CategoryRules();
+        $this->vendorId = $vendorId;
     }
 
     /**
@@ -133,10 +105,10 @@ class CreateRequestHandler extends BaseController implements IRequestHandler
         $validator->add(
             'name',
             new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => $this->getValidationRules()->allowNameWhiteSpace,
-                'underscore' => $this->getValidationRules()->allowNameUnderscore,
-                'min' => $this->getValidationRules()->minNameLength,
-                'max' => $this->getValidationRules()->maxNameLength,
+                'whiteSpace' => $this->validationRules->allowNameWhiteSpace,
+                'underscore' => $this->validationRules->allowNameUnderscore,
+                'min' => $this->validationRules->minNameLength,
+                'max' => $this->validationRules->maxNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters',
@@ -146,22 +118,21 @@ class CreateRequestHandler extends BaseController implements IRequestHandler
 
         $validator->add(
             'parentId',
-            new Validation\Validator\Callback([
-                'callback' => function ($data) {
-                    if (!empty($data['parentId'])) {
-                        return $this->getUuidUtil()->isValid($data['parentId']);
-                    }
-                    return true;
-                },
-                'message' => 'Invalid parent category Id'
+            new UuidValidator([
+                'allowEmpty' => true
             ])
+        );
+
+        $validator->add(
+            ['vendorId', 'userId'],
+            new UuidValidator()
         );
 
         $validator->add(
             'order',
             new Validation\Validator\NumericValidator([
-                'min' => $this->getValidationRules()->minOrder,
-                'max' => $this->getValidationRules()->maxOrder,
+                'min' => $this->validationRules->minOrder,
+                'max' => $this->validationRules->maxOrder,
                 'message' => 'Category order should be a number',
                 'allowEmpty' => true
             ])
@@ -169,83 +140,31 @@ class CreateRequestHandler extends BaseController implements IRequestHandler
 
         // Fields to be validated
         $fields = [
-            'name'      => $this->getName(),
-            'parentId'  => $this->getParentId(),
-            'order'     => $this->getOrder()
+            'name'      => $this->name,
+            'parentId'  => $this->parentId,
+            'order'     => $this->order,
+            'userId'    => $this->userId,
+            'vendorId'  => $this->vendorId
         ];
 
         return $validator->validate($fields);
     }
 
     /**
-     * @return bool
-     */
-    public function isValid() : bool
-    {
-        $messages = $this->validate();
-
-        if (count($messages)) {
-            foreach ($messages as $message) {
-                $this->errorMessages[$message->getField()] = $message->getMessage();
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param null $message
-     * @throws ArrayOfStringsException
-     */
-    public function invalidRequest($message = null)
-    {
-        if (is_null($message)) {
-            $message = $this->errorMessages;
-        }
-        throw new ArrayOfStringsException($message, 400);
-    }
-
-    /**
-     * @param null $message
-     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
-     */
-    public function successRequest($message = null)
-    {
-        http_response_code(200);
-        return $this->response
-            ->setJsonContent([
-                'status' => 200,
-                'message' => $message
-            ]);
-    }
-
-    /**
-     * @param string $message
-     * @throws Exception
-     */
-    public function notFound($message = 'Not Found')
-    {
-        throw new Exception($message, 404);
-    }
-
-    /**
      * @return array
-     * @throws Exception
+     * @throws \Phalcon\Exception|
+     * @throws \Exception
      */
     public function toArray(): array
     {
-        $result = [
-            'categoryId' => $this->getCategoryId(),
-            'categoryParentId' => $this->getParentId(),
-            'categoryName' => $this->getName(),
-            'categoryOrder' => $this->getOrder(),
-            'categoryVendorId' => $this->request->getQuery('vendorId'),
-            'categoryUserId' => 'fded67e4-9fcd-4a2d-ae2e-de15d70a8bb5',
+        return [
+            'categoryId' => Uuid::uuid4()->toString(),
+            'categoryParentId' => $this->parentId,
+            'categoryName' => $this->name,
+            'categoryOrder' => $this->order,
+            'categoryVendorId' => $this->vendorId,
+            'categoryUserId' => $this->userId,
             'categoryUrl' => (new Slug())->generate($this->name)
         ];
-
-        return $result;
     }
 }

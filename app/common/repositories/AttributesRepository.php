@@ -10,7 +10,7 @@ namespace app\common\repositories;
 use app\common\exceptions\NotFoundException;
 use app\common\exceptions\ArrayOfStringsException;
 use app\common\interfaces\AttributeDataSourceInterface;
-use app\common\collections\Attribute;
+use app\common\models\Attribute;
 
 class AttributesRepository implements AttributeDataSourceInterface
 {
@@ -58,7 +58,11 @@ class AttributesRepository implements AttributeDataSourceInterface
     public function getAll(string $categoryId): array
     {
         /** @var Attribute[] $attributes */
-        $attributes = self::getModel()::find(['attribute_category_id' => $categoryId]);
+        $attributes = self::getModel()::find([
+            'conditions' => [
+                'attribute_category_id' => $categoryId
+            ]
+        ]);
 
         $result = [];
         foreach ($attributes as $attribute) {
@@ -72,13 +76,18 @@ class AttributesRepository implements AttributeDataSourceInterface
      * Create attribute
      *
      * @param array $data
+     * @param string $categoryId
      * @return Attribute
      *
+     * @throws ArrayOfStringsException
+     * @throws \Phalcon\Mvc\Collection\Exception
      * @throws \Exception
      */
-    public function create(array $data): Attribute
+    public function create(array $data, string $categoryId): Attribute
     {
         $attribute = self::getModel();
+        $data = $attribute->mapInputData($data);
+        $attribute->attribute_category_id = $categoryId;
         $attribute->setAttributes($data);
         if (!$attribute->save()) {
             throw new ArrayOfStringsException($attribute->getMessages(), 400);

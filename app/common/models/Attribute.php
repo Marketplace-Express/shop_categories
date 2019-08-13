@@ -5,7 +5,7 @@
  * Time: 10:32 م
  */
 
-namespace app\common\collections;
+namespace app\common\models;
 
 use app\common\validators\rules\AttributeRules;
 use Phalcon\Validation;
@@ -40,12 +40,27 @@ class Attribute extends BaseCollection
     }
 
     /**
+     * @param array $data
+     * @return array
+     */
+    public function mapInputData(array $data)
+    {
+        return [
+            'attribute_name' => $data['name'],
+            'attribute_values' => $data['values']
+        ];
+    }
+
+    /**
      * @param array|null $parameters
      * @return Attribute[]
      */
     public static function find(array $parameters = null)
     {
-        $parameters[0]['is_deleted'] = false;
+        if (empty($parameters['conditions'])) {
+            $parameters['conditions'] = [];
+        }
+        $parameters['conditions']['is_deleted'] = false;
         return parent::find($parameters);
     }
 

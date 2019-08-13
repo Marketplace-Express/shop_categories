@@ -167,6 +167,27 @@ class CategoryCacheUtils
         return $category;
     }
 
+    /**
+     * @param array $categoriesIds
+     * @return array
+     */
+    public function getByIds(array $categoriesIds)
+    {
+        $iterator = $this->getIterator();
+        $categories = [];
+        while ($iterator->valid()) {
+            if ($iterator->key() == 'categoryId' && in_array($iterator->current(), $categoriesIds)) {
+                $categories[] = (array) $iterator->getInnerIterator();
+            }
+            if (count($categories) == count($categoriesIds)) {
+                // break the loop if all categories with specified ids fetched
+                break;
+            }
+            $iterator->next();
+        }
+        return $categories;
+    }
+
     /** Returns roots
      * @return array
      */

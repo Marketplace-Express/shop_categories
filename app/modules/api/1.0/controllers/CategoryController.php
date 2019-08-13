@@ -2,7 +2,10 @@
 namespace app\modules\api\controllers;
 
 use app\common\controllers\BaseController;
-use app\common\graphqlTypes\QueryType;
+use app\common\exceptions\ArrayOfStringsException;
+use app\common\graphql\mutation\MutationSchema;
+use app\common\graphql\query\QueryType;
+use app\common\requestHandler\FetchRequestHandler;
 use app\common\requestHandler\category\{
     CreateRequestHandler,
     DeleteRequestHandler,
@@ -30,16 +33,6 @@ class CategoryController extends BaseController
     }
 
     /**
-     * @return Schema
-     */
-    protected function getSchema(): Schema
-    {
-        return new Schema([
-            'query' => new QueryType()
-        ]);
-    }
-
-    /**
      * @return CategoryService
      */
     private function getService(): CategoryService
@@ -48,46 +41,61 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Create category
-     * Send response on success/fail
-     * @Post('')
-     * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
+     * @return Schema
      */
-    public function createAction()
+    protected function getQuerySchema(): Schema
+    {
+        return new Schema([
+            'query' => new QueryType()
+        ]);
+    }
+
+    /**
+     * @return Schema
+     */
+    protected function getMutationSchema(): Schema
+    {
+        return new Schema([
+            'mutation' => new MutationSchema()
+        ]);
+    }
+
+    /**
+     * @Post('/fetch')
+     */
+    public function fetchAction()
     {
         try {
-            /** @var CreateRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new CreateRequestHandler());
-
+            // NOTE: THIS RULES SHOULD BE DYNAMIC PER USER (PER ROLE)
+            /** @var FetchRequestHandler $request */
+            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new FetchRequestHandler($this));
             if (!$request->isValid()) {
                 $request->invalidRequest();
             }
-
-            $request->successRequest($this->getService()->create($request->toArray()));
+            $request->successRequest($request->toArray());
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
+            $this->handleError($exception->getMessage(), $exception->getCode());
         }
     }
 
     /**
-     * Update category
-     * @Put('/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}')
-     * @param $categoryId
-     * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
+     * @Post('/save')
      */
-    public function updateAction($categoryId)
+    public function saveAction()
     {
         try {
-            /** @var UpdateRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new UpdateRequestHandler());
-
-            if (!$request->isValid()) {
-                $request->invalidRequest();
+            $output = GraphQL::executeQuery(
+                $this->getMutationSchema(),
+                $this->request->getJsonRawBody(true)['query'],
+                $this, null,
+                $this->request->getJsonRawBody(true)['variables']
+            );
+            if ($output->errors) {
+                throw new ArrayOfStringsException($output->errors);
             }
-
-            $request->successRequest($this->getService()->update($categoryId, $request->toArray()));
+            $this->sendResponse($output->toArray(), 200);
         } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
+            $this->handleError($exception->getMessage(), $exception->getCode());
         }
     }
 
@@ -106,30 +114,6 @@ class CategoryController extends BaseController
             $request->successRequest('Deleted');
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
-        }
-    }
-
-    /**
-     * @Post('/fetch')
-     */
-    public function fetchAction()
-    {
-        try {
-            // TODO: ADD QUERY VALIDATION RULES
-            // NOTE: THIS RULES SHOULD BE DYNAMIC PER USER (PER ROLE)
-            $output = GraphQL::executeQuery(
-                $this->getSchema(),
-                $this->request->getJsonRawBody(true)['query']
-            );
-            if ($output->errors) {
-                if ($output->errors[0]->getPrevious() instanceof \Throwable) {
-                    throw $output->errors[0]->getPrevious();
-                }
-                throw new \Exception($output->errors[0]->getMessage(), 500);
-            }
-            $this->sendResponse($output->toArray()['data'], 200);
-        } catch (\Throwable $exception) {
-            $this->handleError($exception->getMessage(), $exception->getCode());
         }
     }
 }

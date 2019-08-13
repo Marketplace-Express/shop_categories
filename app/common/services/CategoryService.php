@@ -10,18 +10,31 @@ namespace app\common\services;
 use app\common\exceptions\ArrayOfStringsException;
 use app\common\exceptions\NotFoundException;
 use app\common\exceptions\OperationFailedException;
-use app\common\models\Category;
 use app\common\repositories\CategoryRepository;
 use app\common\services\cache\CategoryCache;
+use app\common\utils\UuidUtil;
 
 class CategoryService extends AbstractService
 {
+    /** @var AttributesService */
+    private $attributesService;
+
+    /**
+     * @return AttributesService
+     */
+    protected function getAttributesService(): AttributesService
+    {
+        return $this->attributesService ?? $this->attributesService = new AttributesService();
+    }
+
     /**
      * Get stop words
      * @return array
      */
     public static function getStopWords(): array
     {
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         if (file_exists($stopWords = \Phalcon\Di::getDefault()->getConfig()->application->stopWords)) {
             return json_decode(file_get_contents($stopWords), true);
         }
@@ -29,50 +42,19 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @return Category[]
-     * @throws \Exception
-     */
-    public function getRoots()
-    {
-        $roots = CategoryCache::getInstance()->getRoots(self::getVendorId());
-        return $roots;
-    }
-
-    /**
+     * @param array $ids
      * @return array
+     * @throws \RedisException
      * @throws \Exception
      */
-    public function getAll(): array
+    public function getCategories(array $ids = [])
     {
-        $allCategories = CategoryCache::getInstance()->getAll(self::getVendorId());
-        return $allCategories;
-    }
-
-
-    /**
-     * @param $categoryId
-     * @return array
-     * @throws \Exception
-     * @throws NotFoundException
-     */
-    public function getCategory($categoryId): array
-    {
-        $category = CategoryCache::getInstance()->getCategory($categoryId);
-        if (!$category) {
-            throw new NotFoundException('Category not found or maybe deleted');
+        if (!empty($ids)) {
+            $categories = CategoryCache::getInstance()->getByIds($ids);
+        } else {
+            $categories = CategoryCache::getInstance()->getAll(self::getVendorId());
         }
-        return $category;
-    }
-
-    /**
-     * @param $categoryId
-     * @return array
-     * @throws \Exception
-     */
-    public function getDescendants($categoryId): array
-    {
-        $descendants = CategoryCache::getInstance()->getDescendants($categoryId, self::getVendorId());
-        return $descendants;
+        return $categories;
     }
 
     /**
@@ -98,17 +80,6 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @param $categoryId
-     * @return array
-     * @throws \Exception
-     */
-    public function getParents($categoryId): array
-    {
-        $parents = CategoryCache::getInstance()->getParents($categoryId, self::getVendorId());
-        return $parents;
-    }
-
-    /**
      * Create category
      * @param array $data
      * @return array
@@ -117,6 +88,9 @@ class CategoryService extends AbstractService
     public function create(array $data): array
     {
         $category = CategoryRepository::getInstance()->create($data)->toApiArray();
+        if (!empty($data['attributes'])) {
+            $this->getAttributesService()->create($data['attributes'], $category['categoryId']);
+        }
         try {
             CategoryCache::getInstance()->invalidateCache();
             CategoryCache::getInstance()->indexCategory($category);
@@ -133,9 +107,9 @@ class CategoryService extends AbstractService
      * @return array
      * @throws \Exception
      */
-    public function update(string $categoryId, array $data): array
+    public function update(array $data): array
     {
-        $category = CategoryRepository::getInstance()->update($categoryId, self::getVendorId(), $data)->toApiArray();
+        $category = CategoryRepository::getInstance()->update($data['categoryId'], self::getVendorId(), $data)->toApiArray();
         try {
             CategoryCache::getInstance()->invalidateCache();
             CategoryCache::getInstance()->updateCategoryIndex($category);

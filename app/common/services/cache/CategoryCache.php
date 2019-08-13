@@ -7,7 +7,6 @@
 
 namespace app\common\services\cache;
 
-use Ehann\RediSearch\RediSearchRedisClient;
 use Phalcon\Di;
 use app\common\enums\QueueNamesEnum;
 use app\common\helpers\ArrayHelper;
@@ -198,6 +197,16 @@ class CategoryCache implements CategoryDataSourceInterface
     public function getAll(?string $vendorId = null): array
     {
         return $this->prepareCache()->getCategoryCacheUtils()->getAll();
+    }
+
+    /**
+     * @param array $ids
+     * @return array
+     * @throws \Exception
+     */
+    public function getByIds(array $ids)
+    {
+        return $this->prepareCache()->getCategoryCacheUtils()->getByIds($ids);
     }
 
     /**

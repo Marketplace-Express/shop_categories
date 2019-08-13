@@ -51,22 +51,24 @@ class AttributesService extends BaseService
     /**
      * Create new attribute
      *
-     * @param array $data
+     * @param array $attributes
+     * @param string $categoryId
      * @return array
      *
      * @throws \Exception
      */
-    public function create(array $data)
+    public function create(array $attributes, string $categoryId)
     {
         // TODO: PREPARE ATTRIBUTE BEFORE CREATE
-
-        $attribute = AttributesRepository::getInstance()->create($data)->toApiArray();
-        try {
-            AttributesCache::getInstance()->updateCache($attribute['attributeId'], $attribute['attributeCategoryId'], $attribute);
-        } catch (\RedisException $exception) {
-            // do nothing
+        foreach ($attributes as &$attribute) {
+            $attribute = AttributesRepository::getInstance()->create($attribute, $categoryId)->toApiArray();
+            try {
+                AttributesCache::getInstance()->updateCache($attribute['attributeId'], $categoryId, $attribute);
+            } catch (\RedisException $exception) {
+                // do nothing
+            }
         }
-        return $attribute;
+        return $attributes;
     }
 
     /**
@@ -115,25 +117,21 @@ class AttributesService extends BaseService
      *
      * @param string $attributeId
      * @param array $values
-     * @return bool|\app\common\collections\Attribute
+     * @return array
      *
      * @throws ArrayOfStringsException
      * @throws RedisException
-     * @throws \Phalcon\Mvc\Collection\Exception
      * @throws \Exception
      */
     public function updateValues(string $attributeId, array $values)
     {
-        if ($attribute = AttributesRepository::getInstance()->updateValues($attributeId, $values)) {
-            $categoryId = AttributesCache::getInstance()->getAttribute($attributeId)['attributeCategoryId'];
-            try {
-                AttributesCache::getInstance()->updateCache($attributeId, $categoryId, $attribute->toApiArray());
-            } catch (\RedisException $exception) {
-                // do nothing
-            }
-            return $attribute;
+        $attribute = AttributesRepository::getInstance()->updateValues($attributeId, $values)->toApiArray();
+        try {
+            AttributesCache::getInstance()->updateCache($attributeId, $attribute['attributeCategoryId'], $attribute);
+        } catch (\RedisException $exception) {
+            // do nothing
         }
-        throw new ArrayOfStringsException($attribute->getMessages(), 400);
+        return $attribute;
     }
 
     /**

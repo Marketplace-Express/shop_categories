@@ -5,7 +5,7 @@
  * Time: 06:13 م
  */
 
-namespace app\common\collections;
+namespace app\common\models;
 
 use Phalcon\Mvc\MongoCollection As Collection;
 use app\common\traits\ModelCollectionBehaviorTrait;

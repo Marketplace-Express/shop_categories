@@ -5,9 +5,10 @@
  * Time: ١:٤٦ ص
  */
 
-namespace app\common\graphqlTypes;
+namespace app\common\graphql\query;
 
 
+use app\common\graphql\TypeRegistry;
 use app\common\services\AttributesService;
 use app\common\services\CategoryService;
 use GraphQL\Type\Definition\ObjectType;
@@ -27,7 +28,8 @@ class CategoryType extends ObjectType
                     'name' => self::string(),
                     'children' => self::listOf(TypeRegistry::category()),
                     'parent' => self::listOf(TypeRegistry::category()),
-                    'attributes' => self::listOf(TypeRegistry::attribute())
+                    'attributes' => self::listOf(TypeRegistry::attribute()),
+                    'order' => self::int()
                 ];
             },
             'resolveField' => function ($rootValue, $args, $context, ResolveInfo $info) {
@@ -70,5 +72,10 @@ class CategoryType extends ObjectType
     public function resolveAttributes($category)
     {
         return $this->getAttributeService()->getAll($category['categoryId']);
+    }
+
+    public function resolveOrder($category)
+    {
+        return $category['categoryOrder'];
     }
 }

@@ -8,6 +8,7 @@
 
 namespace app\common\requestHandler;
 
+use app\common\validators\rules\RulesAbstract;
 use Phalcon\Validation\Message\Group;
 
 interface IRequestHandler
@@ -45,6 +46,4 @@ interface IRequestHandler
      * @return array
      */
     public function toArray(): array;
-
-    public function getValidationRules();
 }

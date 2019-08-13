@@ -9,10 +9,10 @@ $loader = new Loader();
  */
 $loader->registerNamespaces([
     'app\common\models' => APP_PATH . '/common/models/',
-    'app\common\collections' => APP_PATH . '/common/collections/',
     'app\common\interfaces' => APP_PATH . '/common/interfaces/',
     'app\common\controllers' => APP_PATH . '/common/controllers/',
     'app\common\models\behaviors' => APP_PATH . '/common/models/behaviors/',
+    'app\common\models\mappers' => APP_PATH . '/common/models/mappers/',
     'app\common\helpers' => APP_PATH . '/common/helpers/',
     'app\common\traits' => APP_PATH . '/common/traits/',
     'app\common\events' => APP_PATH . '/common/events/',
@@ -39,7 +39,10 @@ $loader->registerNamespaces([
     'app\modules\cli\request' => APP_PATH . '/modules/cli/request/',
     'app\modules\cli\services' => APP_PATH . '/modules/cli/services/',
     'app\common\redis' => APP_PATH . '/common/redis/',
-    'app\common\graphqlTypes' => APP_PATH . '/common/graphqlTypes'
+    'app\common\graphql' => APP_PATH . '/common/graphql/',
+    'app\common\graphql\query' => APP_PATH . '/common/graphql/query/',
+    'app\common\graphql\mutation' => APP_PATH . '/common/graphql/mutation/',
+    'app\common\graphql\scalarTypes' => APP_PATH . '/common/graphql/scalarTypes/'
 ]);
 
 /**

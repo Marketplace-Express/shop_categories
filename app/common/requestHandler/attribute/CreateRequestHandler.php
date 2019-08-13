@@ -117,22 +117,10 @@ class CreateRequestHandler extends BaseController implements IRequestHandler
             'values',
             new Validation\Validator\Callback([
                 'callback' => function ($data) {
-                    return !empty($data['values']) && is_array($data['values']);
+                    return !empty($data['values']) && is_array($data['values'])
+                        && array_unique($data['values']) !== $data['values'];
                 },
-                'message' => 'Attribute values should be an array'
-            ])
-        );
-
-        $validator->add(
-            'values',
-            new Validation\Validator\Callback([
-                'callback' => function($data) {
-                    if (array_unique($data['values']) !== $data['values']) {
-                        return false;
-                    }
-                    return true;
-                },
-                'message' => 'There are duplicate entries'
+                'message' => 'Invalid input data or may contains duplicate values'
             ])
         );
 

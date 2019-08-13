@@ -5,7 +5,7 @@
  * Time: ٦:١٩ م
  */
 
-namespace app\common\graphqlTypes;
+namespace app\common\graphql\query;
 
 
 use GraphQL\Type\Definition\ObjectType;

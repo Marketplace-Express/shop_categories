@@ -8,7 +8,7 @@
 namespace app\common\validators\rules;
 
 
-class AttributeRules implements IValidationRules
+class AttributeRules extends RulesAbstract
 {
     /** @var int  */
     public $minAttrNameLength = 3;

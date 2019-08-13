@@ -5,9 +5,10 @@
  * Time: ٣:١٩ ص
  */
 
-namespace app\common\graphqlTypes;
+namespace app\common\graphql\query;
 
 
+use app\common\graphql\TypeRegistry;
 use app\common\services\CategoryService;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -22,19 +23,14 @@ class QueryType extends ObjectType
                     'categories' => [
                         'type' => self::listOf(TypeRegistry::category()),
                         'args' => [
-                            'id' => self::string()
+                            'ids' => self::listOf(TypeRegistry::uuidType())
                         ],
                         'description' => 'List of categories'
-                    ],
+                    ]
                 ];
             },
             'resolveField' => function ($rootValue, $args, $context, ResolveInfo $info) {
-                if (!empty($args['id'])) {
-                    $result = [$this->getService()->getCategory($args['id'])];
-                } else {
-                    $result = $this->getService()->getAll();
-                }
-                return $result;
+                return $this->getService()->getCategories($args['ids'] ?? []);
             }
         ];
         parent::__construct($config);

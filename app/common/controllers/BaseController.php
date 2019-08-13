@@ -122,15 +122,11 @@ class BaseController extends Controller
 
     /**
      * @param array $params
-     * @return \stdClass
+     * @return mixed
      */
     protected function queryStringToObject(array $params)
     {
-        $object = new \stdClass();
         unset($params['_url']);
-        foreach ($params as $key => $value) {
-            $object->$key = $value;
-        }
-        return $object;
+        return json_decode(json_encode($params));
     }
 }

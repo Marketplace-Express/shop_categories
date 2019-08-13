@@ -30,8 +30,14 @@ class ExceptionhandlerController extends Controller
      */
     public function raiseErrorAction($errors, $code)
     {
-        if (!is_array($errors) && !is_object($errors) && ($jsonError = json_decode($errors, true)) != null) {
-            $errors = $jsonError;
+        if ($jsonErrors = json_decode($errors, true)) {
+            array_walk_recursive($jsonErrors, function (&$message) {
+                $decoded = json_decode($message, true);
+                if ($decoded) {
+                    $message = $decoded;
+                }
+            });
+            $errors = $jsonErrors;
         }
 
         /**

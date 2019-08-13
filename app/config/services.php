@@ -105,7 +105,7 @@ $di->setShared('modelsMetadata', function () {
 /**
  * Register Redis as a service
  */
-$di->setShared('cache', function(int $database = 0) {
+$di->set('cache', function(int $database = 0) {
     $config = $this->getConfig()->cache;
     $redisInstance = new \app\common\redis\Connector();
     $redisInstance->connect(

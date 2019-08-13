@@ -39,6 +39,7 @@ class ArrayHelper
      */
     public function tree()
     {
+        // TODO ENHANCE PERFORMANCE
         $ids = array_column($this->array, $this->itemIdAttribute);
         foreach ($this->array as $key => &$value) {
             if ($value[$this->parentIdAttribute] != $this->noParentValue) {

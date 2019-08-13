@@ -11,7 +11,7 @@ use Phalcon\Mvc\Model;
 use app\common\interfaces\BaseModelInterface;
 use app\common\traits\ModelCollectionBehaviorTrait;
 
-abstract class Base extends Model implements BaseModelInterface
+abstract class BaseModel extends Model implements BaseModelInterface
 {
     use ModelCollectionBehaviorTrait;
 

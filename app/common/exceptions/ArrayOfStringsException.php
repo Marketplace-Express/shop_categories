@@ -9,9 +9,23 @@ namespace app\common\exceptions;
 
 class ArrayOfStringsException extends \Exception
 {
-    public function __construct(array $message = [], int $code = 0)
+    /**
+     * ArrayOfStringsException constructor.
+     * @param array $messages
+     * @param int $code
+     * Code has default value 422, which describes unprocessable entity
+     */
+    public function __construct(array $messages = [], int $code = 422)
     {
-        $this->message = json_encode($message);
+        $errors = [];
+        foreach ($messages as $key => $message) {
+            if ($message instanceof \Throwable) {
+                $errors[$key] = $message->getMessage();
+            } else {
+                $errors[$key] = $message;
+            }
+        }
+        $this->message = json_encode($errors);
         $this->code = $code;
         parent::__construct($this->message, $this->code);
     }
