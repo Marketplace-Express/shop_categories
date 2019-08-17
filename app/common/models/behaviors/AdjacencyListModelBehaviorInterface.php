@@ -229,8 +229,8 @@ class AdjacencyListModelBehaviorInterface extends Behavior implements BehaviorIn
             [
                 [
                     'CONDITIONS' => array_merge([
-                        'category_id' => [SchemaQueryOperatorsEnum::OP_EQUALS => $itemId],
-                        'category_parent_id' => [SchemaQueryOperatorsEnum::OP_IS_NOT_NULL => ''],
+                        'id' => [SchemaQueryOperatorsEnum::OP_EQUALS => $itemId],
+                        'parent_id' => [SchemaQueryOperatorsEnum::OP_IS_NOT_NULL => ''],
                         'is_deleted' => [SchemaQueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
                     ], $additionalConditions)
                 ],
@@ -246,7 +246,7 @@ class AdjacencyListModelBehaviorInterface extends Behavior implements BehaviorIn
                         'table' => 'category',
                         'alias' => 'c',
                         'conditions' => [
-                            'c.category_id' => [SchemaQueryOperatorsEnum::OP_EQUALS => 'cp.category_parent_id', 'process' => false],
+                            'c.id' => [SchemaQueryOperatorsEnum::OP_EQUALS => 'cp.parent_id', 'process' => false],
                             'c.is_deleted' => [SchemaQueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
                         ]
                     ]
@@ -286,7 +286,7 @@ class AdjacencyListModelBehaviorInterface extends Behavior implements BehaviorIn
             [
                 [
                     'CONDITIONS' => array_merge([
-                            'category_id' => [SchemaQueryOperatorsEnum::OP_EQUALS => $itemId],
+                            'id' => [SchemaQueryOperatorsEnum::OP_EQUALS => $itemId],
                             'is_deleted' => [SchemaQueryOperatorsEnum::OP_EQUALS => $this->isDeletedValue]
                     ], $additionalConditions)
                 ],
@@ -303,7 +303,7 @@ class AdjacencyListModelBehaviorInterface extends Behavior implements BehaviorIn
                         'table' => 'category',
                         'alias' => 'c',
                         'conditions' => [
-                            'c.category_parent_id' => [SchemaQueryOperatorsEnum::OP_EQUALS => 'cp.category_id', 'process' => false],
+                            'c.parent_id' => [SchemaQueryOperatorsEnum::OP_EQUALS => 'cp.id', 'process' => false],
                             'c.is_deleted' => [SchemaQueryOperatorsEnum::OP_EQUALS => false]
                         ]
                     ]

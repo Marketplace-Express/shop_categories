@@ -10,14 +10,16 @@ namespace app\common\requestHandler\category;
 
 use app\common\requestHandler\RequestAbstract;
 use app\common\validators\rules\CategoryRules;
+use app\common\validators\UuidValidator;
 use Phalcon\Exception;
+use Phalcon\Mvc\Controller;
 use Phalcon\Utils\Slug;
 use Phalcon\Validation;
-use app\common\controllers\BaseController;
-use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\IRequestHandler;
-use app\common\utils\UuidUtil;
 
+/**
+ * Class UpdateRequestHandler
+ * @package app\common\requestHandler\category
+ */
 class UpdateRequestHandler extends RequestAbstract
 {
     /** @var string */
@@ -32,10 +34,23 @@ class UpdateRequestHandler extends RequestAbstract
     /** @var int|null */
     private $order;
 
-    public $validator;
-    public $errorMessages = [];
-    public $uuidUtil;
+    /**
+     * @var \app\common\requestHandler\attribute\CreateRequestHandler[]|\app\common\requestHandler\attribute\UpdateRequestHandler[]
+     */
+    private $attributes;
 
+    /**
+     * UpdateRequestHandler constructor.
+     * @param Controller $controller
+     */
+    public function __construct(Controller $controller)
+    {
+        parent::__construct($controller, new CategoryRules());
+    }
+
+    /**
+     * @param string $id
+     */
     public function setId($id)
     {
         $this->id = $id;
@@ -57,27 +72,51 @@ class UpdateRequestHandler extends RequestAbstract
         $this->parentId = $parentId;
     }
 
+    /**
+     * @param int|null $order
+     */
     public function setOrder($order)
     {
         $this->order = $order;
     }
 
     /**
-     * @return mixed
+     * @param array|null $attributes
      */
-    private function getUuidUtil()
+    public function setAttributes(?array $attributes)
     {
-        if (!$this->uuidUtil) {
-            $this->uuidUtil = new UuidUtil();
+        if ($attributes) {
+            $attributes = array_map(function ($attribute) {
+                return $this->controller->getJsonMapper()->map(
+                    json_decode(json_encode($attribute)),
+                    $this->getAttributesRequestHandler($attribute)
+                );
+            }, $attributes);
         }
-        return $this->uuidUtil;
+        $this->attributes = $attributes;
     }
+
     /**
-     * @return CategoryRules
+     * @param array $attribute
+     * @return \app\common\requestHandler\attribute\CreateRequestHandler|\app\common\requestHandler\attribute\UpdateRequestHandler
      */
-    public function getValidationRules(): CategoryRules
+    private function getAttributesRequestHandler(array $attribute)
     {
-        return new CategoryRules();
+        if (!empty($attribute['id'])) {
+            return new \app\common\requestHandler\attribute\UpdateRequestHandler($this->controller);
+        } else {
+            return new \app\common\requestHandler\attribute\CreateRequestHandler($this->controller);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    private function getAttributes()
+    {
+        return array_map(function ($attribute) {
+            return $attribute->toArray();
+        }, $this->attributes);
     }
 
     /**
@@ -88,22 +127,16 @@ class UpdateRequestHandler extends RequestAbstract
         $validator = new Validation();
         $validator->add(
             'parentId',
-            new Validation\Validator\Callback([
-                'callback' => function ($data) {
-                    if (!empty($data['parentId'])) {
-                        return $this->getUuidUtil()->isValid($data['parentId']);
-                    }
-                    return true;
-                },
-                'message' => 'Invalid category parent Id'
+            new UuidValidator([
+                'allowEmpty' => true
             ])
         );
 
         $validator->add(
             'order',
             new Validation\Validator\NumericValidator([
-                'min' => $this->getValidationRules()->minOrder,
-                'max' => $this->getValidationRules()->maxOrder,
+                'min' => $this->validationRules->minOrder,
+                'max' => $this->validationRules->maxOrder,
                 'message' => 'Category order should be a number',
                 'allowEmpty' => true
             ])
@@ -112,10 +145,10 @@ class UpdateRequestHandler extends RequestAbstract
         $validator->add(
             'name',
             new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => $this->getValidationRules()->allowNameWhiteSpace,
-                'underscore' => $this->getValidationRules()->allowNameUnderscore,
-                'min' => $this->getValidationRules()->minNameLength,
-                'max' => $this->getValidationRules()->maxNameLength,
+                'whiteSpace' => $this->validationRules->allowNameWhiteSpace,
+                'underscore' => $this->validationRules->allowNameUnderscore,
+                'min' => $this->validationRules->minNameLength,
+                'max' => $this->validationRules->maxNameLength,
                 'message' => 'Invalid category name',
                 'messageMinimum' => 'Category name should be at least 3 characters',
                 'messageMaximum' => 'Category name should not exceed 100 characters',
@@ -138,14 +171,27 @@ class UpdateRequestHandler extends RequestAbstract
             ])
         );
 
-        // Fields to be validated
-        $fields = [
+        $validator->add(
+            'attributes',
+            new Validation\Validator\Callback([
+                'callback' => function ($data) {
+                    if (!empty($data['attributes'])) {
+                        return !in_array(false, array_map(function ($attribute) {
+                            return $attribute->isValid();
+                        }, $data['attributes']));
+                    }
+                    return true;
+                },
+                'message' => 'Invalid attributes'
+            ])
+        );
+
+        return $validator->validate([
             'name'      => $this->name,
             'parentId'  => $this->parentId,
-            'order'     => $this->order
-        ];
-
-        return $validator->validate($fields);
+            'order'     => $this->order,
+            'attributes' => $this->attributes
+        ]);
     }
 
     /**
@@ -155,21 +201,25 @@ class UpdateRequestHandler extends RequestAbstract
     public function toArray(): array
     {
         $result = [
-            'categoryId' => $this->id
+            'id' => $this->id
         ];
 
         if (!empty($this->name)) {
-            $result['categoryName'] = $this->name;
-            $result['categoryUrl'] = (new Slug())->generate($this->name);
+            $result['name'] = $this->name;
+            $result['url'] = (new Slug())->generate($this->name);
 
         }
 
         if (!empty($this->parentId)) {
-            $result['categoryParentId'] = $this->parentId;
+            $result['parentId'] = $this->parentId;
         }
 
         if (!empty($this->order) && $this->order !== null) {
-            $result['categoryOrder'] = $this->order;
+            $result['order'] = $this->order;
+        }
+
+        if (!empty($this->attributes)) {
+            $result['attributes'] = $this->getAttributes();
         }
 
         return $result;

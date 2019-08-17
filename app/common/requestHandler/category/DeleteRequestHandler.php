@@ -8,13 +8,19 @@
 
 namespace app\common\requestHandler\category;
 
+use app\common\requestHandler\RequestAbstract;
 use Phalcon\Validation\Message\Group;
-use app\common\controllers\BaseController;
-use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\IRequestHandler;
 
-class DeleteRequestHandler extends BaseController implements IRequestHandler
+class DeleteRequestHandler extends RequestAbstract
 {
+    /** @var string */
+    private $id;
+
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
     /** Validate request fields using \Phalcon\Validation\Validator
      * @return Group
      */
@@ -23,49 +29,13 @@ class DeleteRequestHandler extends BaseController implements IRequestHandler
         return new Group();
     }
 
-    public function isValid(): bool
-    {
-        return true;
-    }
-
     /**
-     * @param string $message
-     * @throws \Exception
+     * @return array
      */
-    public function notFound($message = 'Not Found')
-    {
-        throw new \Exception($message, 404);
-    }
-
-    /**
-     * @param null $message
-     * @throws ArrayOfStringsException
-     */
-    public function invalidRequest($message = null)
-    {
-        throw new ArrayOfStringsException($message, 400);
-    }
-
-    /**
-     * @param null $message
-     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
-     */
-    public function successRequest($message = null)
-    {
-        return $this->response
-            ->setJsonContent([
-                'status' => 200,
-                'message' => $message
-            ]);
-    }
-
     public function toArray(): array
     {
-        // TODO: Implement toArray() method.
-    }
-
-    public function getValidationRules()
-    {
-        // TODO: Implement getValidationRules() method.
+        return [
+            'categoryId' => $this->id
+        ];
     }
 }

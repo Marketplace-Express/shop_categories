@@ -5,20 +5,20 @@
  * Time: ١:٠٨ ص
  */
 
-namespace app\common\graphql\mutation;
+namespace app\common\graphql\mutation\schema\attribute;
 
 
 use GraphQL\Type\Definition\InputObjectType;
 
-class CreateAttrType extends InputObjectType
+class CreateAttributeType extends InputObjectType
 {
     public function __construct()
     {
         $config = [
             'fields' => function () {
                 return [
-                    'name' => self::string(),
-                    'values' => self::listOf(self::string())
+                    'name' => self::nonNull(self::string()),
+                    'values' => self::nonNull(self::listOf(self::string()))
                 ];
             }
         ];

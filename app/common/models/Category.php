@@ -3,6 +3,7 @@
 namespace app\common\models;
 
 use app\common\validators\rules\CategoryRules;
+use app\common\validators\UuidValidator;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\AlphaNumericValidator;
 use app\common\models\behaviors\AdjacencyListModelBehaviorInterface;
@@ -18,65 +19,73 @@ use app\common\validators\ExistenceValidator;
  */
 class Category extends BaseModel
 {
-    const WHITE_LIST = [
-        'categoryId',
-        'categoryParentId',
-        'categoryVendorId',
-        'categoryUserId',
-        'categoryName',
-        'categoryOrder',
-        'categoryUrl',
-        'categoryDepth'
+    const CREATE_WHITE_LIST = [
+        'id',
+        'parentId',
+        'vendorId',
+        'userId',
+        'name',
+        'order',
+        'url',
+        'depth'
+    ];
+
+    const UPDATE_WHITE_LIST = [
+        'name',
+        'parentId',
+        'order',
+        'url',
+        'depth'
     ];
 
     /**
      * @var string
      * @Primary
-     * @Column(column="category_id", type="string", length=36, nullable=false)
+     * @Column(column="id", type="string", length=36, nullable=false)
      */
-    public $categoryId;
+    public $id;
 
     /**
      * @var string
-     * @Column(column="category_parent_id", type="string", length=36)
+     * @Column(column="parent_id", type="string", length=36)
      */
-    public $categoryParentId;
+    public $parentId;
 
     /**
      * @var string
-     * @Column(column="category_vendor_id", type="string", length=36, nullable=false)
+     * @Column(column="vendor_id", type="string", length=36, nullable=false)
      */
-    public $categoryVendorId;
+    public $vendorId;
 
     /**
-     * @var string $categoryUserId
-     * @Column(column="category_user_id", type="string", length=36, nullable=false)
+     * @var string $userId
+     * @Column(column="user_id", type="string", length=36, nullable=false)
      */
-    public $categoryUserId;
-
-    /**
-     * @var integer $categoryOrder
-     * @Column(column="category_order", type="integer", length=3, nullable=false)
-     */
-    public $categoryOrder = 0;
+    public $userId;
 
     /**
      * @var string
-     * @Column(column="category_name", type="string", length=100, nullable=false)
+     * @Column(column="name", type="string", length=100, nullable=false)
      */
-    public $categoryName;
+    public $name;
 
     /**
      * @var string
-     * @Column(column="category_url", type="string", length=255)
+     * @Column(column="url", type="string", length=255)
      */
-    public $categoryUrl;
+    public $url;
+
+    /**
+     * @var integer $order
+     * @Column(column="order", type="integer", length=3, nullable=false)
+     */
+    public $order = 0;
 
     /**
      * @var int
-     * @Column(column="category_depth", type="integer", size=2, nullable=false)
+     * @Column(column="depth", type="integer", size=2, nullable=false)
      */
-    public $categoryDepth = 0;
+    public $depth = 0;
 
     /**
      * @var string
@@ -102,146 +111,146 @@ class Category extends BaseModel
      */
     public $isDeleted = false;
 
-    /** @param string $categoryId */
-    public function setCategoryId(string $categoryId)
+    /** @param string */
+    public function setId(string $id)
     {
-        $this->categoryId = $categoryId;
+        $this->id = $id;
     }
 
-    /** @param string|null $categoryParentId */
-    public function setCategoryParentId(?string $categoryParentId)
+    /** @param string|null */
+    public function setParentId(?string $parentId)
     {
-        $this->categoryParentId = $categoryParentId;
+        $this->parentId = $parentId;
     }
 
-    /** @param string $categoryName */
-    public function setCategoryName(string $categoryName)
+    /** @param string */
+    public function setName(string $name)
     {
-        $this->categoryName = $categoryName;
+        $this->name = $name;
     }
 
-    /** @param int $categoryOrder */
-    public function setCategoryOrder(?int $categoryOrder): void
+    /** @param int */
+    public function setOrder(int $order = 0): void
     {
-        $this->categoryOrder = $categoryOrder;
+        $this->order = $order;
     }
 
-    /** @param string $categoryVendorId */
-    public function setCategoryVendorId(string $categoryVendorId)
+    /** @param string */
+    public function setVendorId(string $vendorId)
     {
-        $this->categoryVendorId = $categoryVendorId;
+        $this->vendorId = $vendorId;
     }
 
-    /** @param $categoryUserId */
-    public function setCategoryUserId(string $categoryUserId)
+    /** @param string */
+    public function setUserId(string $userId)
     {
-        $this->categoryUserId = $categoryUserId;
+        $this->userId = $userId;
     }
 
-    /**@param string|null $categoryUrl */
-    public function setCategoryUrl(?string $categoryUrl)
+    /**@param string|null */
+    public function setUrl(?string $url)
     {
-        $this->categoryUrl = $categoryUrl;
+        $this->url = $url;
     }
 
-    /** @var int $categoryDepth */
-    public function setCategoryDepth(int $categoryDepth = 0)
+    /** @var int */
+    public function setDepth(int $depth = 0)
     {
-        $this->categoryDepth = $categoryDepth;
+        $this->depth = $depth;
     }
 
-    /**@param string $createdAt */
+    /**@param string */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
     }
 
-    /**@param string $updatedAt */
+    /**@param string */
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
     }
 
-    /**@param string $deletedAt */
+    /**@param string */
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
     }
 
-    /** @param bool $isDeleted */
+    /** @param bool */
     public function setIsDeleted(bool $isDeleted)
     {
         $this->isDeleted = $isDeleted;
     }
 
     /** @return string */
-    public function getCategoryId()
+    public function getId(): string
     {
-        return $this->categoryId;
+        return $this->id;
     }
 
     /** @return string */
-    public function getCategoryParentId()
+    public function getParentId(): ?string
     {
-        return $this->categoryParentId;
+        return $this->parentId;
     }
 
     /** @return string */
-    public function getCategoryVendorId()
+    public function getVendorId(): string
     {
-        return $this->categoryVendorId;
+        return $this->vendorId;
     }
 
     /**@return string */
-    public function getCategoryUserId()
+    public function getUserId(): string
     {
-        return $this->categoryUserId;
+        return $this->userId;
     }
 
     /**@return int */
-    public function getCategoryOrder()
+    public function getOrder(): int
     {
-        return $this->categoryOrder;
+        return $this->order;
     }
 
     /**@return string */
-    public function getCategoryName()
+    public function getName(): string
     {
-        return $this->categoryName;
+        return $this->name;
     }
 
     /**@return string */
-    public function getCategoryUrl()
+    public function getUrl(): ?string
     {
-        return $this->categoryUrl;
+        return $this->url;
     }
 
     /**@return int */
-    public function getCategoryDepth()
+    public function getDepth(): int
     {
-        return $this->categoryDepth;
+        return $this->depth;
     }
 
     /**@return string */
-    public function getCreatedAt()
+    public function getCreatedAt(): string
     {
         return $this->createdAt;
     }
 
     /**@return string|null */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
     }
 
     /**@return string|null */
-    public function getDeletedAt()
+    public function getDeletedAt(): ?string
     {
         return $this->deletedAt;
     }
 
     /**@return bool */
-    public function getIsDeleted()
+    public function getIsDeleted(): bool
     {
         return $this->isDeleted;
     }
@@ -255,16 +264,16 @@ class Category extends BaseModel
         $this->defaultBehavior();
 
         $this->addBehavior(new AdjacencyListModelBehaviorInterface([
-            'itemIdAttribute' => 'categoryId',
-            'parentIdAttribute' => 'categoryParentId',
-            'orderByAttribute' => 'categoryOrder',
+            'itemIdAttribute' => 'id',
+            'parentIdAttribute' => 'parentId',
+            'orderByAttribute' => 'order',
             'isDeletedAttribute' => 'isDeleted',
             'isDeletedValue' => false,
             'subItemsSlug' => 'children',
             'noParentValue' => null
         ]));
 
-        $this->skipAttributesOnUpdate(['categoryVendorId', 'isDeleted']);
+        $this->skipAttributesOnUpdate(['id', 'vendorId']);
     }
 
     /**
@@ -286,14 +295,14 @@ class Category extends BaseModel
     public function columnMap()
     {
         return [
-            'category_id' => 'categoryId',
-            'category_parent_id' => 'categoryParentId',
-            'category_name' => 'categoryName',
-            'category_order' => 'categoryOrder',
-            'category_vendor_id' => 'categoryVendorId',
-            'category_user_id' => 'categoryUserId',
-            'category_url' => 'categoryUrl',
-            'category_depth' => 'categoryDepth',
+            'id' => 'id',
+            'parent_id' => 'parentId',
+            'name' => 'name',
+            'order' => 'order',
+            'vendor_id' => 'vendorId',
+            'user_id' => 'userId',
+            'url' => 'url',
+            'depth' => 'depth',
             'created_at' => 'createdAt',
             'updated_at' => 'updatedAt',
             'deleted_at' => 'deletedAt',
@@ -308,13 +317,13 @@ class Category extends BaseModel
     public function toApiArray()
     {
         return [
-            'categoryId' => $this->categoryId,
-            'categoryParentId' => $this->categoryParentId,
-            'categoryVendorId' => $this->categoryVendorId,
-            'categoryName' => $this->categoryName,
-            'categoryUrl' => $this->categoryUrl,
-            'categoryOrder' => $this->categoryOrder,
-            'categoryDepth' => $this->categoryDepth
+            'id' => $this->id,
+            'parentId' => $this->parentId,
+            'vendorId' => $this->vendorId,
+            'name' => $this->name,
+            'url' => $this->url,
+            'order' => $this->getOrder(),
+            'depth' => $this->getDepth()
         ];
     }
 
@@ -348,7 +357,7 @@ class Category extends BaseModel
             'name',
             new Validation\Validator\Callback([
                 'callback' => function ($data) {
-                    $categoryName = preg_replace('/[\d\s_]/i', '', $data['categoryName']);
+                    $categoryName = preg_replace('/[\d\s_]/i', '', $data['name']);
                     if (preg_match('/[a-z]/i', $categoryName) == false) {
                         return false;
                     }
@@ -359,7 +368,7 @@ class Category extends BaseModel
         );
 
         $validator->add(
-            'categoryName',
+            'name',
             new AlphaNumericValidator([
                 'whiteSpace' => $this->getValidationRules()->allowNameWhiteSpace,
                 'underscore' => $this->getValidationRules()->allowNameUnderscore,
@@ -372,45 +381,40 @@ class Category extends BaseModel
         );
 
         $validator->add(
-            ['categoryName', 'categoryVendorId'],
+            ['name', 'vendorId'],
             new Validation\Validator\Uniqueness([
                 'model' => self::model(true),
                 'convert' => function ($values) {
-                    $values['categoryVendorId'] = $this->categoryVendorId;
+                    $values['vendorId'] = $this->vendorId;
                     return $values;
                 },
+                'except' => ['id' => $this->id],
                 'message' => 'Category name already exists'
             ])
         );
 
         $validator->add(
-            'categoryParentId',
-            new Validation\Validator\Callback([
-                'callback' => function ($data) {
-                    if (!empty($data['categoryParentId'])) {
-                        return (new UuidUtil())->isValid($data['categoryParentId']);
-                    }
-                    return true;
-                },
-                'message' => 'Invalid parent category Id'
+            'parentId',
+            new UuidValidator([
+                'allowEmpty' => true
             ])
         );
 
         $validator->add(
-            'categoryParentId',
+            'parentId',
             new ExistenceValidator([
                 'model' => self::class,
-                'column' => 'categoryId',
+                'column' => 'id',
                 'conditions' => [
-                    'where' => 'categoryVendorId = :vendorId:',
-                    'bind' => ['vendorId' => $this->categoryVendorId]
+                    'where' => 'vendorId = :vendorId: AND isDeleted = false',
+                    'bind' => ['vendorId' => $this->vendorId]
                 ],
                 'message' => 'Parent category does not exist'
             ])
         );
 
         $validator->add(
-            'categoryOrder',
+            'order',
             new Validation\Validator\NumericValidator([
                 'min' => $this->getValidationRules()->minOrder,
                 'max' => $this->getValidationRules()->maxOrder,
@@ -419,9 +423,9 @@ class Category extends BaseModel
         );
 
         $this->_errorMessages = $messages = $validator->validate([
-            'categoryName' => $this->categoryName,
-            'categoryParentId' => $this->categoryParentId,
-            'categoryOrder' => $this->categoryOrder
+            'name' => $this->name,
+            'parentId' => $this->parentId,
+            'order' => $this->order
         ]);
 
         return !$messages->count();

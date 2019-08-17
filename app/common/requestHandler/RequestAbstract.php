@@ -17,7 +17,7 @@ use Phalcon\Mvc\ControllerInterface;
 abstract class RequestAbstract  implements IRequestHandler, ControllerInterface
 {
     /** @var array */
-    protected $errorMessages = [];
+    public $errorMessages = [];
 
     /** @var RulesAbstract */
     protected $validationRules;
@@ -77,10 +77,7 @@ abstract class RequestAbstract  implements IRequestHandler, ControllerInterface
      */
     final public function isValid(): bool
     {
-        $messages = $this->validate();
-        foreach ($messages as $message) {
-            $this->errorMessages[$message->getField()] = $message->getMessage();
-        }
+        $this->errorMessages = $this->validate();
         return !count($this->errorMessages);
     }
 }

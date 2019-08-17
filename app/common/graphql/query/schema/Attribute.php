@@ -5,13 +5,13 @@
  * Time: ٦:١٩ م
  */
 
-namespace app\common\graphql\query;
+namespace app\common\graphql\query\schema;
 
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 
-class AttributeType extends ObjectType
+class Attribute extends ObjectType
 {
     public function __construct()
     {

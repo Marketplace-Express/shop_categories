@@ -8,12 +8,12 @@
 namespace app\common\graphql\query;
 
 
-use app\common\graphql\TypeRegistry;
+use app\common\graphql\Types;
 use app\common\services\CategoryService;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 
-class QueryType extends ObjectType
+class Query extends ObjectType
 {
     public function __construct()
     {
@@ -21,9 +21,9 @@ class QueryType extends ObjectType
             'fields' => function () {
                 return [
                     'categories' => [
-                        'type' => self::listOf(TypeRegistry::category()),
+                        'type' => self::listOf(Types::queryCategorySchema()),
                         'args' => [
-                            'ids' => self::listOf(TypeRegistry::uuidType())
+                            'ids' => self::listOf(Types::uuidType())
                         ],
                         'description' => 'List of categories'
                     ]

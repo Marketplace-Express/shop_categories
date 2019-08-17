@@ -23,6 +23,10 @@ trait ModelCollectionBehaviorTrait
     {
         $modelType = self::getType();
         if ($modelType === Model::class) {
+            self::setup([
+                'notNullValidations' => false
+            ]);
+
             $this->addBehavior(new Model\Behavior\SoftDelete([
                 'field' => 'isDeleted',
                 'value' => 1
@@ -43,7 +47,6 @@ trait ModelCollectionBehaviorTrait
                     'format' => self::$dateFormat
                 ]
             ]));
-
         } elseif ($modelType === MongoCollection::class) {
 
             $this->addBehavior(new Collection\Behavior\SoftDelete([

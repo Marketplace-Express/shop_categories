@@ -11,6 +11,7 @@ use app\common\exceptions\NotFoundException;
 use app\common\exceptions\ArrayOfStringsException;
 use app\common\interfaces\AttributeDataSourceInterface;
 use app\common\models\Attribute;
+use MongoDB\BSON\ObjectId;
 
 class AttributesRepository implements AttributeDataSourceInterface
 {
@@ -86,7 +87,6 @@ class AttributesRepository implements AttributeDataSourceInterface
     public function create(array $data, string $categoryId): Attribute
     {
         $attribute = self::getModel();
-        $data = $attribute->mapInputData($data);
         $attribute->attribute_category_id = $categoryId;
         $attribute->setAttributes($data);
         if (!$attribute->save()) {
@@ -98,16 +98,21 @@ class AttributesRepository implements AttributeDataSourceInterface
     /**
      * Update attribute
      *
-     * @param string $attribute_id
+     * @param string $categoryId
      * @param array $data
      * @return Attribute
      *
      * @throws \Exception
      */
-    public function update(string $attribute_id, array $data)
+    public function update(string $categoryId, array $data)
     {
         /** @var Attribute $attribute */
-        $attribute = self::getModel()::findById($attribute_id);
+        $attribute = self::getModel()::findFirst([
+            [
+                'attribute_category_id' => $categoryId,
+                '_id' => new ObjectId($data['attribute_id'])
+            ]
+        ]);
         if (!$attribute) {
             throw new NotFoundException('Attribute not found or maybe deleted');
         }

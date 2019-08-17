@@ -89,7 +89,7 @@ class CategoryService extends AbstractService
     {
         $category = CategoryRepository::getInstance()->create($data)->toApiArray();
         if (!empty($data['attributes'])) {
-            $this->getAttributesService()->create($data['attributes'], $category['categoryId']);
+            $this->getAttributesService()->create($data['attributes'], $category['id']);
         }
         try {
             CategoryCache::getInstance()->invalidateCache();
@@ -102,14 +102,22 @@ class CategoryService extends AbstractService
 
     /**
      * Update category
-     * @param string $categoryId
      * @param array $data
      * @return array
      * @throws \Exception
      */
     public function update(array $data): array
     {
-        $category = CategoryRepository::getInstance()->update($data['categoryId'], self::getVendorId(), $data)->toApiArray();
+        $category = CategoryRepository::getInstance()->update($data['id'], self::getVendorId(), $data)->toApiArray();
+        if (!empty($data['attributes'])) {
+            foreach ($data['attributes'] as $attribute) {
+                if (!empty($data['attribute_id'])) {
+                    $this->getAttributesService()->update([$attribute], $category['id']);
+                } else {
+                    $this->getAttributesService()->create([$attribute], $data['id']);
+                }
+            }
+        }
         try {
             CategoryCache::getInstance()->invalidateCache();
             CategoryCache::getInstance()->updateCategoryIndex($category);
@@ -120,19 +128,22 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @param $categoryId
-     * @throws OperationFailedException
-     * @throws NotFoundException
+     * @param array $data
+     * @return bool
+     *
      * @throws ArrayOfStringsException
+     * @throws NotFoundException
+     * @throws OperationFailedException
      */
-    public function delete($categoryId): void
+    public function delete(array $data): bool
     {
-        CategoryRepository::getInstance()->delete($categoryId, self::getVendorId());
+        $isDeleted = CategoryRepository::getInstance()->delete($data['id'], self::getVendorId());
         try {
             CategoryCache::getInstance()->invalidateCache();
-            CategoryCache::getInstance()->deleteIndex($categoryId);
+            CategoryCache::getInstance()->deleteIndex($data['id']);
         } catch (\RedisException $exception) {
             // do nothing
         }
+        return $isDeleted;
     }
 }

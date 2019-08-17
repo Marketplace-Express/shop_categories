@@ -74,21 +74,23 @@ class AttributesService extends BaseService
     /**
      * Update existing attribute
      *
-     * @param string $attributeId
-     * @param array $data
+     * @param array $attributes
+     * @param string $categoryId
      * @return array
      *
      * @throws \Exception
      */
-    public function update(string $attributeId, array $data)
+    public function update(array $attributes, string $categoryId)
     {
-        $attribute = AttributesRepository::getInstance()->update($attributeId, $data)->toApiArray();
-        try {
-            AttributesCache::getInstance()->updateCache($attributeId, $attribute['attributeCategoryId'], $attribute);
-        } catch (\RedisException $exception) {
-            // do nothing
+        foreach ($attributes as &$attribute) {
+            $attribute = AttributesRepository::getInstance()->update($categoryId, $attribute)->toApiArray();
+            try {
+                AttributesCache::getInstance()->updateCache($attribute['attributeId'], $attribute['attributeCategoryId'], $attribute);
+            } catch (\RedisException $exception) {
+                // do nothing
+            }
         }
-        return $attribute;
+        return $attributes;
     }
 
     /**

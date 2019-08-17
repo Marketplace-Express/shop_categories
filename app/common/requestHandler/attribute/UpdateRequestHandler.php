@@ -1,67 +1,64 @@
 <?php
 /**
  * User: Wajdi Jurry
- * Date: 27/12/18
- * Time: 02:17 م
+ * Date: 31/12/18
+ * Time: 08:12 م
  */
 
 namespace app\common\requestHandler\attribute;
 
+
+use app\common\requestHandler\RequestAbstract;
+use app\common\validators\MongoIdValidator;
 use app\common\validators\rules\AttributeRules;
+use Phalcon\Mvc\Controller;
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
-use app\common\controllers\BaseController;
-use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\IRequestHandler;
 
-class UpdateRequestHandler extends BaseController implements IRequestHandler
+/**
+ * Class UpdateRequestHandler
+ * @package app\common\requestHandler\attribute
+ */
+class UpdateRequestHandler extends RequestAbstract
 {
-    /** @var string $name */
+    /** @var string */
+    private $id;
+
+    /** @var string|null */
     private $name;
 
-    /** @var string $categoryId */
-    private $categoryId;
-
-    private $errorMessages;
+    /** @var array|null $values */
+    private $values;
 
     /**
-     * @return string
+     * UpdateRequestHandler constructor.
+     * @param Controller $controller
      */
-    public function getName()
+    public function __construct(Controller $controller)
     {
-        return $this->name;
+        parent::__construct($controller, new AttributeRules());
     }
 
     /**
-     * @param string $name
+     * @param string $id
      */
-    public function setName(string $name)
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /** @param string|null $name */
+    public function setName(?string $name)
     {
         $this->name = $name;
     }
 
     /**
-     * @return string
+     * @param array|null $values
      */
-    public function getCategoryId()
+    public function setValues(?array $values)
     {
-        return $this->categoryId;
-    }
-
-    /**
-     * @param string $categoryId
-     */
-    public function setCategoryId(string $categoryId)
-    {
-        $this->categoryId = $categoryId;
-    }
-
-    /**
-     * @return AttributeRules
-     */
-    public function getValidationRules(): AttributeRules
-    {
-        return new AttributeRules();
+        $this->values = $values;
     }
 
     /** Validate request fields using \Phalcon\Validation\Validator
@@ -70,13 +67,19 @@ class UpdateRequestHandler extends BaseController implements IRequestHandler
     public function validate(): Group
     {
         $validator = new Validation();
+
+        $validator->add(
+            'id',
+            new MongoIdValidator()
+        );
+
         $validator->add(
             'name',
             new Validation\Validator\AlphaNumericValidator([
-                'whiteSpace' => $this->getValidationRules()->allowAttrNameWhiteSpace,
-                'underscore' => $this->getValidationRules()->allowAttrNameUnderscore,
-                'min' => $this->getValidationRules()->minAttrNameLength,
-                'max' => $this->getValidationRules()->maxAttrNameLength,
+                'whiteSpace' => $this->validationRules->allowAttrNameWhiteSpace,
+                'underscore' => $this->validationRules->allowAttrNameUnderscore,
+                'min' => $this->validationRules->minAttrNameLength,
+                'max' => $this->validationRules->maxAttrNameLength,
                 'message' => 'Invalid attribute name',
                 'messageMinimum' => 'Attribute name should be at least 3 characters',
                 'messageMaximum' => 'Attribute name should not exceed 50 characters',
@@ -85,62 +88,24 @@ class UpdateRequestHandler extends BaseController implements IRequestHandler
         );
 
         $validator->add(
-            'categoryId',
+            'values',
             new Validation\Validator\Callback([
                 'callback' => function ($data) {
-                    return empty($data['categoryId']) || $this->uuidUtil->isValid($data['categoryId']);
+                    if (!empty($data['values'])) {
+                        return is_array($data['values'])
+                            && array_unique($data['values']) === $data['values'];
+                    }
+                    return true;
                 },
-                'message' => 'Invalid category id'
+                'message' => 'Invalid input data or may contains duplicate values'
             ])
         );
 
         return $validator->validate([
-            'name' => $this->getName(),
-            'categoryId' => $this->getCategoryId()
+            'id' => $this->id,
+            'name' => $this->name,
+            'values' => $this->values
         ]);
-    }
-
-    public function isValid(): bool
-    {
-        $messages = $this->validate();
-        if (count($messages)) {
-            foreach ($messages as $message) {
-                $this->errorMessages[$message->getField()] = $message->getMessage();
-            }
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * @param string $message
-     * @throws \Exception
-     */
-    public function notFound($message = 'Not Found')
-    {
-        throw new \Exception($message, 404);
-    }
-
-    /**
-     * @param null $message
-     * @throws ArrayOfStringsException
-     */
-    public function invalidRequest($message = null)
-    {
-        if (is_null($message)) {
-            $message = $this->errorMessages;
-        }
-        throw new ArrayOfStringsException($message, 400);
-    }
-
-    public function successRequest($message = null)
-    {
-        http_response_code(200);
-        return $this->response
-            ->setJsonContent([
-                'status' => 200,
-                'message' => $message
-            ]);
     }
 
     /**
@@ -149,19 +114,14 @@ class UpdateRequestHandler extends BaseController implements IRequestHandler
      */
     public function toArray(): array
     {
-        $result = [];
-        if (!empty($this->getName())) {
-            $result['attribute_name'] = $this->getName();
-        }
+        $result['attribute_id'] = $this->id;
 
-        if (!empty($this->getCategoryId())) {
-            $result['attribute_category_id'] = $this->getCategoryId();
+        if (!empty($this->name)) {
+            $result['attribute_name'] = $this->name;
         }
-
-        if (empty($result)) {
-            throw new \Exception('Nothing to update', 400);
+        if (!empty($this->values)) {
+            $result['attribute_values'] = $this->values;
         }
-
         return $result;
     }
 }

@@ -91,7 +91,7 @@ class RecursiveQueryBuilder extends QueryBuilder
     protected function getColumns($alias = ''): string
     {
         return implode(',', array_map(function ($column) {
-            return substr($column, strpos($column, '.')+1, strlen($column));
+            return '`'.substr($column, strpos($column, '.')+1, strlen($column)).'`';
         }, explode(',', parent::getColumns($alias))));
     }
 
@@ -107,7 +107,7 @@ class RecursiveQueryBuilder extends QueryBuilder
                     SELECT * FROM '.$this->recursionName;
 
         if ($this->recursionOrderBy) {
-            $query .= ' ORDER BY ' . $this->recursionOrderBy['column'] . ' ' . $this->recursionOrderBy['direction'];
+            $query .= ' ORDER BY `' . $this->recursionOrderBy['column'] . '` ' . $this->recursionOrderBy['direction'];
         }
 
         if ($this->recursionLimit) {

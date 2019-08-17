@@ -20,7 +20,7 @@ class CategoryMigration_100 extends Migration
         $this->morphTable('category', [
                 'columns' => [
                     new Column(
-                        'category_id',
+                        'id',
                         [
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
@@ -29,65 +29,65 @@ class CategoryMigration_100 extends Migration
                         ]
                     ),
                     new Column(
-                        'category_parent_id',
+                        'parent_id',
                         [
                             'type' => Column::TYPE_VARCHAR,
                             'size' => 36,
-                            'after' => 'category_id'
+                            'after' => 'id'
                         ]
                     ),
                     new Column(
-                        'category_name',
+                        'name',
                         [
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
                             'size' => 100,
-                            'after' => 'category_parent_id'
+                            'after' => 'parent_id'
                         ]
                     ),
                     new Column(
-                        'category_order',
+                        'order',
                         [
                             'type' => Column::TYPE_INTEGER,
                             'default' => "0",
                             'notNull' => true,
                             'size' => 3,
-                            'after' => 'category_name'
+                            'after' => 'name'
                         ]
                     ),
                     new Column(
-                        'category_vendor_id',
+                        'vendor_id',
                         [
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
                             'size' => 36,
-                            'after' => 'category_order'
+                            'after' => 'order'
                         ]
                     ),
                     new Column(
-                        'category_user_id',
+                        'user_id',
                         [
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
                             'size' => 36,
-                            'after' => 'category_vendor_id'
+                            'after' => 'vendor_id'
                         ]
                     ),
                     new Column(
-                        'category_url',
+                        'url',
                         [
                             'type' => Column::TYPE_TEXT,
                             'size' => 1,
-                            'after' => 'category_user_id'
+                            'after' => 'user_id'
                         ]
                     ),
                     new Column(
-                        'category_depth',
+                        'depth',
                         [
                             'type' => Column::TYPE_INTEGER,
                             'notNull' => true,
                             'size' => 2,
-                            'after' => 'category_url',
+                            'after' => 'url',
                             'default' => "0"
                         ]
                     ),
@@ -96,7 +96,7 @@ class CategoryMigration_100 extends Migration
                         [
                             'type' => Column::TYPE_DATETIME,
                             'notNull' => true,
-                            'after' => 'category_depth',
+                            'after' => 'depth',
                             'default' => new \Phalcon\Db\RawValue('CURRENT_TIMESTAMP')
                         ]
                     ),
@@ -128,18 +128,18 @@ class CategoryMigration_100 extends Migration
                     )
                 ],
                 'indexes' => [
-                    new Index('PRIMARY', ['category_id'], 'PRIMARY'),
-                    new Index('category_parent_id_index', ['category_parent_id'], null),
-                    new Index('category_id-category_parent_id-unique', ['category_id', 'category_parent_id'], 'UNIQUE')
+                    new Index('PRIMARY', ['id'], 'PRIMARY'),
+                    new Index('parent_id_index', ['parent_id'], null),
+                    new Index('id-parent_id-unique', ['id', 'parent_id'], 'UNIQUE')
                 ],
                 'references' => [
                     new Reference(
-                        'category_ids_fk',
+                        'ids_fk',
                         [
                             'referencedTable' => 'category',
                             'referencedSchema' => 'shop_categories',
-                            'columns' => ['category_parent_id'],
-                            'referencedColumns' => ['category_id'],
+                            'columns' => ['parent_id'],
+                            'referencedColumns' => ['id'],
                             'onUpdate' => 'NO ACTION',
                             'onDelete' => 'NO ACTION'
                         ]

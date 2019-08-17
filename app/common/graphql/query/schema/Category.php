@@ -5,16 +5,16 @@
  * Time: ١:٤٦ ص
  */
 
-namespace app\common\graphql\query;
+namespace app\common\graphql\query\schema;
 
 
-use app\common\graphql\TypeRegistry;
+use app\common\graphql\Types;
 use app\common\services\AttributesService;
 use app\common\services\CategoryService;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 
-class CategoryType extends ObjectType
+class Category extends ObjectType
 {
     private $categoryService;
     private $attributeService;
@@ -26,9 +26,10 @@ class CategoryType extends ObjectType
                 return [
                     'id' => self::id(),
                     'name' => self::string(),
-                    'children' => self::listOf(TypeRegistry::category()),
-                    'parent' => self::listOf(TypeRegistry::category()),
-                    'attributes' => self::listOf(TypeRegistry::attribute()),
+                    'url' => self::string(),
+                    'children' => self::listOf(Types::queryCategorySchema()),
+                    'parent' => self::listOf(Types::queryCategorySchema()),
+                    'attributes' => self::listOf(Types::queryAttributeSchema()),
                     'order' => self::int()
                 ];
             },
@@ -39,43 +40,48 @@ class CategoryType extends ObjectType
         parent::__construct($config);
     }
 
-    private function getCategoryService(): CategoryService
+    protected function getCategoryService(): CategoryService
     {
         return $this->categoryService ?? $this->categoryService = new CategoryService();
     }
 
-    public function getAttributeService(): AttributesService
+    protected function getAttributeService(): AttributesService
     {
         return $this->attributeService ?? $this->attributeService = new AttributesService();
     }
 
-    public function resolveId($category)
+    private function resolveId($category)
     {
-        return $category['categoryId'];
+        return $category['id'];
     }
 
-    public function resolveName($category)
+    private function resolveName($category)
     {
-        return $category['categoryName'];
+        return $category['name'];
     }
 
-    public function resolveChildren($category)
+    private function resolveChildren($category)
     {
         return !empty($category['children']) ? $category['children'] : [];
     }
 
-    public function resolveParent($category)
+    private function resolveParent($category)
     {
-        return $this->getCategoryService()->getParent($category['categoryId']);
+        return $this->getCategoryService()->getParent($category['id']);
     }
 
-    public function resolveAttributes($category)
+    private function resolveAttributes($category)
     {
-        return $this->getAttributeService()->getAll($category['categoryId']);
+        return $this->getAttributeService()->getAll($category['id']);
     }
 
-    public function resolveOrder($category)
+    private function resolveOrder($category)
     {
-        return $category['categoryOrder'];
+        return $category['order'];
+    }
+
+    private function resolveUrl($category)
+    {
+        return $category['url'];
     }
 }

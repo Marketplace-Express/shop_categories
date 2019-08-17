@@ -12,7 +12,6 @@ $loader->registerNamespaces([
     'app\common\interfaces' => APP_PATH . '/common/interfaces/',
     'app\common\controllers' => APP_PATH . '/common/controllers/',
     'app\common\models\behaviors' => APP_PATH . '/common/models/behaviors/',
-    'app\common\models\mappers' => APP_PATH . '/common/models/mappers/',
     'app\common\helpers' => APP_PATH . '/common/helpers/',
     'app\common\traits' => APP_PATH . '/common/traits/',
     'app\common\events' => APP_PATH . '/common/events/',
@@ -42,6 +41,9 @@ $loader->registerNamespaces([
     'app\common\graphql' => APP_PATH . '/common/graphql/',
     'app\common\graphql\query' => APP_PATH . '/common/graphql/query/',
     'app\common\graphql\mutation' => APP_PATH . '/common/graphql/mutation/',
+    'app\common\graphql\mutation\schema\category' => APP_PATH . '/common/graphql/mutation/schema/category/',
+    'app\common\graphql\mutation\schema\attribute' => APP_PATH . '/common/graphql/mutation/schema/attribute/',
+    'app\common\graphql\query\schema' => APP_PATH . '/common/graphql/query/schema/',
     'app\common\graphql\scalarTypes' => APP_PATH . '/common/graphql/scalarTypes/'
 ]);
 

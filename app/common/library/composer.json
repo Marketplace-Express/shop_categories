@@ -1,8 +1,8 @@
 {
     "require": {
-	"ext-phalcon": "^3.4",
+	    "ext-phalcon": "^3.4",
         "ext-pdo": "*",
-	"ext-intl": "*",
+	    "ext-intl": "*",
         "ramsey/uuid": "3.8.0",
         "phalcon/incubator": "^3.4",
         "netresearch/jsonmapper": "^1.4",

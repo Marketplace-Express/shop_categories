@@ -108,8 +108,8 @@ class CategoryCache implements CategoryDataSourceInterface
             // Get all categories from repository and set in cache
             $categories = CategoryRepository::getInstance()->getAll(CategoryService::getVendorId());
             $categories = (new ArrayHelper($categories, [
-                'itemIdAttribute' => 'categoryId',
-                'parentIdAttribute' => 'categoryParentId'
+                'itemIdAttribute' => 'id',
+                'parentIdAttribute' => 'parentId'
             ]))->tree();
             self::set(self::$cacheKey, $categories);
         }
@@ -235,10 +235,10 @@ class CategoryCache implements CategoryDataSourceInterface
             ->setService('indexing')
             ->setMethod('add')
             ->setData([
-                'id' => $category['categoryId'],
-                'vendorId' => $category['categoryVendorId'],
-                'name' => $category['categoryName'],
-                'url' => $category['categoryUrl']
+                'id' => $category['id'],
+                'vendorId' => $category['vendorId'],
+                'name' => $category['name'],
+                'url' => $category['url']
             ])
             ->sendAsync();
     }
@@ -258,10 +258,10 @@ class CategoryCache implements CategoryDataSourceInterface
             ->setService('indexing')
             ->setMethod('update')
             ->setData([
-                'id' => $category['categoryId'],
-                'vendorId' => $category['categoryVendorId'],
-                'name' => $category['categoryName'],
-                'url' => $category['categoryUrl']
+                'id' => $category['id'],
+                'vendorId' => $category['vendorId'],
+                'name' => $category['name'],
+                'url' => $category['url']
             ])
             ->sendAsync();
     }

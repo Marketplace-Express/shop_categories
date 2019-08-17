@@ -54,7 +54,7 @@ class CategoryCacheUtils
     {
         $iterator = $this->getIterator();
         while ($iterator->valid()) {
-            if ($iterator->key() == 'categoryId' && $iterator->current() == $categoryId) {
+            if ($iterator->key() == 'id' && $iterator->current() == $categoryId) {
                 return $iterator->offsetGet('children');
             }
             $iterator->next();
@@ -72,7 +72,7 @@ class CategoryCacheUtils
         $iterator = $this->getIterator();
         $category = [];
         while ($iterator->valid()) {
-            if ($iterator->key() == 'categoryId' && $iterator->current() == $categoryId) {
+            if ($iterator->key() == 'id' && $iterator->current() == $categoryId) {
                 $category = (array) $iterator->getSubIterator();
                 break;
             }
@@ -107,15 +107,10 @@ class CategoryCacheUtils
 
         // Get most parent category Id
         while ($iterator->valid()) {
-            if ($iterator->key() == 'categoryId' && $iterator->current() == $categoryId) {
+            if ($iterator->key() == 'id' && $iterator->current() == $categoryId) {
 
                 // Get category details as array
                 $category = (array)$iterator->getInnerIterator();
-
-                // Check if category is root node
-                if (array_key_exists('lft', $category) && $category['lft'] == 1) {
-                    return [];
-                }
 
                 // Step back the iterator
                 if ($prevLevel) {
@@ -126,7 +121,7 @@ class CategoryCacheUtils
 
                 for ($i = 1; $i < $depth; $i++) {
                     $currentArr = (array) $iterator->getSubIterator($iterator->getDepth() - $i);
-                    if (array_key_exists('categoryId', $currentArr)) {
+                    if (array_key_exists('id', $currentArr)) {
                         $parents[] = array_slice($currentArr, 0, count($currentArr) - 1);
                     }
                 }
@@ -156,7 +151,7 @@ class CategoryCacheUtils
         $iterator = $this->getIterator();
         $category = [];
         while ($iterator->valid()) {
-            if ($iterator->key() == 'categoryId' && $iterator->current() == $categoryId) {
+            if ($iterator->key() == 'id' && $iterator->current() == $categoryId) {
                 $category = (array) $iterator->getInnerIterator();
                 break;
             }
@@ -176,7 +171,7 @@ class CategoryCacheUtils
         $iterator = $this->getIterator();
         $categories = [];
         while ($iterator->valid()) {
-            if ($iterator->key() == 'categoryId' && in_array($iterator->current(), $categoriesIds)) {
+            if ($iterator->key() == 'id' && in_array($iterator->current(), $categoriesIds)) {
                 $categories[] = (array) $iterator->getInnerIterator();
             }
             if (count($categories) == count($categoriesIds)) {

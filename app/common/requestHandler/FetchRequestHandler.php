@@ -9,15 +9,19 @@ namespace app\common\requestHandler;
 
 
 use app\common\exceptions\ArrayOfStringsException;
-use app\common\graphql\query\QueryType;
+use app\common\graphql\query\Query;
 use GraphQL\Executor\ExecutionResult;
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
+use GraphQL\Validator\DocumentValidator;
+use GraphQL\Validator\Rules\QueryDepth;
 use Phalcon\Mvc\Controller;
 use Phalcon\Validation\Message\Group;
 
 class FetchRequestHandler extends RequestAbstract
 {
+    const MAX_QUERY_DEPTH = 5;
+
     /** @var string */
     private $query;
 
@@ -76,7 +80,7 @@ class FetchRequestHandler extends RequestAbstract
     private function getSchema(): Schema
     {
         return new Schema([
-            'query' => new QueryType()
+            'query' => new Query()
         ]);
     }
 
@@ -103,6 +107,9 @@ class FetchRequestHandler extends RequestAbstract
      */
     public function execute(): ExecutionResult
     {
+        // Limit the query depth
+        DocumentValidator::addRule(new QueryDepth($maxDepth = self::MAX_QUERY_DEPTH));
+
         $result = GraphQL::executeQuery(
             $this->getSchema(),
             $this->getQuery(),

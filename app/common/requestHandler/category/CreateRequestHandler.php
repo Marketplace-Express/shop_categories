@@ -14,7 +14,6 @@ use app\common\validators\UuidValidator;
 use Phalcon\Mvc\Controller;
 use Phalcon\Utils\Slug;
 use Phalcon\Validation;
-use app\common\exceptions\ArrayOfStringsException;
 use Ramsey\Uuid\Uuid;
 
 class CreateRequestHandler extends RequestAbstract
@@ -34,10 +33,13 @@ class CreateRequestHandler extends RequestAbstract
     /** @var string */
     private $vendorId;
 
+    /** @var array */
+    private $attributes;
+
     public function __construct(Controller $controller)
     {
         parent::__construct($controller, new CategoryRules());
-        $this->setVendorId($controller->request->getQuery('vendorId'));
+        $this->setVendorId($this->getUserService()->vendorId);
         $this->setUserId($this->getUserService()->userId);
     }
 
@@ -50,7 +52,7 @@ class CreateRequestHandler extends RequestAbstract
     }
 
     /**
-     * @param string $name
+     * @param string
      */
     public function setName($name)
     {
@@ -58,26 +60,55 @@ class CreateRequestHandler extends RequestAbstract
     }
 
     /**
-     * @param string $parentId
+     * @param string|null
      */
     public function setParentId($parentId)
     {
         $this->parentId = $parentId;
     }
 
+    /** @param int */
     public function setOrder($order)
     {
         $this->order = $order;
     }
 
+    /** @param string */
     public function setUserId($userId)
     {
         $this->userId = $userId;
     }
 
+    /** @param string */
     public function setVendorId($vendorId)
     {
         $this->vendorId = $vendorId;
+    }
+
+    /**
+     * @param array|null $attributes
+     */
+    public function setAttributes(?array $attributes)
+    {
+        if ($attributes) {
+            $attributes = array_map(function ($attribute) {
+                return $this->controller->getJsonMapper()->map(
+                    json_decode(json_encode($attribute)),
+                    new \app\common\requestHandler\attribute\CreateRequestHandler($this->controller)
+                );
+            }, $attributes);
+        }
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * @return array
+     */
+    private function getAttributes()
+    {
+        return array_map(function ($attribute) {
+            return $attribute->toArray();
+        }, $this->attributes);
     }
 
     /**
@@ -138,13 +169,29 @@ class CreateRequestHandler extends RequestAbstract
             ])
         );
 
+        $validator->add(
+            'attributes',
+            new Validation\Validator\Callback([
+                'callback' => function ($data) {
+                    if (!empty($data['attributes'])) {
+                        return !in_array(false, array_map(function ($attribute) {
+                            return $attribute->isValid();
+                        }, $data['attributes']));
+                    }
+                    return true;
+                },
+                'message' => 'Invalid attributes'
+            ])
+        );
+
         // Fields to be validated
         $fields = [
             'name'      => $this->name,
             'parentId'  => $this->parentId,
             'order'     => $this->order,
             'userId'    => $this->userId,
-            'vendorId'  => $this->vendorId
+            'vendorId'  => $this->vendorId,
+            'attributes' => $this->attributes
         ];
 
         return $validator->validate($fields);
@@ -158,13 +205,14 @@ class CreateRequestHandler extends RequestAbstract
     public function toArray(): array
     {
         return [
-            'categoryId' => Uuid::uuid4()->toString(),
-            'categoryParentId' => $this->parentId,
-            'categoryName' => $this->name,
-            'categoryOrder' => $this->order,
-            'categoryVendorId' => $this->vendorId,
-            'categoryUserId' => $this->userId,
-            'categoryUrl' => (new Slug())->generate($this->name)
+            'id' => Uuid::uuid4()->toString(),
+            'parentId' => $this->parentId,
+            'name' => $this->name,
+            'order' => $this->order,
+            'vendorId' => $this->vendorId,
+            'userId' => $this->userId,
+            'url' => (new Slug())->generate($this->name),
+            'attributes' => $this->getAttributes()
         ];
     }
 }
