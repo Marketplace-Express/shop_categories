@@ -8,7 +8,6 @@
 
 namespace app\common\requestHandler;
 
-use app\common\validators\rules\RulesAbstract;
 use Phalcon\Validation\Message\Group;
 
 interface IRequestHandler
