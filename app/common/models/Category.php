@@ -111,6 +111,11 @@ class Category extends BaseModel
      */
     public $isDeleted = false;
 
+    /**
+     * @var CategoryRules
+     */
+    private $validationRules;
+
     /** @param string */
     public function setId(string $id)
     {
@@ -337,7 +342,7 @@ class Category extends BaseModel
      */
     private function getValidationRules(): CategoryRules
     {
-        return new CategoryRules();
+        return $this->validationRules ?? $this->validationRules = new CategoryRules();
     }
 
     /**

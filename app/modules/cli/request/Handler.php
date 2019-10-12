@@ -34,7 +34,7 @@ class Handler extends Injectable
     {
         $this->service = $this->getDI()->get($service, $serviceArgs);
         if (!is_callable([$this->service, $method])) {
-            throw new \Exception('Method "' . get_class($this->service) . '::' . $method . '" is not a callable method');
+            throw new \Exception('Unreachable method "' . get_class($this->service) . '::' . $method);
         }
         $this->method = $method;
         $this->params = $params;

@@ -2,14 +2,9 @@
 namespace app\modules\api\controllers;
 
 use app\common\controllers\BaseController;
-use app\common\exceptions\ArrayOfStringsException;
-use app\common\graphql\mutation\Mutation;
-use app\common\graphql\query\Query;
 use app\common\requestHandler\FetchRequestHandler;
 use app\common\requestHandler\MutationResolver;
 use app\common\services\CategoryService;
-use GraphQL\GraphQL;
-use GraphQL\Type\Schema;
 
 /**
  * Class CategoryController

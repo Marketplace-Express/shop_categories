@@ -32,33 +32,6 @@ class ArrayHelper
         }
     }
 
-//    public function tree() {
-//        $hierarchy = array(); // -- Stores the final data
-//        $itemReferences = array(); // -- temporary array, storing references to all items in a single-dimention
-//        foreach ( $this->array as $item ) {
-//            $id       = $item[$this->itemIdAttribute];
-//            $parentId = $item[$this->parentIdAttribute];
-//            if (isset($itemReferences[$parentId])) { // parent exists
-//                $itemReferences[$parentId][$this->subItemsSlug][$id] = $item; // assign item to parent
-//                $itemReferences[$id] =& $itemReferences[$parentId][$this->subItemsSlug][$id]; // reference parent's item in single-dimentional array
-//            } elseif (!$parentId || !isset($hierarchy[$parentId])) { // -- parent Id empty or does not exist. Add it to the root
-//                $hierarchy[$id] = $item;
-//                $itemReferences[$id] =& $hierarchy[$id];
-//            }
-//        }
-//        unset($this->array, $item, $id, $parentId);
-//        // -- Run through the root one more time. If any child got added before it's parent, fix it.
-//        foreach ( $hierarchy as $id => &$item ) {
-//            $parentId = $item[$this->parentIdAttribute];
-//            if ( isset($itemReferences[$parentId] ) ) { // -- parent DOES exist
-//                $itemReferences[$parentId][$this->subItemsSlug][$id] = $item; // -- assign it to the parent's list of children
-//                unset($hierarchy[$id]); // -- remove it from the root of the hierarchy
-//            }
-//        }
-//        unset($itemReferences, $id, $item, $parentId);
-//        return $hierarchy;
-//    }
-
     /**
      * Creating multidimensional array from one-dimensional array, based on itemId and parentId
      * @return array

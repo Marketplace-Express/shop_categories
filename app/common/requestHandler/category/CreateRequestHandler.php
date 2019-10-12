@@ -34,7 +34,7 @@ class CreateRequestHandler extends RequestAbstract
     private $vendorId;
 
     /** @var array */
-    private $attributes;
+    private $attributes = [];
 
     public function __construct(Controller $controller)
     {

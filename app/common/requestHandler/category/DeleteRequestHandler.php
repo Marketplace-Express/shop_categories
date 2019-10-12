@@ -35,7 +35,7 @@ class DeleteRequestHandler extends RequestAbstract
     public function toArray(): array
     {
         return [
-            'categoryId' => $this->id
+            'id' => $this->id
         ];
     }
 }
