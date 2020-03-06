@@ -216,7 +216,7 @@ class CategoryCache implements CategoryDataSourceInterface
     public static function invalidateCache()
     {
         if (self::has(self::$cacheKey)) {
-            return self::$categoryCacheInstance->delete(self::$cacheKey);
+            return self::$categoryCacheInstance->del(self::$cacheKey);
         }
         return false;
     }

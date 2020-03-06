@@ -18,7 +18,7 @@ use app\common\dbTools\QueryBuilder;
 use app\common\dbTools\RecursiveQueryBuilder;
 use app\common\traits\AdjacencyModelEventManagerTrait;
 
-class AdjacencyListModelBehaviorInterface extends Behavior implements BehaviorInterface
+class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
 {
     use AdjacencyModelEventManagerTrait;
 

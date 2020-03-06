@@ -6,7 +6,7 @@ use app\common\validators\rules\CategoryRules;
 use app\common\validators\UuidValidator;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\AlphaNumericValidator;
-use app\common\models\behaviors\AdjacencyListModelBehaviorInterface;
+use app\common\models\behaviors\AdjacencyListModelBehavior;
 use app\common\utils\UuidUtil;
 use app\common\validators\ExistenceValidator;
 
@@ -268,7 +268,7 @@ class Category extends BaseModel
 
         $this->defaultBehavior();
 
-        $this->addBehavior(new AdjacencyListModelBehaviorInterface([
+        $this->addBehavior(new AdjacencyListModelBehavior([
             'itemIdAttribute' => 'id',
             'parentIdAttribute' => 'parentId',
             'orderByAttribute' => 'order',

@@ -111,7 +111,7 @@ class CategoryService extends AbstractService
         $category = CategoryRepository::getInstance()->update($data['id'], self::getVendorId(), $data)->toApiArray();
         if (!empty($data['attributes'])) {
             foreach ($data['attributes'] as $attribute) {
-                if (!empty($data['attribute_id'])) {
+                if (!empty($attribute['attribute_id'])) {
                     $this->getAttributesService()->update([$attribute], $category['id']);
                 } else {
                     $this->getAttributesService()->create([$attribute], $data['id']);

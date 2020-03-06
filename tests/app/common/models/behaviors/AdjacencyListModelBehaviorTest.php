@@ -15,7 +15,7 @@ use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\Model\Manager;
 use Phalcon\Mvc\Model\MetaData\Memory;
 use PHPUnit\Framework\MockObject\MockObject;
-use app\common\models\behaviors\AdjacencyListModelBehaviorInterface;
+use app\common\models\behaviors\AdjacencyListModelBehavior;
 use app\common\models\Category;
 
 class AdjacencyListModelBehaviorTest extends \UnitTestCase
@@ -41,7 +41,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
 
     public function getBehaviorMock(...$methods)
     {
-        return $this->getMockBuilder(AdjacencyListModelBehaviorInterface::class)
+        return $this->getMockBuilder(AdjacencyListModelBehavior::class)
             ->setConstructorArgs([$this->params])
             ->setMethods($methods)
             ->getMock();
@@ -76,7 +76,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         $sampleModel->setDI($di);
         $sampleModel->expects(self::atLeastOnce())->method('delete')->willReturn(true);
 
-        /** @var AdjacencyListModelBehaviorInterface|MockObject $behaviorMock */
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('descendants');
         $behaviorMock->expects(self::once())->method('descendants')->with(self::ITEM_ID)->willReturn([$sampleModel]);
 
@@ -96,7 +96,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         $sampleModel->expects(self::once())->method('getItemId')->willReturn(self::ITEM_ID);
         $sampleModel->expects(self::atLeastOnce())->method('delete')->willReturn(false);
 
-        /** @var AdjacencyListModelBehaviorInterface|MockObject $behaviorMock */
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('descendants');
         $behaviorMock->expects(self::once())->method('descendants')->with(self::ITEM_ID)->willReturn([$sampleModel]);
 
@@ -147,7 +147,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         ]);
         $modelMock->setDI($di);
 
-        /** @var AdjacencyListModelBehaviorInterface|MockObject $behaviorMock */
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
 
         $behaviorMock->missingMethod($modelMock, 'children', [self::ITEM_ID, []]);
@@ -192,7 +192,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         ]);
         $modelMock->setDI($di);
 
-        /** @var AdjacencyListModelBehaviorInterface|MockObject $behaviorMock */
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
 
         $behaviorMock->missingMethod($modelMock, 'getItems', []);
@@ -240,7 +240,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         ]);
         $modelMock->setDI($di);
 
-        /** @var AdjacencyListModelBehaviorInterface|MockObject $behaviorMock */
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
         $behaviorMock->missingMethod($modelMock, 'children', [self::ITEM_ID, [], false]);
     }
@@ -274,7 +274,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
             (new $dummyModel())->setAttributes(['itemId' => '380a92c3-f8bb-4980-845a-d61e7a403355', 'parentId' => 'b91b11e8-909a-4691-b550-0bf5fae29e66'])
         ];
 
-        /** @var AdjacencyListModelBehaviorInterface|MockObject $behaviorMock */
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('descendants');
         $behaviorMock->expects(self::any())->method('descendants')->with(self::ITEM_ID)->willReturn($sampleItems);
 
@@ -324,7 +324,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         ]);
         $modelMock->setDI($di);
 
-        /** @var AdjacencyListModelBehaviorInterface|MockObject $behaviorMock */
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
 
         $behaviorMock->missingMethod($modelMock, 'roots', []);
@@ -372,7 +372,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         ]);
         $modelMock->setDI($di);
 
-        /** @var AdjacencyListModelBehaviorInterface|MockObject $behaviorMock */
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
         $behaviorMock->missingMethod($modelMock, 'roots', []);
     }
@@ -419,7 +419,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         ]);
         $modelMock->setDI($di);
 
-        /** @var AdjacencyListModelBehaviorInterface|MockObject $behaviorMock */
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
 
         $behaviorMock->missingMethod($modelMock, 'parents', [self::ITEM_ID, [], false]);
@@ -467,7 +467,7 @@ class AdjacencyListModelBehaviorTest extends \UnitTestCase
         ]);
         $modelMock->setDI($di);
 
-        /** @var AdjacencyListModelBehaviorInterface|MockObject $behaviorMock */
+        /** @var AdjacencyListModelBehavior|MockObject $behaviorMock */
         $behaviorMock = $this->getBehaviorMock('nothing');
 
         $behaviorMock->missingMethod($modelMock, 'descendants', [self::ITEM_ID, [], false]);

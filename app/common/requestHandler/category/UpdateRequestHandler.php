@@ -162,7 +162,7 @@ class UpdateRequestHandler extends RequestAbstract
             new Validation\Validator\Callback([
                 'callback' => function ($data) {
                     $name = preg_replace('/[\d\s_]/i', '', $data['name']); // clean string
-                    if (preg_match('/[a-z]/i', $name) == false) {
+                    if (!empty($data['name']) && preg_match('/[a-z]/i', $name) == false) {
                         return false;
                     }
                     return true;

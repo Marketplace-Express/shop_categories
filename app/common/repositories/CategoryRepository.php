@@ -12,7 +12,7 @@ use app\common\exceptions\OperationFailedException;
 use app\common\dbTools\enums\SchemaQueryOperatorsEnum;
 use app\common\exceptions\ArrayOfStringsException;
 use app\common\interfaces\CategoryDataSourceInterface;
-use app\common\models\behaviors\AdjacencyListModelBehaviorInterface;
+use app\common\models\behaviors\AdjacencyListModelBehavior;
 use app\common\models\Category;
 
 class CategoryRepository implements CategoryDataSourceInterface
@@ -27,7 +27,7 @@ class CategoryRepository implements CategoryDataSourceInterface
 
     /**
      * @param bool $new
-     * @return Category|AdjacencyListModelBehaviorInterface
+     * @return Category|AdjacencyListModelBehavior
      */
     public static function getModel(bool $new = false): Category
     {
