@@ -129,7 +129,7 @@ class CategoryMigration_101 extends Migration
                 'indexes' => [
                     new Index('PRIMARY', ['id'], 'PRIMARY'),
                     new Index('category_id-category_parent_id_unique', ['id', 'parent_id'], 'UNIQUE'),
-                    new Index('category_parent_id_index', ['parent_id'], null)
+                    new Index('category_parent_id_index', ['parent_id'])
                 ],
                 'references' => [
                     new Reference(

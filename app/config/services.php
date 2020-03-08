@@ -1,5 +1,6 @@
 <?php
 
+use Phalcon\Config\Adapter\Yaml;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use app\common\services\user\UserService;
 
@@ -7,7 +8,15 @@ use app\common\services\user\UserService;
  * Shared configuration service
  */
 $di->setShared('config', function () {
-    return include APP_PATH . "/config/config.php";
+    $config = new Yaml(CONFIG_PATH . '/categories.yml', [
+        '!appDir' => function ($value) {
+            return APP_PATH . $value ;
+        },
+        '!baseDir' => function ($value) {
+            return BASE_PATH . $value;
+        }
+    ]);
+    return $config;
 });
 
 /**

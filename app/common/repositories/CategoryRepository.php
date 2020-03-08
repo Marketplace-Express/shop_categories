@@ -237,7 +237,6 @@ class CategoryRepository implements CategoryDataSourceInterface
     public function getAll(string $vendorId): array
     {
         /** @var Category[] $categories */
-        /** @noinspection PhpUndefinedMethodInspection */
         $categories = $this::getModel()->getItems([
             'vendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
         ]);

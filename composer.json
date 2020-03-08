@@ -1,4 +1,8 @@
 {
+    "config": {
+        "vendor-dir": "app/common/library/vendor",
+        "bin-dir": "app/common/library/vendor/bin"
+    },
     "require": {
 	    "ext-phalcon": "^3.4",
         "ext-pdo": "*",
@@ -16,6 +20,7 @@
         "webonyx/graphql-php": "^0.13.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.3"
+        "phpunit/phpunit": "^7.3",
+        "phalcon/devtools": "~3.4"
     }
 }

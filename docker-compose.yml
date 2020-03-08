@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  shop-categories:
+    container_name: 'shop-categories'
+    build: .
+    image: 'shop/categories'
+    volumes:
+      - .:/var/www/html
+      - ./app/config/categories.yml:/etc/shop/categories.yml
+    networks:
+      - marketplace
+networks:
+  marketplace:
+    external:
+      name: marketplace-network

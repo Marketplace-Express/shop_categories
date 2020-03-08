@@ -1,0 +1,60 @@
+version: '1.0'
+api:
+  version: '1.0'
+
+database:
+  adapter: Mysql
+  host: 172.22.0.2
+  username: phalcon
+  password: phalcon
+  dbname: shop_categories
+  charset: utf8
+
+mongodb:
+  host: 172.22.0.3
+  username:
+  password:
+  port: 27017
+  dbname: shop_categories
+
+cache:
+  category_cache:
+    host: 172.22.0.7
+    port: 6379
+    persistent: true
+    database: 4
+    ttl: -1
+    auth:
+  attributes_cache:
+    host: 172.22.0.7
+    port: 6379
+    persistent: true
+    database: 5
+    ttl: -1
+    auth:
+
+rabbitmq:
+  host: 172.22.0.4
+  port: 5672
+  username: guest
+  password: guest
+  sync_queue:
+    queue_name: categories_sync
+    message_ttl: 10000
+  async_queue:
+    queue_name: categories_async
+    message_ttl: 10000
+  rpc:
+    queue_name: rpc_queue
+
+application:
+  modelsDir: !appDir /common/models/
+  collectionsDir: !appDir /common/collections/
+  migrationsDir: !appDir /migrations/
+  logsDir: !appDir /logs/
+  cacheDir: !appDir /cache
+  stopWords: !appDir /stop_words.json
+  token:
+    saltKey: abc@123456789012
+    allowedAlg: HS512
+printNewLine: true
