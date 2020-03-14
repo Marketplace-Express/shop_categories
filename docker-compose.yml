@@ -1,15 +1,30 @@
 version: '3.3'
 services:
-  shop-categories:
-    container_name: 'shop-categories'
+  shop-categories-sync:
+    container_name: 'shop-categories-sync'
     build: .
     image: 'shop/categories'
     volumes:
       - .:/var/www/html
-      - ./app/config/categories.yml:/etc/shop/categories.yml
+    command: ./run consumer syncConsumer
     networks:
-      - marketplace
+      - marketplace-network
+  shop-categories-async:
+    container_name: 'shop-categories-async'
+    build: .
+    image: 'shop/categories'
+    volumes:
+      - .:/var/www/html
+    command: ./run consumer asyncConsumer
+    networks:
+      - marketplace-network
+  shop-categories-api:
+    container_name: 'shop-categories-api'
+    build: .
+    image: 'shop/categories'
+    volumes:
+      - .:/var/www/html
+    networks:
+      - marketplace-network
 networks:
-  marketplace:
-    external:
-      name: marketplace-network
+  marketplace-network:
