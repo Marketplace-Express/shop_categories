@@ -20,7 +20,6 @@ class CreateCategoryType extends InputObjectType
             'fields' => function () {
                 return [
                     'name' => self::nonNull(self::string()),
-                    'vendorId' => Types::uuidType(),
                     'parentId' => Types::uuidType(),
                     'order' => self::int(),
                     'attributes' => self::listOf(Types::createAttributeSchema())

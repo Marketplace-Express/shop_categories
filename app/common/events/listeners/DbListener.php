@@ -17,6 +17,6 @@ class DbListener
 
     public function beforeQuery(Event $event, $connection)
     {
-        $x = $event;
+
     }
 }

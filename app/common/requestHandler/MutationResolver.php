@@ -68,7 +68,7 @@ class MutationResolver extends RequestAbstract
         }
 
         // Set vendorId
-        $this->di->getAppServices('categoryService')::setVendorId($this->variables['category']->vendorId);
+        $this->di->getAppServices('categoryService')::setVendorId($this->variables['vendorId']);
 
         $requestHandler = new $this->requestHandlers[$this->method];
         $output = GraphQL::executeQuery(
