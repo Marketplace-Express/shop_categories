@@ -85,19 +85,18 @@ class CategoryMigration_100 extends Migration
                         'depth',
                         [
                             'type' => Column::TYPE_INTEGER,
-                            'notNull' => true,
+                            'default' => "0",
                             'size' => 2,
-                            'after' => 'url',
-                            'default' => "0"
+                            'after' => 'url'
                         ]
                     ),
                     new Column(
                         'created_at',
                         [
                             'type' => Column::TYPE_DATETIME,
-                            'notNull' => true,
-                            'after' => 'depth',
-                            'default' => new \Phalcon\Db\RawValue('CURRENT_TIMESTAMP')
+                            'default' => "CURRENT_TIMESTAMP",
+                            'size' => 1,
+                            'after' => 'depth'
                         ]
                     ),
                     new Column(
@@ -129,19 +128,19 @@ class CategoryMigration_100 extends Migration
                 ],
                 'indexes' => [
                     new Index('PRIMARY', ['id'], 'PRIMARY'),
-                    new Index('parent_id_index', ['parent_id'], null),
-                    new Index('id-parent_id-unique', ['id', 'parent_id'], 'UNIQUE')
+                    new Index('category_id-category_parent_id_unique', ['id', 'parent_id'], 'UNIQUE'),
+                    new Index('category_parent_id_index', ['parent_id'])
                 ],
                 'references' => [
                     new Reference(
-                        'ids_fk',
+                        'category_ids_fk',
                         [
                             'referencedTable' => 'category',
                             'referencedSchema' => 'shop_categories',
                             'columns' => ['parent_id'],
                             'referencedColumns' => ['id'],
                             'onUpdate' => 'NO ACTION',
-                            'onDelete' => 'NO ACTION'
+                            'onDelete' => 'CASCADE'
                         ]
                     )
                 ],

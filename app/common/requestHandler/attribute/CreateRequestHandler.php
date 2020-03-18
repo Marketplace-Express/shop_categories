@@ -27,15 +27,6 @@ class CreateRequestHandler extends RequestAbstract
     private $values;
 
     /**
-     * CreateRequestHandler constructor.
-     * @param Controller $controller
-     */
-    public function __construct(Controller $controller)
-    {
-        parent::__construct($controller, new AttributeRules());
-    }
-
-    /**
      * @param string $name
      */
     public function setName(string $name)

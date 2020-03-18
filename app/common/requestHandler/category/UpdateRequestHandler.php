@@ -41,11 +41,10 @@ class UpdateRequestHandler extends RequestAbstract
 
     /**
      * UpdateRequestHandler constructor.
-     * @param Controller $controller
      */
-    public function __construct(Controller $controller)
+    public function __construct()
     {
-        parent::__construct($controller, new CategoryRules());
+        parent::__construct(new CategoryRules());
     }
 
     /**
@@ -87,7 +86,7 @@ class UpdateRequestHandler extends RequestAbstract
     {
         if ($attributes) {
             $attributes = array_map(function ($attribute) {
-                return $this->controller->getJsonMapper()->map(
+                return $this->di->get('jsonMapper')->map(
                     json_decode(json_encode($attribute)),
                     $this->getAttributesRequestHandler($attribute)
                 );
@@ -103,9 +102,9 @@ class UpdateRequestHandler extends RequestAbstract
     private function getAttributesRequestHandler(array $attribute)
     {
         if (!empty($attribute['id'])) {
-            return new \app\common\requestHandler\attribute\UpdateRequestHandler($this->controller);
+            return new \app\common\requestHandler\attribute\UpdateRequestHandler();
         } else {
-            return new \app\common\requestHandler\attribute\CreateRequestHandler($this->controller);
+            return new \app\common\requestHandler\attribute\CreateRequestHandler();
         }
     }
 

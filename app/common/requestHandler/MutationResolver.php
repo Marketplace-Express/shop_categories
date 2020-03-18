@@ -8,29 +8,30 @@
 namespace app\common\requestHandler;
 
 
-use app\common\controllers\BaseController;
 use app\common\exceptions\ArrayOfStringsException;
 use app\common\graphql\mutation\Mutation;
 use app\common\requestHandler\category\CreateRequestHandler;
 use app\common\requestHandler\category\DeleteRequestHandler;
 use app\common\requestHandler\category\UpdateRequestHandler;
+use app\common\validators\UuidValidator;
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
-use Phalcon\Mvc\Controller;
+use Phalcon\Validation;
+use Phalcon\Validation\Message\Group;
 
-class MutationResolver
+class MutationResolver extends RequestAbstract
 {
-    /** @var BaseController */
-    private $controller;
-
     /** @var string */
     private $method;
 
     /** @var string */
-    private $query;
+    public $query;
 
     /** @var array */
-    private $variables = [];
+    public $variables = [];
+
+    /** @var mixed */
+    private $output;
 
     private $requestHandlers = [
         'POST' => CreateRequestHandler::class,
@@ -38,12 +39,12 @@ class MutationResolver
         'DELETE' => DeleteRequestHandler::class
     ];
 
-    public function __construct(Controller $controller)
+    /**
+     * MutationResolver constructor.
+     */
+    public function __construct()
     {
-        $this->controller = $controller;
-        $this->method = strtoupper($controller->request->getMethod());
-        $this->query = $controller->request->getJsonRawBody(true)['query'];
-        $this->variables = $controller->request->getJsonRawBody(true)['variables'];
+        $this->method = strtoupper($this->request->getMethod());
     }
 
     /**
@@ -57,7 +58,6 @@ class MutationResolver
     }
 
     /**
-     * @return array
      * @throws ArrayOfStringsException
      * @throws \Exception
      */
@@ -67,11 +67,10 @@ class MutationResolver
             throw new \Exception('Unknown request method');
         }
 
-        if (!$this->controller) {
-            throw new \Exception('Controller is not provided', 500);
-        }
+        // Set vendorId
+        $this->di->getAppServices('categoryService')::setVendorId($this->variables['category']->vendorId);
 
-        $requestHandler = new $this->requestHandlers[$this->method]($this->controller);
+        $requestHandler = new $this->requestHandlers[$this->method];
         $output = GraphQL::executeQuery(
             $this->getMutationSchema(),
             $this->query,
@@ -81,6 +80,40 @@ class MutationResolver
         if ($output->errors) {
             throw new ArrayOfStringsException($output->errors);
         }
-        return $output->toArray();
+        $this->output = $output;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validate(): Group
+    {
+        $validator = new Validation();
+
+        $validator->add(
+            'vendorId',
+            new Validation\Validator\Callback([
+                'callback' => function ($data) {
+                    if (!empty($data['vendorId'])) {
+                        return new UuidValidator();
+                    }
+                    return false;
+                },
+                'message' => 'vendorId is required'
+            ])
+        );
+
+        return $validator->validate([
+            'vendorId' => $this->variables['vendorId'] ?? null
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray(): array
+    {
+        return $this->output->toArray();
     }
 }

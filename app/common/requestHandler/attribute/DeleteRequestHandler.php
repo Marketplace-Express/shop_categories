@@ -8,11 +8,10 @@
 namespace app\common\requestHandler\attribute;
 
 
+use app\common\requestHandler\RequestAbstract;
 use Phalcon\Validation\Message\Group;
-use app\common\controllers\BaseController;
-use app\common\requestHandler\IRequestHandler;
 
-class DeleteRequestHandler extends BaseController implements IRequestHandler
+class DeleteRequestHandler extends RequestAbstract
 {
 
     /** Validate request fields using \Phalcon\Validation\Validator
@@ -20,41 +19,11 @@ class DeleteRequestHandler extends BaseController implements IRequestHandler
      */
     public function validate(): Group
     {
-        // TODO: Implement validate() method.
-    }
-
-    public function isValid(): bool
-    {
-        // TODO: Implement isValid() method.
-    }
-
-    public function notFound($message = 'Not Found')
-    {
-        // TODO: Implement notFound() method.
-    }
-
-    public function invalidRequest($message = null)
-    {
-        // TODO: Implement invalidRequest() method.
-    }
-
-    public function successRequest($message = null)
-    {
-        http_response_code(200);
-        return $this->response
-            ->setJsonContent([
-                'status' => 200,
-                'message' => 'Deleted'
-            ]);
+        return new Group();
     }
 
     public function toArray(): array
     {
-        // TODO: Implement toArray() method.
-    }
-
-    public function getValidationRules()
-    {
-        // TODO: Implement getValidationRules() method.
+        return [];
     }
 }

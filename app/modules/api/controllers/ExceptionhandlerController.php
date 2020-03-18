@@ -5,7 +5,7 @@
  * Time: 10:41 م
  */
 
-namespace app\common\controllers;
+namespace app\modules\api\controllers;
 
 use Phalcon\Mvc\Controller;
 use app\common\logger\ApplicationLogger;
@@ -40,14 +40,9 @@ class ExceptionhandlerController extends Controller
             $errors = $jsonErrors;
         }
 
-        /**
-         * Log Error
-         * @ignore
-         */
+        // Log errors
         $this->getLogger()->logError($errors);
 
-        // response->setStatusCode slows down the performance
-        // replacing it with http_response_code
         http_response_code($code);
         return $this->response
             ->setJsonContent([

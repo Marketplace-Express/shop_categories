@@ -8,7 +8,6 @@
 namespace app\modules\api\controllers;
 
 
-use app\common\controllers\BaseController;
 use app\common\requestHandler\category\AutocompleteRequestHandler;
 use app\common\requestHandler\category\SearchRequestHandler;
 use app\common\services\SearchService;
@@ -16,7 +15,7 @@ use app\common\services\SearchService;
 /**
  * Class SearchController
  * @package app\modules\api\controllers
- * @RoutePrefix("/api/1.0/search")
+ * @RoutePrefix("/api/search")
  */
 class SearchController extends BaseController
 {

@@ -9,9 +9,9 @@ namespace app\common\requestHandler\category;
 
 use app\common\requestHandler\RequestAbstract;
 use app\common\services\user\UserService;
+use app\common\validators\rules\AttributeRules;
 use app\common\validators\rules\CategoryRules;
 use app\common\validators\UuidValidator;
-use Phalcon\Mvc\Controller;
 use Phalcon\Utils\Slug;
 use Phalcon\Validation;
 use Ramsey\Uuid\Uuid;
@@ -36,9 +36,9 @@ class CreateRequestHandler extends RequestAbstract
     /** @var array */
     private $attributes = [];
 
-    public function __construct(Controller $controller)
+    public function __construct()
     {
-        parent::__construct($controller, new CategoryRules());
+        parent::__construct(new CategoryRules());
         $this->setVendorId($this->getUserService()->vendorId);
         $this->setUserId($this->getUserService()->userId);
     }
@@ -48,7 +48,7 @@ class CreateRequestHandler extends RequestAbstract
      */
     private function getUserService()
     {
-        return $this->controller->getDI()->get('userService');
+        return $this->di->get('userService');
     }
 
     /**
@@ -92,9 +92,9 @@ class CreateRequestHandler extends RequestAbstract
     {
         if ($attributes) {
             $attributes = array_map(function ($attribute) {
-                return $this->controller->getJsonMapper()->map(
-                    json_decode(json_encode($attribute)),
-                    new \app\common\requestHandler\attribute\CreateRequestHandler($this->controller)
+                return $this->di->get('jsonMapper')->map(
+                    (object) ($attribute),
+                    new \app\common\requestHandler\attribute\CreateRequestHandler(new AttributeRules())
                 );
             }, $attributes);
         }

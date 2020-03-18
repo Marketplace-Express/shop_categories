@@ -11,7 +11,6 @@ namespace app\common\requestHandler\attribute;
 use app\common\requestHandler\RequestAbstract;
 use app\common\validators\MongoIdValidator;
 use app\common\validators\rules\AttributeRules;
-use Phalcon\Mvc\Controller;
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
 
@@ -32,11 +31,10 @@ class UpdateRequestHandler extends RequestAbstract
 
     /**
      * UpdateRequestHandler constructor.
-     * @param Controller $controller
      */
-    public function __construct(Controller $controller)
+    public function __construct()
     {
-        parent::__construct($controller, new AttributeRules());
+        parent::__construct(new AttributeRules());
     }
 
     /**

@@ -23,13 +23,16 @@ class QueryBuilderTest extends \UnitTestCase
     public function setUp()
     {
         parent::setUp();
+
+        $config = $this->di->getConfig();
         if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
             $this->markTestSkipped('PDO extension should be enabled');
         }
-        $this->pdo = new PDO('mysql:dbname=test;host=127.0.0.1:3306', 'test', 'test', [
+        $this->pdo = new PDO(sprintf('mysql:dbname=%s;host=%s:%d', $_ENV['TEST_DB_NAME'], $config->database->host, $config->database->port), $config->database->username, $config->database->password, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_TIMEOUT =>  10
+            PDO::ATTR_TIMEOUT => 10
         ]);
+        $this->createTables();
     }
 
     /**

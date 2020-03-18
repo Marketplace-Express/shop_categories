@@ -5,7 +5,7 @@
  * Time: 11:53 م
  */
 
-namespace app\common\controllers;
+namespace app\modules\api\controllers;
 
 use Phalcon\Mvc\Controller;
 use app\common\helpers\ArrayHelper;
@@ -48,27 +48,6 @@ class BaseController extends Controller
     }
 
     /**
-     * @return \JsonMapper
-     * @codeCoverageIgnore
-     */
-    public function getJsonMapper(): \JsonMapper
-    {
-        if (!$this->jsonMapper) {
-            $this->jsonMapper = new \JsonMapper();
-        }
-        return $this->jsonMapper;
-    }
-
-    /**
-     * @param \JsonMapper $jsonMapper
-     * @codeCoverageIgnore
-     */
-    public function setJsonMapper(\JsonMapper $jsonMapper): void
-    {
-        $this->jsonMapper = $jsonMapper;
-    }
-
-    /**
      * Initialize controller
      */
     public function onConstruct()
@@ -85,7 +64,7 @@ class BaseController extends Controller
     public function handleError($errors, $code = 500)
     {
         $this->dispatcher->forward([
-            'namespace' => 'app\common\controllers',
+            'namespace' => 'app\modules\api\controllers',
             'controller' => 'exceptionhandler',
             'action' => 'raiseError',
             'params' => [$errors, $code]

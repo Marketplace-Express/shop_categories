@@ -64,8 +64,7 @@ class CategoryService extends AbstractService
      */
     public function getChildren($categoryId): array
     {
-        $children = CategoryCache::getInstance()->getChildren($categoryId, self::getVendorId());
-        return $children;
+        return CategoryCache::getInstance()->getChildren($categoryId, self::getVendorId());
     }
 
     /**
@@ -75,8 +74,7 @@ class CategoryService extends AbstractService
      */
     public function getParent($categoryId): array
     {
-        $parent = CategoryCache::getInstance()->getParent($categoryId, self::getVendorId());
-        return $parent;
+        return CategoryCache::getInstance()->getParent($categoryId, self::getVendorId());
     }
 
     /**

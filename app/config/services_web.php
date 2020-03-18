@@ -1,5 +1,7 @@
 <?php
 
+use app\common\requestHandler\RequestAbstract;
+use Phalcon\Events\Event;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Router;
 use Phalcon\Mvc\Url as UrlResolver;
@@ -10,11 +12,9 @@ use Phalcon\Flash\Direct as Flash;
  * Registering a router
  */
 $di->setShared('router', function () {
-    $config = $this->getConfig();
     $router = new Router\Annotations(false);
-    $router->addModuleResource('api', 'app\modules\api\controllers\Search', '/api/' . $config->api->version . '/search');
-    $router->addModuleResource('api', 'app\modules\api\controllers\Category', '/api/' . $config->api->version . '/categories');
-    $router->addModuleResource('api', 'app\modules\api\controllers\Attributes', '/api/' . $config->api->version . '/attributes');
+    $router->addModuleResource('api', 'app\modules\api\controllers\Search', '/api/search');
+    $router->addModuleResource('api', 'app\modules\api\controllers\Category', '/api/categories');
     return $router;
 });
 
@@ -64,6 +64,28 @@ $di->setShared('dispatcher', function() {
         "dispatch:beforeExecuteRoute",
         new \Sid\Phalcon\AuthMiddleware\Event()
     );
+    $evManager->attach("dispatch:beforeDispatch", function (Event $event, Dispatcher $dispatcher) {
+        try {
+            $methodReflection = new ReflectionMethod(
+                $dispatcher->getControllerClass(),
+                $dispatcher->getActiveMethod()
+            );
+            foreach ($methodReflection->getParameters() as $parameter) {
+                $parameterClass = $parameter->getClass();
+                if ($parameterClass instanceof ReflectionClass) {
+                    $dispatcher->setParam($parameter->name, new $parameterClass->name);
+                }
+            }
+
+        } catch (Exception $exception) {
+            $dispatcher->forward([
+                'namespace' => 'app\modules\api\controllers',
+                'controller' => 'Exceptionhandler',
+                'action' => 'raiseError',
+                'params' => [$exception->getMessage(), $exception->getCode()]
+            ]);
+        }
+    });
     $evManager->attach(
         "dispatch:beforeException",
         function ($event, $dispatcher, $exception) {
@@ -74,12 +96,9 @@ $di->setShared('dispatcher', function() {
             switch ($exception->getCode()) {
                 case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
                 case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
-                    $dispatcher->forward(
-                        [
-                            'controller' => '\app\common\controllers\Notfound',
-                            'action'     => 'index'
-                        ]
-                    );
+                    $dispatcher->forward([
+                        'controller' => '\app\modules\api\controllers\Notfound'
+                    ]);
                     return false;
                     break;
             }
@@ -88,8 +107,8 @@ $di->setShared('dispatcher', function() {
                 case $exception instanceof \Phalcon\Mvc\Model\Exception:
                 case $exception instanceof PDOException:
                     $dispatcher->forward([
-                        'controller' => '\app\common\controllers\exceptionHandler',
-                        'action' => 'serverError',
+                        'controller' => '\app\modules\api\controllers\exceptionHandler',
+                        'action' => 'raiseError',
                         'params' => [$exception->getMessage()]
                     ]);
                     return false;
@@ -100,4 +119,14 @@ $di->setShared('dispatcher', function() {
     $dispatcher = new Dispatcher();
     $dispatcher->setEventsManager($evManager);
     return $dispatcher;
+});
+
+/**
+ * Json Mapper Service
+ */
+$di->setShared('jsonMapper', function () {
+    $jsonMapper = new JsonMapper();
+    $jsonMapper->bExceptionOnUndefinedProperty = false;
+    $jsonMapper->bEnforceMapType = false;
+    return $jsonMapper;
 });

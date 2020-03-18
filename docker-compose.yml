@@ -1,30 +1,48 @@
 version: '3.3'
 services:
-  shop-categories-sync:
-    container_name: 'shop-categories-sync'
+  categories-sync:
     build: .
     image: 'shop/categories'
     volumes:
       - .:/var/www/html
-    command: ./run consumer syncConsumer
-    networks:
-      - marketplace-network
-  shop-categories-async:
-    container_name: 'shop-categories-async'
+    command: >
+      bash -c "chmod +x utilities/start_service.sh
+      && utilities/start_service.sh
+      && ./run consumer syncConsumer"
+  categories-async:
     build: .
     image: 'shop/categories'
     volumes:
       - .:/var/www/html
-    command: ./run consumer asyncConsumer
-    networks:
-      - marketplace-network
-  shop-categories-api:
-    container_name: 'shop-categories-api'
+    command: >
+      bash -c "chmod +x utilities/start_service.sh
+      && utilities/start_service.sh
+      && ./run consumer asyncConsumer"
+  categories-api:
     build: .
+    image: 'shop/categories'
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "1000:8000"
+    command: >
+      bash -c "chmod +x utilities/start_service.sh
+      && utilities/start_service.sh
+      && phalcon webtools enable
+      && phalcon serve"
+  categories-unit-test:
+    build: .
+    container_name: 'unit-test'
     image: 'shop/categories'
     volumes:
       - .:/var/www/html
-    networks:
-      - marketplace-network
+    command: >
+      bash -c "chmod +x utilities/start_service.sh
+      && utilities/start_service.sh
+      && app/common/library/vendor/bin/phpunit -c tests/phpunit.xml"
+
 networks:
-  marketplace-network:
+  default:
+    external:
+      name: marketplace-network

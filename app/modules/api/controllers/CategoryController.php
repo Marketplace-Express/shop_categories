@@ -1,35 +1,25 @@
 <?php
 namespace app\modules\api\controllers;
 
-use app\common\controllers\BaseController;
 use app\common\requestHandler\FetchRequestHandler;
 use app\common\requestHandler\MutationResolver;
-use app\common\services\CategoryService;
 
 /**
  * Class CategoryController
  * @package app\modules\api\controllers
- * @RoutePrefix("/api/1.0/categories")
+ * @RoutePrefix("/api/categories")
  */
 class CategoryController extends BaseController
 {
-    public function initialize()
-    {
-        if (empty($vendorId = $this->request->getQuery('vendorId')) || !$this->uuidUtil->isValid($vendorId)) {
-            $this->sendResponse('Please provide a valid vendor Id', 400);
-        }
-        $service = new CategoryService();
-        $service::setVendorId($vendorId);
-    }
-
     /**
      * @Post('/fetch')
+     * @param FetchRequestHandler $request
      */
-    public function fetchAction()
+    public function fetchAction(FetchRequestHandler $request)
     {
         try {
             /** @var FetchRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->request->getJsonRawBody(), new FetchRequestHandler($this));
+            $request = $this->di->get('jsonMapper')->map($this->request->getJsonRawBody(), $request);
             if (!$request->isValid()) {
                 $request->invalidRequest();
             }
@@ -44,12 +34,17 @@ class CategoryController extends BaseController
      * @Put('/mutate')
      * @Delete('/mutate')
      * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
+     * @param MutationResolver $resolver
      */
-    public function mutateAction()
+    public function mutateAction(MutationResolver $resolver)
     {
         try {
-            $resolver = new MutationResolver($this);
-            $this->sendResponse($resolver->resolve(), 200);
+            /** @var MutationResolver $resolver */
+            $resolver = $this->di->get('jsonMapper')->map(
+                $this->request->getJsonRawBody(),
+                $resolver
+            );
+            $resolver->successRequest($resolver->resolve()->toArray(), 200);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode());
         }

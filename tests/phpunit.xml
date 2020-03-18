@@ -28,4 +28,7 @@
             </exclude>
         </whitelist>
     </filter>
+    <php>
+        <env name="TEST_DB_NAME" value="shop_categories_test" force="true" />
+    </php>
 </phpunit>

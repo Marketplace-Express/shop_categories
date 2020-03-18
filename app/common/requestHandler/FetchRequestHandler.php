@@ -10,12 +10,13 @@ namespace app\common\requestHandler;
 
 use app\common\exceptions\ArrayOfStringsException;
 use app\common\graphql\query\Query;
+use app\common\validators\UuidValidator;
 use GraphQL\Executor\ExecutionResult;
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\QueryDepth;
-use Phalcon\Mvc\Controller;
+use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
 
 class FetchRequestHandler extends RequestAbstract
@@ -23,56 +24,13 @@ class FetchRequestHandler extends RequestAbstract
     const MAX_QUERY_DEPTH = 5;
 
     /** @var string */
-    private $query;
+    public $query;
 
     /** @var array */
-    private $variables;
+    public $variables;
 
     /** @var mixed */
-    private $rootValue;
-
-    /**
-     * FetchRequestHandler constructor.
-     * @param Controller $controller
-     * @param mixed $rootValue
-     */
-    public function __construct(Controller $controller, $rootValue = null)
-    {
-        $this->rootValue = $rootValue;
-        parent::__construct($controller);
-    }
-
-    /**
-     * @param string $query
-     */
-    public function setQuery(string $query)
-    {
-        $this->query = $query;
-    }
-
-    /**
-     * @param array|null $variables
-     */
-    public function setVariables(?array $variables)
-    {
-        $this->variables = $variables;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getQuery(): string
-    {
-        return $this->query;
-    }
-
-    /**
-     * @return array|null
-     */
-    protected function getVariables(): ?array
-    {
-        return $this->variables;
-    }
+    public $rootValue;
 
     /**
      * @return Schema
@@ -89,7 +47,24 @@ class FetchRequestHandler extends RequestAbstract
      */
     public function validate(): Group
     {
-        return new Group();
+        $validator = new Validation();
+
+        $validator->add(
+            'vendorId',
+            new Validation\Validator\Callback([
+                'callback' => function ($data) {
+                    if (!empty($data['vendorId'])) {
+                        return new UuidValidator();
+                    }
+                    return false;
+                },
+                'message' => 'vendorId is required'
+            ])
+        );
+
+        return $validator->validate([
+            'vendorId' => $this->variables['vendorId'] ?? null
+        ]);
     }
 
     /**
@@ -110,12 +85,15 @@ class FetchRequestHandler extends RequestAbstract
         // Limit the query depth
         DocumentValidator::addRule(new QueryDepth($maxDepth = self::MAX_QUERY_DEPTH));
 
+        // Set vendorId
+        $this->di->getAppServices('categoryService')::setVendorId($this->variables['vendorId']);
+
         $result = GraphQL::executeQuery(
             $this->getSchema(),
-            $this->getQuery(),
+            $this->query,
             $this->rootValue,
             null,
-            $this->getVariables()
+            $this->variables
         );
 
         if (!empty($result->errors)) {

@@ -1,6 +1,6 @@
 <?php
 
-use Phalcon\Config\Adapter\Yaml;
+use app\common\utils\AMQPHandler;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use app\common\services\user\UserService;
 
@@ -8,15 +8,7 @@ use app\common\services\user\UserService;
  * Shared configuration service
  */
 $di->setShared('config', function () {
-    $config = new Yaml(CONFIG_PATH . '/categories.yml', [
-        '!appDir' => function ($value) {
-            return APP_PATH . $value ;
-        },
-        '!baseDir' => function ($value) {
-            return BASE_PATH . $value;
-        }
-    ]);
-    return $config;
+    return require(APP_PATH . '/config/config.php');
 });
 
 /**
@@ -156,7 +148,7 @@ $di->setShared('logger', function() {
 });
 
 /** RabbitMQ service */
-$di->setShared('queue', function () {
+$di->setShared('amqp', function () {
     $config = $this->getConfig();
     $connection = new \PhpAmqpLib\Connection\AMQPStreamConnection(
         $config->rabbitmq->host,
@@ -165,18 +157,25 @@ $di->setShared('queue', function () {
         $config->rabbitmq->password
     );
     $channel = $connection->channel();
-    $channel->queue_declare($config->rabbitmq->sync_queue->queue_name,
-        false, false, false, false, false,
-        new \PhpAmqpLib\Wire\AMQPTable(['x-message-ttl' => $config->rabbitmq->sync_queue->message_ttl])
-    );
-    $channel->queue_declare($config->rabbitmq->async_queue->queue_name,
-        false, false, false, false, false,
-        new \PhpAmqpLib\Wire\AMQPTable(['x-message-ttl' => $config->rabbitmq->async_queue->message_ttl])
-    );
-    return $channel;
+
+    return new AMQPHandler($channel, $config);
 });
 
 $di->setShared(
     'userService',
     UserService::class
 );
+
+$di->setShared('appServices', function($serviceName) {
+    $services = [
+        'categoryService' => 'app\common\services\CategoryService',
+        'attributeService' => 'app\common\services\AttributesService',
+        'searchService' => 'app\common\services\SearchService'
+    ];
+
+    if (!array_key_exists($serviceName, $services)) {
+        throw new Exception('DI: Service not found', 500);
+    }
+
+    return new $services[$serviceName];
+});

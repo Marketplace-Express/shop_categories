@@ -10,7 +10,6 @@ $loader = new Loader();
 $loader->registerNamespaces([
     'app\common\models' => APP_PATH . '/common/models/',
     'app\common\interfaces' => APP_PATH . '/common/interfaces/',
-    'app\common\controllers' => APP_PATH . '/common/controllers/',
     'app\common\models\behaviors' => APP_PATH . '/common/models/behaviors/',
     'app\common\helpers' => APP_PATH . '/common/helpers/',
     'app\common\traits' => APP_PATH . '/common/traits/',
@@ -34,7 +33,7 @@ $loader->registerNamespaces([
     'app\common\dbTools' => APP_PATH . '/common/dbTools/',
     'app\common\dbTools\enums' => APP_PATH . '/common/dbTools/enums/',
     'app\common\enums' => APP_PATH . '/common/enums/',
-    'app\modules\api\controllers' => APP_PATH . '/modules/api/' . $config->api->version . '/controllers/',
+    'app\modules\api\controllers' => APP_PATH . '/modules/api/controllers/',
     'app\modules\cli\request' => APP_PATH . '/modules/cli/request/',
     'app\modules\cli\services' => APP_PATH . '/modules/cli/services/',
     'app\common\redis' => APP_PATH . '/common/redis/',

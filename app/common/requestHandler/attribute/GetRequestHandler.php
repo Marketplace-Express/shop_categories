@@ -7,18 +7,14 @@
 
 namespace app\common\requestHandler\attribute;
 
+use app\common\requestHandler\RequestAbstract;
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
-use app\common\controllers\BaseController;
-use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\IRequestHandler;
 
-class GetRequestHandler extends BaseController implements IRequestHandler
+class GetRequestHandler extends RequestAbstract
 {
     /** @var string $categoryId */
     private $categoryId;
-
-    private $errorMessages;
 
     /**
      * @return string
@@ -56,59 +52,10 @@ class GetRequestHandler extends BaseController implements IRequestHandler
     }
 
     /**
-     * @return bool
+     * @return array
      */
-    public function isValid(): bool
-    {
-        $messages = $this->validate();
-        if (count($messages)) {
-            foreach ($messages as $message) {
-                $this->errorMessages[$message->getField()] = $message->getMessage();
-            }
-            return false;
-        }
-        return true;
-    }
-
-    public function notFound($message = 'Not Found')
-    {
-        // TODO: Implement notFound() method.
-    }
-
-    /**
-     * @param null $message
-     * @return void
-     * @throws ArrayOfStringsException
-     */
-    public function invalidRequest($message = null)
-    {
-        if (is_null($message)) {
-            $message = $this->errorMessages;
-        }
-        throw new ArrayOfStringsException($message, 400);
-    }
-
-    /**
-     * @param null $message
-     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
-     */
-    public function successRequest($message = null)
-    {
-        http_response_code(200);
-        return $this->response
-            ->setJsonContent([
-                'status' => 200,
-                'message' => $message
-            ]);
-    }
-
     public function toArray(): array
     {
-        // TODO: Implement toArray() method.
-    }
-
-    public function getValidationRules()
-    {
-        // TODO: Implement getValidationRules() method.
+        return [];
     }
 }

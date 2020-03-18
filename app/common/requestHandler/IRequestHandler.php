@@ -17,7 +17,6 @@ interface IRequestHandler
      */
     public function validate() : Group;
 
-
     /**
      * @return bool
      */

@@ -41,6 +41,6 @@ class Query extends ObjectType
      */
     protected function getService(): CategoryService
     {
-        return new CategoryService();
+        return \Phalcon\Di::getDefault()->getAppServices('categoryService');
     }
 }

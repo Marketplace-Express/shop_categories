@@ -108,9 +108,12 @@ class QueueRequestHandler extends Injectable
         return $this;
     }
 
+    /**
+     * QueueRequestHandler constructor.
+     */
     public function __construct()
     {
-        $this->channel = $this->getDI()->get('queue');
+        $this->channel = $this->getDI()->getAmqp()->getChannel();
     }
 
     /**

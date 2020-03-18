@@ -39,22 +39,16 @@ class ExceptionhandlerControllerTest extends \UnitTestCase
     {
         return [
             [
-                [
-                    'status' => 400,
-                    'message' => ['error1', 'error2']
-                ]
+                'status' => 400,
+                'message' => ['error1', 'error2']
             ],
             [
-                [
-                    'status' => 500,
-                    'message' => 'sample error'
-                ]
+                'status' => 500,
+                'message' => 'sample error'
             ],
             [
-                [
-                    'status' => 404,
-                    'message' => 'not found error'
-                ]
+                'status' => 404,
+                'message' => 'not found error'
             ]
         ];
     }

@@ -2,7 +2,7 @@
 # Products service
 # Install required tools
 apt-get -y update \
-&& apt-get install -y libfreetype6-dev libpng-dev libjpeg-dev libcurl4-gnutls-dev libyaml-dev libicu-dev libzip-dev unzip supervisor
+&& apt-get install -y libfreetype6-dev libpng-dev libjpeg-dev libcurl4-gnutls-dev libyaml-dev libicu-dev libzip-dev unzip
 # Install required PHP extensions
 docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
 docker-php-ext-configure gd --with-freetype-dir=/usr/include/ \

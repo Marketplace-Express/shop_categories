@@ -8,13 +8,11 @@
 namespace app\common\requestHandler\category;
 
 
+use app\common\requestHandler\RequestAbstract;
 use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
-use app\common\controllers\BaseController;
-use app\common\exceptions\ArrayOfStringsException;
-use app\common\requestHandler\IRequestHandler;
 
-class SearchRequestHandler extends BaseController implements IRequestHandler
+class SearchRequestHandler extends RequestAbstract
 {
 
     /** @var string */
@@ -48,58 +46,6 @@ class SearchRequestHandler extends BaseController implements IRequestHandler
     }
 
     /**
-     * @return bool
-     */
-    public function isValid(): bool
-    {
-        $messages = self::validate();
-        if (count($messages)) {
-            foreach ($messages as $message) {
-                $this->errorMessages[$message->getField()] = $message->getMessage();
-            }
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * @param string $message
-     *
-     * @throws \Exception
-     */
-    public function notFound($message = 'Not Found')
-    {
-        throw new \Exception($message, 404);
-    }
-
-    /**
-     * @param null $message
-     * @return mixed|void
-     * @throws ArrayOfStringsException
-     */
-    public function invalidRequest($message = null)
-    {
-        if (is_null($message)) {
-            $message = $this->errorMessages;
-        }
-        throw new ArrayOfStringsException($message, 400);
-    }
-
-    /**
-     * @param mixed $message
-     * @return mixed|\Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
-     */
-    public function successRequest($message = null)
-    {
-        http_response_code(200);
-        return $this->response
-            ->setJsonContent([
-                'status' => 200,
-                'message' => $message
-            ]);
-    }
-
-    /**
      * @return array
      */
     public function toArray(): array
@@ -107,10 +53,5 @@ class SearchRequestHandler extends BaseController implements IRequestHandler
         return [
             'keyword' => $this->keyword . '*'
         ];
-    }
-
-    public function getValidationRules()
-    {
-        // TODO: Implement getValidationRules() method.
     }
 }

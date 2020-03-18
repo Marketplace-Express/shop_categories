@@ -18,9 +18,7 @@ use Firebase\JWT\JWT;
 
 class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
 {
-    /**
-     * @var Token $token
-     */
+    /** @var Token $token */
     private $token;
 
     private $saltKey;
@@ -56,7 +54,7 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
         $this->validate($accessToken);
 
         /** @var \stdClass $accessToken */
-        $this->token = $this->getJsonMapper()->map(
+        $this->token = $this->di->getJsonMapper()->map(
             $accessToken,
             new Token()
         );
@@ -71,14 +69,6 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
             'exp' => time() + 3600 * 1,
             'entropy' => mt_rand(10000, 20000)
         ], $this->saltKey, $this->allowedAlg));
-    }
-
-    /**
-     * @return \JsonMapper
-     */
-    private function getJsonMapper()
-    {
-        return $this->jsonMapper ?? $this->jsonMapper = new \JsonMapper();
     }
 
     /**
@@ -153,7 +143,7 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
     private function handleError($errors, $code = 500)
     {
         $this->dispatcher->forward([
-            'namespace' => 'app\common\controllers',
+            'namespace' => 'app\modules\api\controllers',
             'controller' => 'exceptionhandler',
             'action' => 'raiseError',
             'params' => [$errors, $code]

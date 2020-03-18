@@ -20,6 +20,7 @@ class UpdateCategoryType extends InputObjectType
             'fields' => function () {
                 return [
                     'id' => self::nonNull(Types::uuidType()),
+                    'vendorId' => Types::uuidType(),
                     'name' => self::string(),
                     'parentId' => Types::uuidType(),
                     'attributes' => [
