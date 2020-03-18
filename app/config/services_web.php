@@ -76,14 +76,8 @@ $di->setShared('dispatcher', function() {
                     $dispatcher->setParam($parameter->name, new $parameterClass->name);
                 }
             }
-
         } catch (Exception $exception) {
-            $dispatcher->forward([
-                'namespace' => 'app\modules\api\controllers',
-                'controller' => 'Exceptionhandler',
-                'action' => 'raiseError',
-                'params' => [$exception->getMessage(), $exception->getCode()]
-            ]);
+            throw new \Exception('', Dispatcher::EXCEPTION_HANDLER_NOT_FOUND);
         }
     });
     $evManager->attach(
@@ -97,7 +91,8 @@ $di->setShared('dispatcher', function() {
                 case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
                 case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
                     $dispatcher->forward([
-                        'controller' => '\app\modules\api\controllers\Notfound'
+                        'namespace' => 'app\modules\api\controllers',
+                        'controller' => 'Notfound'
                     ]);
                     return false;
                     break;
