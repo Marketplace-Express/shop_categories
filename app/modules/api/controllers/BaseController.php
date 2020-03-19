@@ -14,12 +14,6 @@ use app\common\utils\UuidUtil;
 
 class BaseController extends Controller
 {
-
-    /**
-     * @var \JsonMapper $jsonMapper
-     */
-    public $jsonMapper;
-
     /**
      * @var $service
      */

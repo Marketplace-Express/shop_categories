@@ -168,7 +168,7 @@ $di->setShared('userService', \app\common\services\user\UserService::class);
 /**
  * AppServices
  */
-$di->setShared('appServices', function($serviceName) {
+$di->set('appServices', function($serviceName) {
     $services = [
         'categoryService' => 'app\common\services\CategoryService',
         'attributeService' => 'app\common\services\AttributesService',

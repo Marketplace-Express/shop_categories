@@ -10,7 +10,6 @@ namespace app\modules\api\controllers;
 
 use app\common\requestHandler\category\AutocompleteRequestHandler;
 use app\common\requestHandler\category\SearchRequestHandler;
-use app\common\services\SearchService;
 
 /**
  * Class SearchController
@@ -19,24 +18,16 @@ use app\common\services\SearchService;
  */
 class SearchController extends BaseController
 {
-
-    private function getService(): SearchService
-    {
-        return $this->service ?? $this->service = new SearchService();
-    }
-
     /**
      * @Get('/autocomplete')
+     * @param AutocompleteRequestHandler $request
      */
-    public function autocompleteAction()
+    public function autocompleteAction(AutocompleteRequestHandler $request)
     {
         try {
             /** @var AutocompleteRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->queryStringToObject($this->request->getQuery()), new AutocompleteRequestHandler());
-//            if (!$request->isValid()) {
-//                $request->invalidRequest();
-//            }
-            $request->successRequest($this->getService()->autocomplete($request->toArray()));
+            $request = $this->di->get('jsonMapper')->map($this->queryStringToObject($this->request->getQuery()), $request);
+            $request->successRequest($this->di->getAppServices('searchService')->autocomplete($request->toArray()));
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
@@ -44,16 +35,17 @@ class SearchController extends BaseController
 
     /**
      * @Get('/')
+     * @param SearchRequestHandler $request
      */
-    public function searchAction()
+    public function searchAction(SearchRequestHandler $request)
     {
         try {
-            /** @var AutocompleteRequestHandler $request */
-            $request = $this->getJsonMapper()->map($this->queryStringToObject($this->request->getQuery()), new SearchRequestHandler());
+            /** @var SearchRequestHandler $request */
+            $request = $this->di->get('jsonMapper')->map($this->queryStringToObject($this->request->getQuery()), $request);
             if (!$request->isValid()) {
                 $request->invalidRequest();
             }
-            $result = $this->getService()->search($request->toArray());
+            $result = $this->di->getAppServices('searchService')->search($request->toArray());
             if (empty($result)) {
                 $request->notFound();
             }
