@@ -26,9 +26,6 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
     /** @var UserService $userService */
     private $userService;
 
-    /** @var Validation\Message\Group */
-    private $errorMessages;
-
     /**
      * @return mixed
      */
@@ -45,7 +42,7 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
     {
         $this->saltKey = $this->getTokenConfig()->saltKey;
         $this->allowedAlg = $this->getTokenConfig()->allowedAlg;
-        $this->userService = $this->getDI()->getUserService();
+        $this->userService = $this->di->getUserService();
 
         // Generate a token
         //$this->generate();
@@ -88,11 +85,6 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
     {
         $errorMessages = $this->validate();
         if (count($errorMessages)) {
-            $errors = [];
-            foreach ($errorMessages as $message) {
-                $errors[$message->getField()] = $message->getMessage();
-            }
-            $this->errorMessages = $errors;
             return false;
         }
         return true;
@@ -106,7 +98,7 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
     {
         // validate token
         if (!$this->isValid()) {
-            $this->handleError(json_encode($this->errorMessages), 400);
+            $this->handleError('Invalid token', 400);
         }
 
         $this->userService->userId = $this->token->user_id;

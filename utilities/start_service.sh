@@ -7,5 +7,3 @@ php composer.phar install && \
 ln -fs /var/www/html/app/common/library/vendor/bin/phalcon /usr/local/bin && \
 
 echo 'y' | phalcon migration --action=run --migrations=app/migrations/
-
-rm -f public/webtools*

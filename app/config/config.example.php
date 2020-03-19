@@ -4,6 +4,9 @@
  * App config file
  */
 
+defined('BASE_PATH') || define('BASE_PATH', dirname(dirname(__DIR__)));
+defined('APP_PATH') || define('APP_PATH', BASE_PATH . '/app');
+
 return new \Phalcon\Config([
     'database' => [
         'adapter' => 'Mysql',

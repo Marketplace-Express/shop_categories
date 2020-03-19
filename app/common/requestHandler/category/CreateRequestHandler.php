@@ -39,16 +39,8 @@ class CreateRequestHandler extends RequestAbstract
     public function __construct()
     {
         parent::__construct(new CategoryRules());
-        $this->setVendorId($this->getUserService()->vendorId);
-        $this->setUserId($this->getUserService()->userId);
-    }
-
-    /**
-     * @return UserService
-     */
-    private function getUserService()
-    {
-        return $this->di->get('userService');
+        $this->setVendorId($this->di->getUserService()->vendorId);
+        $this->setUserId($this->di->getUserService()->userId);
     }
 
     /**

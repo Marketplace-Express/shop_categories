@@ -60,10 +60,6 @@ $di->setShared('dispatcher', function() {
      * @var \Phalcon\Events\Manager $evManager
      */
     $evManager = $this->getEventsManager();
-    $evManager->attach(
-        "dispatch:beforeExecuteRoute",
-        new \Sid\Phalcon\AuthMiddleware\Event()
-    );
     $evManager->attach("dispatch:beforeDispatch", function (Event $event, Dispatcher $dispatcher) {
         try {
             $methodReflection = new ReflectionMethod(
@@ -80,6 +76,10 @@ $di->setShared('dispatcher', function() {
             throw new \Exception('', Dispatcher::EXCEPTION_HANDLER_NOT_FOUND);
         }
     });
+    $evManager->attach(
+        "dispatch:beforeExecuteRoute",
+        new \Sid\Phalcon\AuthMiddleware\Event()
+    );
     $evManager->attach(
         "dispatch:beforeException",
         function ($event, $dispatcher, $exception) {

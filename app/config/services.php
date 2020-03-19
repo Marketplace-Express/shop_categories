@@ -2,7 +2,6 @@
 
 use app\common\utils\AMQPHandler;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
-use app\common\services\user\UserService;
 
 /**
  * Shared configuration service
@@ -161,11 +160,14 @@ $di->setShared('amqp', function () {
     return new AMQPHandler($channel, $config);
 });
 
-$di->setShared(
-    'userService',
-    UserService::class
-);
+/**
+ * UserService should be shared among application
+ */
+$di->setShared('userService', \app\common\services\user\UserService::class);
 
+/**
+ * AppServices
+ */
 $di->setShared('appServices', function($serviceName) {
     $services = [
         'categoryService' => 'app\common\services\CategoryService',
