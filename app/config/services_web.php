@@ -102,7 +102,8 @@ $di->setShared('dispatcher', function() {
                 case $exception instanceof \Phalcon\Mvc\Model\Exception:
                 case $exception instanceof PDOException:
                     $dispatcher->forward([
-                        'controller' => '\app\modules\api\controllers\exceptionHandler',
+                        'namespace' => 'app\modules\api\controllers',
+                        'controller' => 'exceptionHandler',
                         'action' => 'raiseError',
                         'params' => [$exception->getMessage()]
                     ]);

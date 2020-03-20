@@ -7,7 +7,6 @@ use app\common\validators\UuidValidator;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\AlphaNumericValidator;
 use app\common\models\behaviors\AdjacencyListModelBehavior;
-use app\common\utils\UuidUtil;
 use app\common\validators\ExistenceValidator;
 
 /**

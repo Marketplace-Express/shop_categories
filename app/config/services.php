@@ -1,7 +1,21 @@
 <?php
 
+use app\common\enums\CacheIndexesEnum;
+use app\common\logger\ApplicationLogger;
+use app\common\redis\Connector;
+use app\common\services\user\UserService;
 use app\common\utils\AMQPHandler;
+use Ehann\RediSearch\Index;
+use Ehann\RediSearch\Suggestion;
+use Phalcon\Db\Adapter\MongoDB\Client as MongoClient;
+use Phalcon\Db\Profiler;
+use Phalcon\Events\Event;
+use Phalcon\Events\Manager as EventsManager;
+use Phalcon\Logger\Factory;
+use Phalcon\Mvc\Collection\Manager as CollectionManager;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
+use Phalcon\Mvc\Model\MetaData\Strategy\Annotations;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 /**
  * Shared configuration service
@@ -13,9 +27,7 @@ $di->setShared('config', function () {
 /**
  * Profiler service
  */
-$di->setShared('profiler', function () {
-    return new Phalcon\Db\Profiler();
-});
+$di->setShared('profiler', Profiler::class);
 
 /**
  * Register MySQL Database connection
@@ -42,13 +54,13 @@ $di->setShared('db', function () {
     $connection = new $class($params);
 
     /**
-     * @var \Phalcon\Db\Profiler $profiler
+     * @var Profiler $profiler
      */
     $profiler = $this->getProfiler();
-    $eventsManager = new \Phalcon\Events\Manager();
+    $eventsManager = new EventsManager();
     $eventsManager->attach('db', function ($event, $connection) use ($profiler, $config) {
         /**
-         * @var \Phalcon\Events\Event $event
+         * @var Event $event
          * @var \Phalcon\Db\Adapter\Pdo $connection
          */
         if ($event->getType() == 'beforeQuery') {
@@ -63,7 +75,7 @@ $di->setShared('db', function () {
             }
 
             // Log last SQL statement
-            \Phalcon\Logger\Factory::load([
+            Factory::load([
                 'name' => $config->application->logsDir . 'db.log',
                 'adapter' => 'file'
             ])->info($profiler->getLastProfile()->getSqlStatement());
@@ -84,22 +96,24 @@ $di->setShared('mongo', function(){
         $connectionString  .= $config->mongodb->username.":".$config->mongodb->password."@";
     }
     $connectionString .= $config->mongodb->host.":".$config->mongodb->port;
-    $mongo = new \Phalcon\Db\Adapter\MongoDB\Client($connectionString);
+    $mongo = new MongoClient($connectionString);
     return $mongo->selectDatabase($config->mongodb->dbname);
 });
 
-$di->setShared(
-    'collectionManager',
-    function () {
-        return new \Phalcon\Mvc\Collection\Manager();
-    }
-);
+/**
+ * Collection Manager
+ */
+$di->setShared('collectionManager', CollectionManager::class);
 
 /**
  * If the configuration specify the use of metadata adapter use it or use memory otherwise
  */
 $di->setShared('modelsMetadata', function () {
-    return new MetaDataAdapter();
+    $metadata = new MetaDataAdapter([
+        'lifetime' => 1
+    ]);
+    $metadata->setStrategy(new Annotations());
+    return $metadata;
 });
 
 /**
@@ -107,7 +121,7 @@ $di->setShared('modelsMetadata', function () {
  */
 $di->set('cache', function(int $database = 0) {
     $config = $this->getConfig()->cache;
-    $redisInstance = new \app\common\redis\Connector();
+    $redisInstance = new Connector();
     $redisInstance->connect(
         $config->category_cache->host,
         $config->category_cache->port,
@@ -127,14 +141,14 @@ $di->setShared('categoryCache', function () {
 
 $di->setShared('categoryCacheIndex', function () {
     $config = $this->getConfig()->cache->category_cache;
-    return new \Ehann\RediSearch\Index($this->get('cache', [$config->database])['adapter'],
-        \app\common\enums\CacheIndexesEnum::CATEGORY_INDEX_NAME);
+    return new Index($this->get('cache', [$config->database])['adapter'],
+        CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });
 
 $di->setShared('categoryCacheSuggest', function() {
     $config = $this->getConfig()->cache->category_cache;
-    return new \Ehann\RediSearch\Suggestion($this->getCache($config->database, true)['adapter'],
-        \app\common\enums\CacheIndexesEnum::CATEGORY_INDEX_NAME);
+    return new Suggestion($this->getCache($config->database, true)['adapter'],
+        CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });
 
 $di->setShared('attributesCache', function () {
@@ -143,13 +157,13 @@ $di->setShared('attributesCache', function () {
 });
 
 $di->setShared('logger', function() {
-    return new \app\common\logger\ApplicationLogger();
+    return new ApplicationLogger();
 });
 
 /** RabbitMQ service */
 $di->setShared('amqp', function () {
     $config = $this->getConfig();
-    $connection = new \PhpAmqpLib\Connection\AMQPStreamConnection(
+    $connection = new AMQPStreamConnection(
         $config->rabbitmq->host,
         $config->rabbitmq->port,
         $config->rabbitmq->username,
@@ -163,7 +177,7 @@ $di->setShared('amqp', function () {
 /**
  * UserService should be shared among application
  */
-$di->setShared('userService', \app\common\services\user\UserService::class);
+$di->setShared('userService', UserService::class);
 
 /**
  * AppServices
