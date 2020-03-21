@@ -9,15 +9,15 @@ namespace tests\app\common\dbTools;
 
 use app\common\dbTools\enums\SchemaQueryOperatorsEnum;
 use app\common\dbTools\QueryBuilder;
-use PDO;
+use tests\UnitTestCase;
 
-class QueryBuilderTest extends \UnitTestCase
+class QueryBuilderTest extends UnitTestCase
 {
     const TABLE_NAME = 'test';
     const ANOTHER_TABLE_NAME = 'test2';
     const COLUMNS = ['column1', 'column2'];
 
-    /** @var PDO $pdo */
+    /** @var \PDO $pdo */
     public $pdo;
 
     public function setUp()
@@ -28,9 +28,9 @@ class QueryBuilderTest extends \UnitTestCase
         if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
             $this->markTestSkipped('PDO extension should be enabled');
         }
-        $this->pdo = new PDO(sprintf('mysql:dbname=%s;host=%s:%d', $_ENV['TEST_DB_NAME'], $config->database->host, $config->database->port), $config->database->username, $config->database->password, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_TIMEOUT => 10
+        $this->pdo = new \PDO(sprintf('mysql:dbname=%s;host=%s:%d', $_ENV['TEST_DB_NAME'], $config->database->host, $config->database->port), $config->database->username, $config->database->password, [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_TIMEOUT => 10
         ]);
         $this->createTables();
     }

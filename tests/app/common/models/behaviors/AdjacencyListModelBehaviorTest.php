@@ -17,8 +17,9 @@ use Phalcon\Mvc\Model\MetaData\Memory;
 use PHPUnit\Framework\MockObject\MockObject;
 use app\common\models\behaviors\AdjacencyListModelBehavior;
 use app\common\models\Category;
+use tests\UnitTestCase;
 
-class AdjacencyListModelBehaviorTest extends \UnitTestCase
+class AdjacencyListModelBehaviorTest extends UnitTestCase
 {
     const ITEM_ID = '4b157f1b-8134-4688-8e91-5bdcbe342757';
     public $params = [

@@ -1,6 +1,7 @@
 <?php
 
-use Phalcon\Config\Adapter\Yaml;
+namespace tests;
+
 use Phalcon\Di;
 use Phalcon\Test\UnitTestCase as PhalconTestCase;
 use tests\mocks\RequestMock;
@@ -16,19 +17,22 @@ abstract class UnitTestCase extends PhalconTestCase
         $di = Di::getDefault();
 
         // Get any DI components here. If you have a config, be sure to pass it to the parent
-        $di->set('request', new RequestMock());
-        $di->set('response', new ResponseMock());
-        $di->set('config', function () {
-            $config = new Yaml(APP_PATH . '/config/config.yml', [
-                '!appDir' => function ($value) {
-                    return APP_PATH . $value ;
-                },
-                '!baseDir' => function ($value) {
-                    return BASE_PATH . $value;
-                }
-            ]);
-            return $config;
+        $di->setShared('request', RequestMock::class);
+        $di->setShared('response', ResponseMock::class);
+        $di->setShared('config', function () {
+            return require APP_PATH . '/config/config.php';
         });
+        $di->set('jsonMapper', \JsonMapper::class);
+        $di->set('appServices', function($serviceName) {
+            $services = [
+                'categoryService' => 'tests\mocks\services\CategoryService',
+                'attributeService' => 'tests\mocks\services\AttributesService',
+                'searchService' => 'tests\mocks\services\SearchService'
+            ];
+
+            return new $services[$serviceName];
+        });
+
 
         $this->setDi($di);
     }

@@ -12,15 +12,16 @@ use Phalcon\Loader;
 ini_set("display_errors", 1);
 error_reporting(E_ALL);
 
-define("ROOT_PATH", __DIR__);
-define("APP_PATH", __DIR__ . '/../app');
+define("ROOT_PATH", dirname(__DIR__));
+define("TEST_PATH", ROOT_PATH . '/tests');
+define("APP_PATH", ROOT_PATH . '/app');
 
 set_include_path(
-    ROOT_PATH . PATH_SEPARATOR . get_include_path()
+    TEST_PATH . PATH_SEPARATOR . get_include_path()
 );
 
 // Required for phalcon/incubator
-include __DIR__ . "/../app/common/library/vendor/autoload.php";
+include APP_PATH . "/common/library/vendor/autoload.php";
 
 // Use the application autoloader to autoload the classes
 // Autoload the dependencies found in composer
@@ -32,29 +33,27 @@ $loader->registerDirs(
 );
 
 $loader->registerNamespaces([
-    'app\common\models' => ROOT_PATH . '/../app/common/models',
-    'app\common\controllers' => ROOT_PATH . '/../app/common/controllers',
-    'app\common\helpers' => ROOT_PATH . '/../app/common/helpers',
-    'app\common\repositories' => ROOT_PATH . '/../app/common/repositories',
-    'app\common\models\behaviors' => ROOT_PATH . '/../app/common/models/behaviors',
-    'app\common\interfaces' => ROOT_PATH . '/../app/common/interfaces/',
-    'app\common\dbTools' => ROOT_PATH . '/../app/common/dbTools',
-    'app\common\dbTools\enums' => ROOT_PATH . '/../app/common/dbTools/enums',
-    'app\common\traits' => ROOT_PATH . '/../app/common/traits',
-    'app\common\services' => ROOT_PATH . '/../app/common/services',
-    'app\common\services\cache' => ROOT_PATH . '/../app/common/services/cache',
-    'app\common\services\cache\utils' => ROOT_PATH . '/../app/common/services/cache/utils',
-    'app\common\requestHandler' => ROOT_PATH . '/../app/common/requestHandler',
-    'app\common\requestHandler\category' => ROOT_PATH . '/../app/common/requestHandler/category',
-    'app\modules\api\controllers' => ROOT_PATH . '/../app/modules/api/1.0/controllers',
-    'app\common\utils' => ROOT_PATH . '/../app/common/utils',
-    'app\common\logger' => ROOT_PATH . '/common/logger/'
+    'app\common\models' => APP_PATH . '/common/models',
+    'app\common\helpers' => APP_PATH . '/common/helpers',
+    'app\common\repositories' => APP_PATH . '/common/repositories',
+    'app\common\models\behaviors' => APP_PATH . '/common/models/behaviors',
+    'app\common\interfaces' => APP_PATH . '/common/interfaces/',
+    'app\common\dbTools' => APP_PATH . '/common/dbTools',
+    'app\common\dbTools\enums' => APP_PATH . '/common/dbTools/enums',
+    'app\common\traits' => APP_PATH . '/common/traits',
+    'app\common\services' => APP_PATH . '/common/services',
+    'app\common\services\cache' => APP_PATH . '/common/services/cache',
+    'app\common\services\cache\utils' => APP_PATH . '/common/services/cache/utils',
+    'app\common\requestHandler' => APP_PATH . '/common/requestHandler',
+    'app\common\requestHandler\category' => APP_PATH . '/common/requestHandler/category',
+    'app\modules\api\controllers' => APP_PATH . '/modules/api/controllers',
+    'app\common\utils' => APP_PATH . '/common/utils',
+    'app\common\logger' => APP_PATH . '/common/logger/',
+    'tests\mocks' => TEST_PATH . '/mocks/'
 ]);
 
 $loader->registerClasses([
-    'tests\mocks\RequestMock' => ROOT_PATH . '/mocks/RequestMock.php',
-    'tests\mocks\ResponseMock' => ROOT_PATH . '/mocks/ResponseMock.php',
-    'app\common\exceptions\ArrayOfStringsException' => ROOT_PATH . '/../app/common/exceptions/ArrayOfStringsException.php'
+    'app\common\exceptions\ArrayOfStringsException' => APP_PATH . '/common/exceptions/ArrayOfStringsException.php'
 ]);
 
 $loader->register();

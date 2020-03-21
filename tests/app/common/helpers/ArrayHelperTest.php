@@ -9,8 +9,9 @@ namespace tests\app\common\helpers;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use app\common\helpers\ArrayHelper;
+use tests\UnitTestCase;
 
-class ArrayHelperTest extends \UnitTestCase
+class ArrayHelperTest extends UnitTestCase
 {
     public $params;
     public function setUp()

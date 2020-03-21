@@ -9,8 +9,9 @@ namespace tests\app\common\dbTools;
 
 use app\common\dbTools\enums\SchemaQueryOperatorsEnum;
 use app\common\dbTools\RecursiveQueryBuilder;
+use tests\UnitTestCase;
 
-class RecursiveQueryBuilderTest extends \UnitTestCase
+class RecursiveQueryBuilderTest extends UnitTestCase
 {
     const TABLE_NAME = 'test';
     const ANOTHER_TABLE_NAME = 'test2';

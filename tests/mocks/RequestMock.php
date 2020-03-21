@@ -7,6 +7,7 @@
 
 namespace tests\mocks;
 
+
 use Phalcon\Http\Request;
 
 class RequestMock extends Request

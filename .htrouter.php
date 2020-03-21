@@ -21,6 +21,8 @@
 
 // WebTools Access
 define('PTOOLS_IP', $_SERVER['REMOTE_ADDR']);
+defined('BASE_PATH') || define('BASE_PATH', __DIR__);
+defined('APP_PATH') || define('APP_PATH', BASE_PATH . '/app');
 
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
