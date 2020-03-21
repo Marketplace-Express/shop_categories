@@ -1,6 +1,5 @@
 <?php
 
-use app\common\requestHandler\RequestAbstract;
 use Phalcon\Events\Event;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Router;
@@ -15,6 +14,7 @@ $di->setShared('router', function () {
     $router = new Router\Annotations(false);
     $router->addModuleResource('api', 'app\modules\api\controllers\Search', '/api/search');
     $router->addModuleResource('api', 'app\modules\api\controllers\Category', '/api/categories');
+    $router->addModuleResource('api', 'app\modules\api\controllers\HealthCheck', '/api/health');
     return $router;
 });
 
