@@ -13,7 +13,6 @@ use Phalcon\Cli\Task;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use app\common\enums\QueueNamesEnum;
-use app\common\logger\ApplicationLogger;
 use app\modules\cli\request\Handler as RequestHandler;
 
 class ConsumerTask extends Task
@@ -21,14 +20,6 @@ class ConsumerTask extends Task
 
     const SYNC_QUEUE_NAME = QueueNamesEnum::CATEGORY_SYNC_QUEUE;
     const ASYNC_QUEUE_NAME = QueueNamesEnum::CATEGORY_ASYNC_QUEUE;
-
-    /** @var ApplicationLogger */
-    private $logger;
-
-    public function onConstruct()
-    {
-        $this->logger = new ApplicationLogger();
-    }
 
     public function syncConsumerAction()
     {
@@ -56,7 +47,7 @@ class ConsumerTask extends Task
                         $message = json_encode($response);
 
                     } catch (\Throwable $exception) {
-                        $this->logger->logError($exception->getMessage());
+                        $this->di->getLogger()->logError($exception->getMessage());
                         $message = json_encode([
                             'hasError' => true,
                             'message' => $exception->getMessage(),
@@ -102,7 +93,7 @@ class ConsumerTask extends Task
                 $channel->wait();
             }
         } catch (\Throwable $exception) {
-            $this->logger->logError($exception->getMessage());
+            $this->di->getLogger()->logError($exception->getMessage());
         }
     }
 }
