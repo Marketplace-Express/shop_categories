@@ -5,6 +5,8 @@ services:
     image: 'shop/categories'
     volumes:
       - .:/var/www/html
+    env_file:
+      - .env
     command: >
       bash -c "chmod +x utilities/start_service.sh
       && utilities/start_service.sh
@@ -14,6 +16,8 @@ services:
     image: 'shop/categories'
     volumes:
       - .:/var/www/html
+    env_file:
+      - .env
     command: >
       bash -c "chmod +x utilities/start_service.sh
       && utilities/start_service.sh
@@ -24,6 +28,8 @@ services:
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
+    env_file:
+      - .env
     ports:
       - "1000:8000"
     command: >
