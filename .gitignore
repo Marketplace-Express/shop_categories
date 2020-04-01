@@ -6,3 +6,6 @@
 
 # exclude php extensions
 php_extensions
+
+# dotfiles
+.*
