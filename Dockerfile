@@ -27,26 +27,34 @@ RUN set -xe && \
             ${PWD}/v${PSR_VERSION}.tar.gz \
             ${PWD}/php-psr-${PSR_VERSION} \
             ${PWD}/v${PHALCON_VERSION}.tar.gz \
-            ${PWD}/cphalcon-${PHALCON_VERSION} \
-        && php -m
-# Copy service config to config directory
-COPY ./utilities/setup_service.sh /usr/local/bin/
-# Run commands
-WORKDIR /usr/local/bin
-RUN chmod +x setup_service.sh && sh setup_service.sh
+            ${PWD}/cphalcon-${PHALCON_VERSION} && \
+        # Install environment dependencies
+        apt-get -y update && \
+        apt-get install -y libfreetype6-dev libpng-dev libjpeg-dev libcurl4-gnutls-dev libyaml-dev libicu-dev libzip-dev unzip git && \
+        # Install required PHP extensions
+        docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd && \
+        docker-php-ext-configure gd --with-freetype-dir=/usr/include/ \
+                                         --with-png-dir=/usr/include/ \
+                                         --with-jpeg-dir=/usr/include/ && \
+        docker-php-ext-install intl gettext gd bcmath zip pdo_mysql sockets && \
+        # Install extra extensions
+        echo '' | pecl install redis mongodb yaml xdebug
+# Copy PHP extensions to config directory
+COPY php_extensions/*.ini /usr/local/etc/php/conf.d/
 # Return working directory to its default state
 WORKDIR /var/www/html
-# Install environment dependencies
-RUN apt-get -y update && \
-   apt-get install -y libfreetype6-dev libpng-dev libjpeg-dev libcurl4-gnutls-dev libyaml-dev libicu-dev libzip-dev unzip && \
-   # Install required PHP extensions
-   docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd && \
-   docker-php-ext-configure gd --with-freetype-dir=/usr/include/ \
-                                      --with-png-dir=/usr/include/ \
-                                      --with-jpeg-dir=/usr/include/ && \
-   docker-php-ext-install intl gettext gd bcmath zip pdo_mysql sockets && \
-   # Install extra extensions
-   echo '' | pecl install redis mongodb yaml && \
-   echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini && \
-   echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini && \
-   echo "extension=yaml.so" > /usr/local/etc/php/conf.d/yaml.ini
+# Copy composer.json to container
+ADD *.* ./
+# Install composer
+RUN set -xe && \
+        SHA384=$(curl https://composer.github.io/installer.sig) && \
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+        php -r "if (hash_file('sha384', 'composer-setup.php') === '${SHA384}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+        php composer-setup.php && \
+        rm -f composer-setup.php
+# Install dependencies
+RUN set -xe && \
+        rm -rf app/common/library/vendor composer.lock && \
+        php composer.phar clearcache && \
+        php composer.phar config -g github-oauth.github.com 3f6fd65b0d7958581f549b862ee49af9db1bcdf1 && \
+        php composer.phar install

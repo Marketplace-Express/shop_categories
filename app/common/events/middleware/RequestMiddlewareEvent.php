@@ -45,7 +45,7 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
         $this->userService = $this->di->getUserService();
 
         // Generate a token
-        //$this->generate();
+//        $this->generate();
 
         $this->token = @$this->di->getJsonMapper()->map(
             $this->decode($this->request->getHeader('Authorization')),
