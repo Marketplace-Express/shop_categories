@@ -3,7 +3,7 @@
 # Copyrights to MilesChou <github.com/MilesChou>, fizzka <github.com/fizzka>
 # Edited by Wajdi Jurry <github.com/wajdijurry>
 #
-FROM php:7.3-apache
+FROM php:7.3-fpm
 
 LABEL maintainer="MilesChou <github.com/MilesChou>, fizzka <github.com/fizzka>"
 
