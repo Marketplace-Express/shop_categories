@@ -46,12 +46,7 @@ WORKDIR /var/www/html
 # Copy project files to container
 ADD *.* ./
 # Install composer
-RUN set -xe && \
-        SHA384=$(curl https://composer.github.io/installer.sig) && \
-        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-        php -r "if (hash_file('sha384', 'composer-setup.php') === '${SHA384}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
-        php composer-setup.php && \
-        rm -f composer-setup.php
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 # Install dependencies
 RUN set -xe && \
         rm -rf app/common/library/vendor composer.lock && \
