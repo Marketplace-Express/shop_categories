@@ -57,12 +57,12 @@ return new \Phalcon\Config([
         ]
     ],
     'application' => [
-        'modelsDir' => 'app/common/models/',
-        'controllersDir' => 'app/modules/api/controllers/',
-        'migrationsDir' => 'app/migrations/',
-        'logsDir' => 'app/logs/',
-        'cacheDir' => 'app/cache/',
-        'stopWords' => 'app/stop_words.json',
+        'modelsDir' => APP_PATH . '/common/models/',
+        'controllersDir' => APP_PATH . '/modules/api/controllers/',
+        'migrationsDir' => APP_PATH . '/migrations/',
+        'logsDir' => APP_PATH . '/logs/',
+        'cacheDir' => APP_PATH . '/cache/',
+        'stopWords' => APP_PATH . '/stop_words.json',
         'token' => [
             'saltKey' => 'abc@123456789012',
             'allowedAlg' => 'HS512'
