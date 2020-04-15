@@ -11,7 +11,7 @@ Shop: Categories Service
 ```php
 'database' => [
     'adapter' => 'Mysql',
-    'host' => 'network-gateway-ip from step 1.b',
+    'host' => 'network-gateway-ip',
     'port' => 3306,
     'username' => 'mysql-username',
     'password' => 'mysql-password',
@@ -19,7 +19,7 @@ Shop: Categories Service
     'charset' => 'utf8'
 ],
 'mongodb' => [
-    'host' => 'network-gateway-ip from step 1.b',
+    'host' => 'network-gateway-ip',
     'port' => 27017,
     'username' => null,
     'password' => null,
