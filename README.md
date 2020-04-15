@@ -2,7 +2,6 @@ Shop: Categories Service
 --
 ### Installation:
 
-Categories Service:
 1. Clone the repository:
 ```
 /path/to/project/:$ git clone git@gitlab.com:shop_ecommerce/shop_categories.git
