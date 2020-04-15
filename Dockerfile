@@ -50,6 +50,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Install dependencies
 RUN set -xe && \
         rm -rf app/common/library/vendor composer.lock && \
-        php composer.phar clearcache && \
-        php composer.phar config -g github-oauth.github.com 3f6fd65b0d7958581f549b862ee49af9db1bcdf1 && \
-        php composer.phar install
+        composer clearcache && \
+        composer config -g github-oauth.github.com 3f6fd65b0d7958581f549b862ee49af9db1bcdf1 && \
+        composer install
