@@ -2,54 +2,40 @@ Shop: Categories Service
 --
 ### Installation:
 
-After starting a new container, go inside it and do the following:
-
-1- Enable Apache2 rewrite module and HTTP Authorization:
-```shell script
-~# a2enmod rewrite
-~# vim /etc/apache2/conf-enabled/security.conf
+Categories Service:
+1. Clone the repository:
 ```
-Add this line at the end of the file:
-```shell script
-SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+/path/to/project/:$ git clone git@gitlab.com:shop_ecommerce/shop_categories.git
 ```
-Then, save and exit. After that, reload apache2 service:
-```shell script
-~# service apache2 reload
-[ ok ] Reloading Apache httpd web server: apache2.
+2. Open Dockerfile ```/path/to/project/shop_categories/Dockerfile``` and check these arguments if they match your OS architecture (x86 or x64): ```PHALCON_EXT_PATH=php7/64bits```
+3. Rename the file “config.example.php” under “app/config” to “config.php” then change the parameters to match your preferences, example:
+```php
+'database' => [
+    'adapter' => 'Mysql',
+    'host' => 'network-gateway-ip from step 1.b',
+    'port' => 3306,
+    'username' => 'mysql-username',
+    'password' => 'mysql-password',
+    'dbname' => 'shop_products',
+    'charset' => 'utf8'
+],
+'mongodb' => [
+    'host' => 'network-gateway-ip from step 1.b',
+    'port' => 27017,
+    'username' => null,
+    'password' => null,
+    'dbname' => 'shop_products'
+]
 ```
-
-2- Install dependencies:
-```text
-Note: Type "php -m" and make sure these extensions are installed and enabled:
-1. phalcon
-2. intl
-3. pdo
-4. json
-5. redis
-6. mongodb
-7. yaml
+4. Build image and start containers 
+```bash
+docker build --rm -t shop/categories:latest . && docker-compose up -d
 ```
-If you are sure that all required extensions exist, run this command:
-```shell script
-/var/www/html# composer install
+This command will create new three containers ```shop_categories_categories-sync_1```, ```shop_categories_categories-async_1```, ```shop_categories_categories-api_1```. If you want to scale up the workers, you can simply run this command:
+```bash
+docker-compose up --scale categories-{sync/async}=num -d
 ```
-3- Create a schema inside MySQL container
-
-4- Change the DB name inside ```/etc/shop/categories.yml``` to match the DB name in step 3
-
-5- Run migrations:
-```shell script
-/var/www/html# ./app/common/library/vendor/bin/phalcon migration --action=run --config=../../../etc/shop/categories.yml --migrations=app/migrations/
-```
-
-5- Edit configuration in ```/etc/shop/products.yml``` to match your current settings for MySQL, MongoDB, RabbitMQ and Redis connections.
-
-6- Run supervisord && supervisorctl update to update your supervisor programs and make sure that the status of the programs are READY, or you can check if there are two new queues (products_sync, product_async) by going to http://rabbitmq-container-ip:15672/#/queues
-
-7 - Import API collection into postman to start using this service
-
-8- To run unit test:
-```shell script
-/var/www/html# ./app/common/library/vendor/bin/phpunit -c tests/phpunit.xml
-```
+Where “num” is the number of processes to run, {sync/async} is the service which you want to scale up, example:
+docker-compose up --scale categories-async=3 -d
+The first one will declare a new queue “categories_sync” in RabbitMQ queues list while the second one will declare a new queue “categories_async”, and the last one will start a new application server listening on a specific port specified in docker-compose file, you can access it by going to this URL:
+```http://localhost:{port}```. As a default, the port value is ```1000```. You can use Postman with the collections provided to test micro-service APIs.
