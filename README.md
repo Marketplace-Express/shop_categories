@@ -35,6 +35,8 @@ This command will create new three containers ```shop_categories_categories-sync
 docker-compose up --scale categories-{sync/async}=num -d
 ```
 Where “num” is the number of processes to run, {sync/async} is the service which you want to scale up, example:
+```bash
 docker-compose up --scale categories-async=3 -d
-The first one will declare a new queue “categories_sync” in RabbitMQ queues list while the second one will declare a new queue “categories_async”, and the last one will start a new application server listening on a specific port specified in docker-compose file, you can access it by going to this URL:
+```
+The first one will declare a new queue “categories_sync” in RabbitMQ queues list while the second one will declare a new queue ```categories_async```, and the last one will start a new application server listening on a specific port specified in docker-compose file, you can access it by going to this URL:
 ```http://localhost:{port}```. As a default, the port value is ```1000```. You can use Postman with the collections provided to test micro-service APIs.
