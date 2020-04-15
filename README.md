@@ -30,12 +30,18 @@ Shop: Categories Service
 ```bash
 docker build --rm -t shop/categories:latest . && docker-compose up -d
 ```
-This command will create new three containers: 
+This command will create new containers:
 ```
-shop_categories_categories-sync_1
-shop_categories_categories-async_1
-shop_categories_categories-api_1
-```. If you want to scale up the workers, you can simply run this command:
+shop_categories_categories-sync_1: This will declare a new queue “categories_sync” in RabbitMQ queues list
+shop_categories_categories-async_1: This will declare a new queue “categories_async” in RabbitMQ queues list
+shop_categories_categories-api_1: This will start a new application server listening on a specific port
+shop_categories_categories-unit-test_1: This will run the unit test for this micro-service
+```
+API service will listen to a specified port in docker-compose file, you can access it by going to this URL: [http://localhost:port](http://localhost:1000)
+- The default port value is 1000.
+- You can use Postman with the collections provided to test micro-service APIs.
+
+If you want to scale up the workers (sync / async), you can simply run this command:
 ```bash
 docker-compose up --scale categories-{sync/async}=num -d
 ```
@@ -43,9 +49,6 @@ Where “num” is the number of processes to run, {sync/async} is the service w
 ```bash
 docker-compose up --scale categories-async=3 -d
 ```
-
-The first one will declare a new queue “categories_sync” in RabbitMQ queues list while the second one will declare a new queue ```categories_async```, and the last one will start a new application server listening on a specific port specified in docker-compose file, you can access it by going to this URL:
-```http://localhost:{port}```. As a default, the port value is ```1000```. You can use Postman with the collections provided to test micro-service APIs.
 
 ---
 ### Unit test
