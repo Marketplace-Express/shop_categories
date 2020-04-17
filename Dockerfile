@@ -44,7 +44,7 @@ COPY php_extensions/*.ini /usr/local/etc/php/conf.d/
 # Return working directory to its default state
 WORKDIR /var/www/html
 # Copy project files to container
-ADD *.* ./
+ADD . ./
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 # Install dependencies

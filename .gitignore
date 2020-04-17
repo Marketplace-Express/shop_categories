@@ -4,9 +4,6 @@
 # phalcon aut generated folder
 .phalcon
 
-# dotfiles
-.*
-
 # exclude router file
 .htrouter.php
 
