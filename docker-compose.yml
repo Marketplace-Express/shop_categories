@@ -1,50 +1,38 @@
 version: '3.3'
 services:
   categories-sync:
-    build: .
-    image: 'shop/categories'
+    image: 'registry.gitlab.com/shop_ecommerce/shop_categories'
+    command: ./run consumer syncConsumer
     volumes:
-      - .:/var/www/html
-    env_file:
-      - .env
-    command: >
-      bash -c "chmod +x utilities/start_service.sh
-      && utilities/start_service.sh
-      && ./run consumer syncConsumer"
+      - .:/src
+      - /src/app/vendor
+
   categories-async:
-    build: .
-    image: 'shop/categories'
+    image: 'registry.gitlab.com/shop_ecommerce/shop_categories'
+    command: ./run consumer asyncConsumer
     volumes:
-      - .:/var/www/html
-    env_file:
-      - .env
-    command: >
-      bash -c "chmod +x utilities/start_service.sh
-      && utilities/start_service.sh
-      && ./run consumer asyncConsumer"
+      - .:/src
+      - /src/app/vendor
+
   categories-api:
-    build: .
-    image: 'shop/categories'
-    working_dir: /var/www/html
-    volumes:
-      - .:/var/www/html
-    env_file:
-      - .env
-    ports:
-      - "1000:8000"
+    image: 'registry.gitlab.com/shop_ecommerce/shop_categories'
     command: >
-      bash -c "chmod +x utilities/start_service.sh
-      && utilities/start_service.sh
-      && rm -f /var/www/html/public/webtools*
+      bash -c "rm -f /src/public/webtools*
       && phalcon webtools enable
       && phalcon serve"
-  categories-unit-test:
-    build: .
-    container_name: 'unit-test'
-    image: 'shop/categories'
     volumes:
-      - .:/var/www/html
-    command: app/common/library/vendor/bin/phpunit -c tests/phpunit.xml
+      - .:/src
+      - /src/app/vendor
+    ports:
+      - "1000:8000"
+
+  categories-unit-test:
+    container_name: 'unit-test'
+    image: 'registry.gitlab.com/shop_ecommerce/shop_categories'
+    command: app/vendor/bin/phpunit -c tests/phpunit.xml
+    volumes:
+      - .:/src
+      - /src/app/vendor
 
 networks:
   default:

@@ -42,14 +42,18 @@ RUN set -xe && \
 # Copy PHP extensions to config directory
 COPY php_extensions/*.ini /usr/local/etc/php/conf.d/
 # Return working directory to its default state
-WORKDIR /var/www/html
+WORKDIR /src
 # Copy project files to container
 ADD . ./
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 # Install dependencies
-RUN set -xe && \
-        rm -rf app/common/library/vendor composer.lock && \
-        composer clearcache && \
-        composer config -g github-oauth.github.com 3f6fd65b0d7958581f549b862ee49af9db1bcdf1 && \
-        composer install
+RUN rm -rf app/common/library/vendor composer.lock && \
+    composer clearcache && \
+    composer config -g github-oauth.github.com 3f6fd65b0d7958581f549b862ee49af9db1bcdf1 && \
+    composer install
+# Create symlink for phalcon bin
+RUN ln -fs /src/app/vendor/bin/phalcon /usr/local/bin
+# Rin migrations
+RUN echo 'y' | phalcon migration --action=run --migrations=app/migrations/
+ENTRYPOINT ["/bin/bash", "utilities/docker-entrypoint.sh"]
