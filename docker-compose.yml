@@ -6,6 +6,7 @@ services:
     volumes:
       - .:/src
       - /src/app/vendor
+      - /src/.phalcon
 
   categories-async:
     image: 'registry.gitlab.com/shop_ecommerce/shop_categories'
@@ -13,6 +14,7 @@ services:
     volumes:
       - .:/src
       - /src/app/vendor
+      - /src/.phalcon
 
   categories-api:
     image: 'registry.gitlab.com/shop_ecommerce/shop_categories'
@@ -23,6 +25,7 @@ services:
     volumes:
       - .:/src
       - /src/app/vendor
+      - /src/.phalcon
     ports:
       - "1000:8000"
 
@@ -33,6 +36,7 @@ services:
     volumes:
       - .:/src
       - /src/app/vendor
+      - /src/.phalcon
 
 networks:
   default:
