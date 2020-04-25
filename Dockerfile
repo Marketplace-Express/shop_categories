@@ -50,7 +50,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN rm -rf app/vendor composer.lock && \
     composer clearcache && \
     composer config -g github-oauth.github.com 3f6fd65b0d7958581f549b862ee49af9db1bcdf1 && \
-    composer install
+    composer install --ignore-platform-reqs
 # Create symlink for phalcon bin
 RUN ln -fs /src/app/vendor/bin/phalcon /usr/local/bin
 # Rin migrations
