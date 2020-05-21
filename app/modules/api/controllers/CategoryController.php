@@ -25,7 +25,6 @@ class CategoryController extends BaseController
             }
             $request->successRequest($request->toArray());
         } catch (\Throwable $exception) {
-            var_dump($exception->getMessage()); exit;
             $this->handleError($exception->getMessage(), $exception->getCode());
         }
     }

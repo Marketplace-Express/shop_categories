@@ -50,7 +50,7 @@ $loader->registerNamespaces([
  * Register Vendors
  */
 $loader->registerFiles([
-    APP_PATH . '/common/library/vendor/autoload.php'
+    APP_PATH . '/vendor/autoload.php'
 ]);
 
 /**
