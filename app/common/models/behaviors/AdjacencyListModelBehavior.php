@@ -121,6 +121,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         }
         $this->getDbHandler($model);
         $this->setOwner($model);
+
         return call_user_func_array([$this, $method], $arguments);
     }
 
@@ -178,6 +179,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         if (in_array($targetId, $descendants)) {
             return true;
         }
+
         return false;
     }
 
@@ -208,6 +210,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         $query = $this->getOwner()->getReadConnection()->query($queryBuilder->getQuery(), $queryBuilder->getBinds());
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
+
         return $query->fetchAll();
     }
 
@@ -266,6 +269,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         } else {
             $result = $query->fetchAll();
         }
+
         return $result;
     }
 
@@ -318,6 +322,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
         $result = $query->fetchAll();
+
         return $result;
     }
 
@@ -349,6 +354,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         $query = $this->getOwner()->getReadConnection()->query($queryBuilder->getQuery(), $queryBuilder->getBinds());
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
+
         return $query->fetchAll();
     }
 
@@ -378,6 +384,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
         $result = $query->fetchAll();
+
         return $result;
     }
 
@@ -401,6 +408,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
             }
             return $this->db->commit();
         }
+
         throw new NotFoundException("Item not found or maybe deleted");
     }
 }

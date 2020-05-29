@@ -179,7 +179,7 @@ class AttributesCache implements AttributeDataSourceInterface
         if ($attribute) {
             return $attribute['attributeValues'];
         }
-        return null;
+        return [];
     }
 
     /**
