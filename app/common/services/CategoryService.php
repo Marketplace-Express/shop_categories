@@ -58,6 +58,12 @@ class CategoryService extends AbstractService
         return $categories;
     }
 
+    /**
+     * @param string $vendorId
+     * @return array
+     * @throws \RedisException
+     * @throws \Exception
+     */
     public function getByVendorId(string $vendorId): array
     {
         self::setVendorId($vendorId);
