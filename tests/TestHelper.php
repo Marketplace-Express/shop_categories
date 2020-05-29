@@ -21,7 +21,7 @@ set_include_path(
 );
 
 // Required for phalcon/incubator
-include APP_PATH . "/common/library/vendor/autoload.php";
+include APP_PATH . "/vendor/autoload.php";
 
 // Use the application autoloader to autoload the classes
 // Autoload the dependencies found in composer

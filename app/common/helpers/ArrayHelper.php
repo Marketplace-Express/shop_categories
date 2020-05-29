@@ -41,7 +41,7 @@ class ArrayHelper
     {
         // TODO ENHANCE PERFORMANCE
         $ids = array_column($this->array, $this->itemIdAttribute);
-        foreach ($this->array as $key => &$value) {
+        foreach ($this->array as $key => $value) {
             if ($value[$this->parentIdAttribute] != $this->noParentValue) {
                 $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->array), \RecursiveIteratorIterator::CHILD_FIRST);
                 while ($iterator->valid()) {
