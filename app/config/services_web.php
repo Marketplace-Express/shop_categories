@@ -5,7 +5,6 @@ use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Router;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
-use Phalcon\Flash\Direct as Flash;
 
 /**
  * Registering a router
@@ -41,18 +40,6 @@ $di->setShared('session', function () {
 });
 
 /**
- * Register the session flash service with the Twitter Bootstrap classes
- */
-$di->set('flash', function () {
-    return new Flash([
-        'error'   => 'alert alert-danger',
-        'success' => 'alert alert-success',
-        'notice'  => 'alert alert-info',
-        'warning' => 'alert alert-warning'
-    ]);
-});
-
-/**
 * Set the default namespace for dispatcher
 */
 $di->setShared('dispatcher', function() {
@@ -76,10 +63,6 @@ $di->setShared('dispatcher', function() {
             throw new \Exception('', Dispatcher::EXCEPTION_HANDLER_NOT_FOUND);
         }
     });
-    $evManager->attach(
-        "dispatch:beforeExecuteRoute",
-        new \Sid\Phalcon\AuthMiddleware\Event()
-    );
     $evManager->attach(
         "dispatch:beforeException",
         function ($event, $dispatcher, $exception) {
