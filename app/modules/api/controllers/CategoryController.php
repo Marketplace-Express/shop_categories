@@ -33,7 +33,6 @@ class CategoryController extends BaseController
      * @Post('/mutate')
      * @Put('/mutate')
      * @Delete('/mutate')
-     * @AuthMiddleware("\app\common\events\middleware\RequestMiddlewareEvent")
      * @param MutationResolver $resolver
      */
     public function mutateAction(MutationResolver $resolver)
