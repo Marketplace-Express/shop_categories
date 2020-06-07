@@ -4,10 +4,10 @@ Shop: Categories Service
 
 1. Clone the repository:
 ```
-/path/to/project/:$ git clone git@gitlab.com:shop_ecommerce/shop_categories.git
+git clone git@gitlab.com:shop_ecommerce/shop_categories.git
 ```
-2. Open Dockerfile ```/path/to/project/shop_categories/Dockerfile``` and check these arguments if they match your OS architecture (x86 or x64): ```PHALCON_EXT_PATH=php7/64bits```
-3. Rename the file “config.example.php” under “app/config” to “config.php” then change the parameters to match your preferences, example:
+
+2. Rename the file “config.example.php” under “app/config” to “config.php” then change the parameters to match your preferences, example:
 ```php
 'database' => [
     'adapter' => 'Mysql',
@@ -26,25 +26,38 @@ Shop: Categories Service
     'dbname' => 'shop_products'
 ]
 ```
-4. Build image and start containers 
+And so on for Redis and RabbitMQ ...
+>Note: You can use network (marketplace-network) gateway ip instead of providing each container ip
+
+3. Login to docker registry provider, in order to pull this micro service docker image:
 ```bash
-docker build --rm -t shop/categories:latest . && docker-compose up -d
+docker login registry.gitlab.com
 ```
-This command will create new containers:
+Provide your user name and password on gitlab, you should have access to the project, so you can pull the image.
+
+4. Pull the docker image from container registry:
+```bash
+docker pull registry.gitlab.com/shop_ecommerce/shop_products
 ```
-shop_categories_categories-sync_1: This will declare a new queue “categories_sync” in RabbitMQ queues list
-shop_categories_categories-async_1: This will declare a new queue “categories_async” in RabbitMQ queues list
-shop_categories_categories-api_1: This will start a new application server listening on a specific port
-shop_categories_categories-unit-test_1: This will run the unit test for this micro-service
-```
-API service will listen to a specified port in docker-compose file, you can access it by going to this URL: [http://localhost:port](http://localhost:1000)
-- The default port value is 1000.
-- You can use Postman with the collections provided to test micro-service APIs.
+       
+5- Run `docker-compose up -d`, This command will create new containers:
+
+1. shop_categories_categories-sync_1:
+- This will declare a new queue “categories_sync” in RabbitMQ queues list
+2. shop_categories_categories-async_1:
+- This will declare a new queue “categories_async” in RabbitMQ queues list
+3. shop_categories_categories-api_1:
+- This will start a new application server listening on a specific port specified in `docker-compose.yml` file, you can access it by going to this URL: [http://localhost:port](http://localhost:1000)
+- As a default, the port value is 1000.
+- You can use Postman with the collections provided to test micro service APIs.
+4. shop_categories_categories-unit-test_1:
+- This will run the unit test for this micro-service
 
 If you want to scale up the workers (sync / async), you can simply run this command:
 ```bash
 docker-compose up --scale categories-{sync/async}=num -d
 ```
+
 Where “num” is the number of processes to run, {sync/async} is the service which you want to scale up, example:
 ```bash
 docker-compose up --scale categories-async=3 -d
