@@ -1,5 +1,17 @@
 Shop: Categories Service
 --
+### Introduction:
+Welcome to development team of Marketplace project, This project involves the following technologies:
+1. PHP 7.3 - using phalcon framework
+2. MySQL 8
+3. Redis
+4. MongoDB
+5. GraphQL
+6. RabbitMQ
+7. Docker
+
+---
+
 ### Description:
 This service handles categories functionality, including CRUDs, processing and handling all logic related to categories.
 
