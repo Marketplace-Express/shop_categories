@@ -18,7 +18,7 @@ class DocumentMapper extends Document
     protected $id;
 
     /** @var TextField */
-    public $vendorId;
+    public $storeId;
 
     /** @var TextField|$this */
     public $name;
@@ -41,14 +41,14 @@ class DocumentMapper extends Document
     }
 
     /**
-     * @param string $vendorId
+     * @param string $storeId
      * @param string $name
      * @param string|null $url
      * @return $this
      */
-    public function makeDocument(string $vendorId, string $name, ?string $url)
+    public function makeDocument(string $storeId, string $name, ?string $url)
     {
-        $this->vendorId = new TextField('categoryVendorId', $vendorId);
+        $this->storeId = new TextField('categoryStoreId', $storeId);
         $this->name = new TextField('categoryName', $name);
         $this->url = new TextField('categoryUrl', $url);
         return $this;

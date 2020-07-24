@@ -10,17 +10,17 @@ namespace app\common\interfaces;
 
 interface CategoryDataSourceInterface
 {
-    public function getCategory(string $categoryId, string $vendorId);
+    public function getCategory(string $categoryId, string $storeId);
 
-    public function getRoots(string $vendorId): array;
+    public function getRoots(string $storeId): array;
 
-    public function getChildren(string $categoryId, string $vendorId): array;
+    public function getChildren(string $categoryId, string $storeId): array;
 
-    public function getDescendants(string $categoryId, string $vendorId): array;
+    public function getDescendants(string $categoryId, string $storeId): array;
 
-    public function getParents(string $categoryId, string $vendorId): array;
+    public function getParents(string $categoryId, string $storeId): array;
 
-    public function getParent(string $categoryId, string $vendorId);
+    public function getParent(string $categoryId, string $storeId);
 
-    public function getAll(string $vendorId): array;
+    public function getAll(string $storeId): array;
 }

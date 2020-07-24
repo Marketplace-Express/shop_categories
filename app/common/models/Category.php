@@ -21,7 +21,7 @@ class Category extends BaseModel
     const CREATE_WHITE_LIST = [
         'id',
         'parentId',
-        'vendorId',
+        'storeId',
         'userId',
         'name',
         'order',
@@ -52,9 +52,9 @@ class Category extends BaseModel
 
     /**
      * @var string
-     * @Column(column="vendor_id", type="string", length=36, nullable=false)
+     * @Column(column="store_id", type="string", length=36, nullable=false)
      */
-    public $vendorId;
+    public $storeId;
 
     /**
      * @var string $userId
@@ -140,9 +140,9 @@ class Category extends BaseModel
     }
 
     /** @param string */
-    public function setVendorId(string $vendorId)
+    public function setstoreId(string $storeId)
     {
-        $this->vendorId = $vendorId;
+        $this->storeId = $storeId;
     }
 
     /** @param string */
@@ -200,9 +200,9 @@ class Category extends BaseModel
     }
 
     /** @return string */
-    public function getVendorId(): string
+    public function getstoreId(): string
     {
-        return $this->vendorId;
+        return $this->storeId;
     }
 
     /**@return string */
@@ -277,7 +277,7 @@ class Category extends BaseModel
             'noParentValue' => null
         ]));
 
-        $this->skipAttributesOnUpdate(['id', 'vendorId']);
+        $this->skipAttributesOnUpdate(['id', 'storeId']);
     }
 
     /**
@@ -303,7 +303,7 @@ class Category extends BaseModel
             'parent_id' => 'parentId',
             'name' => 'name',
             'order' => 'order',
-            'vendor_id' => 'vendorId',
+            'store_id' => 'storeId',
             'user_id' => 'userId',
             'url' => 'url',
             'depth' => 'depth',
@@ -323,7 +323,7 @@ class Category extends BaseModel
         return [
             'id' => $this->id,
             'parentId' => $this->parentId,
-            'vendorId' => $this->vendorId,
+            'storeId' => $this->storeId,
             'name' => $this->name,
             'url' => $this->url,
             'order' => $this->getOrder(),
@@ -385,11 +385,11 @@ class Category extends BaseModel
         );
 
         $validator->add(
-            ['name', 'vendorId'],
+            ['name', 'storeId'],
             new Validation\Validator\Uniqueness([
                 'model' => self::model(true),
                 'convert' => function ($values) {
-                    $values['vendorId'] = $this->vendorId;
+                    $values['storeId'] = $this->storeId;
                     return $values;
                 },
                 'except' => ['id' => $this->id],
@@ -410,8 +410,8 @@ class Category extends BaseModel
                 'model' => self::class,
                 'column' => 'id',
                 'conditions' => [
-                    'where' => 'vendorId = :vendorId: AND isDeleted = false',
-                    'bind' => ['vendorId' => $this->vendorId]
+                    'where' => 'storeId = :storeId: AND isDeleted = false',
+                    'bind' => ['storeId' => $this->storeId]
                 ],
                 'message' => 'Parent category does not exist'
             ])

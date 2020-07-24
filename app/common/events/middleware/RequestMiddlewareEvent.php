@@ -57,7 +57,7 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
     {
         exit(JWT::encode([
             'user_id' => 'fded67e4-9fcd-4a2d-ae2e-de15d70a8bb5',
-            'vendor_id' => 'f58031e2-a1bb-11ea-ac38-0242ac120002',
+            'store_id' => 'f58031e2-a1bb-11ea-ac38-0242ac120002',
             'access_level' => 2,
             'exp' => time() + 3600 * 1,
             'entropy' => mt_rand(10000, 20000)
@@ -102,7 +102,7 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
         }
 
         $this->userService->userId = $this->token->user_id;
-        $this->userService->vendorId = $this->token->vendor_id;
+        $this->userService->storeId = $this->token->store_id;
         $this->userService->accessLevel = $this->token->access_level;
         return true;
     }
@@ -114,11 +114,11 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
     {
         $validator = new Validation();
         $validator->add(
-            ['user_id', 'vendor_id', 'access_level'],
+            ['user_id', 'store_id', 'access_level'],
             new Validation\Validator\PresenceOf()
         );
         $validator->add(
-            ['user_id', 'vendor_id'],
+            ['user_id', 'store_id'],
             new UuidValidator()
         );
         $validator->add(
@@ -131,7 +131,7 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
 
         return $validator->validate([
             'user_id' => $this->token->user_id,
-            'vendor_id' => $this->token->vendor_id,
+            'store_id' => $this->token->store_id,
             'access_level' => $this->token->access_level
         ]);
     }

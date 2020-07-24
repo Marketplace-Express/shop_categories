@@ -18,7 +18,7 @@ use tests\mocks\RequestMock;
 
 class CategoryControllerTest extends UnitTestCase
 {
-    const VENDOR_ID = 'd9423ce9-bf98-432b-bb00-1c31d4e50e14';
+    const store_id = 'd9423ce9-bf98-432b-bb00-1c31d4e50e14';
     const CATEGORY_ID = '92aaf1e3-ed52-44ad-ac2a-f7c8d2b08a6d';
 
     /** @var CategoryController */
@@ -67,7 +67,7 @@ class CategoryControllerTest extends UnitTestCase
                             }
                         }',
             'variables' => [
-                'vendorId' => self::VENDOR_ID
+                'storeId' => self::store_id
             ]
         ])));
 

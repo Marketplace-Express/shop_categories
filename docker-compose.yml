@@ -4,7 +4,7 @@ services:
     image: 'registry.gitlab.com/shop_ecommerce/shop_categories'
     command: ./run consumer syncConsumer
     environment:
-      - PHP_IDE_CONFIG="serverName=phalcon.local"
+      - PHP_IDE_CONFIG=serverName=phalcon.local
     volumes:
       - .:/src
       - /src/app/vendor
@@ -14,7 +14,7 @@ services:
     image: 'registry.gitlab.com/shop_ecommerce/shop_categories'
     command: ./run consumer asyncConsumer
     environment:
-      - PHP_IDE_CONFIG="serverName=phalcon.local"
+      - PHP_IDE_CONFIG=serverName=phalcon.local
     volumes:
       - .:/src
       - /src/app/vendor
@@ -27,7 +27,7 @@ services:
       && phalcon webtools enable
       && phalcon serve"
     environment:
-      - PHP_IDE_CONFIG="serverName=phalcon.local"
+      - PHP_IDE_CONFIG=serverName=phalcon.local
     volumes:
       - .:/src
       - /src/app/vendor

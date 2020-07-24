@@ -33,21 +33,21 @@ class Mutation extends ObjectType
                 return [
                     'create' => [
                         'args' => [
-                            'vendorId' => Types::uuidType(),
+                            'storeId' => Types::uuidType(),
                             'category' => Types::createCategorySchema()
                         ],
                         'type' => Types::mutateCategoryQuerySchema()
                     ],
                     'update' => [
                         'args' => [
-                            'vendorId' => Types::uuidType(),
+                            'storeId' => Types::uuidType(),
                             'category' => Types::updateCategorySchema()
                         ],
                         'type' => Types::mutateCategoryQuerySchema()
                     ],
                     'delete' => [
                         'args' => [
-                            'vendorId' => Types::uuidType(),
+                            'storeId' => Types::uuidType(),
                             'category' => Types::deleteCategorySchema()
                         ],
                         'type' => self::boolean()

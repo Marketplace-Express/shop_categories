@@ -37,16 +37,16 @@ class CategoryRepository implements CategoryDataSourceInterface
     /**
      * Find category by ID
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return Category
      * @throws \Exception
      */
-    public static function findById(string $categoryId, string $vendorId)
+    public static function findById(string $categoryId, string $storeId)
     {
         /** @noinspection PhpUndefinedMethodInspection */
         $result = self::getModel()->getItems([
             'id' => [SchemaQueryOperatorsEnum::OP_EQUALS => $categoryId],
-            'vendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'storeId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $storeId]
         ]);
 
         if (count($result)) {
@@ -59,16 +59,16 @@ class CategoryRepository implements CategoryDataSourceInterface
     /**
      * Find multiple categories
      * @param array $categoriesIds
-     * @param string $vendorId
+     * @param string $storeId
      * @return \Phalcon\Mvc\Model\ResultsetInterface
      * @throws \Exception
      */
-    public static function findAllByIds(array $categoriesIds, string $vendorId)
+    public static function findAllByIds(array $categoriesIds, string $storeId)
     {
         /** @noinspection PhpUndefinedMethodInspection */
         $result = self::getModel()->getItems([
             'id' => [SchemaQueryOperatorsEnum::OP_IN => [$categoriesIds]],
-            'vendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'storeId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $storeId]
         ]);
 
         if (count($result)) {
@@ -79,14 +79,14 @@ class CategoryRepository implements CategoryDataSourceInterface
 
     }
 
-    public function getColumnsForCategory(string $categoryId, string $vendorId, array $columns = [])
+    public function getColumnsForCategory(string $categoryId, string $storeId, array $columns = [])
     {
         $category = self::getModel(true)::findFirst([
             'columns' => implode(',', $columns),
-            'conditions' => 'id = :categoryId: AND vendorId = :vendorId: AND isDeleted = false',
+            'conditions' => 'id = :categoryId: AND storeId = :storeId: AND isDeleted = false',
             'bind' => [
                 'categoryId' => $categoryId,
-                'vendorId' => $vendorId
+                'storeId' => $storeId
             ]
         ]);
         if (!$category) {
@@ -98,14 +98,14 @@ class CategoryRepository implements CategoryDataSourceInterface
     /**
      * Get category by Id
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return Category
      * @throws NotFoundException
      * @throws \Exception
      */
-    public function getCategory(string $categoryId, string $vendorId): ?Category
+    public function getCategory(string $categoryId, string $storeId): ?Category
     {
-        $category = self::findById($categoryId, $vendorId);
+        $category = self::findById($categoryId, $storeId);
         if (!$category) {
             throw new NotFoundException('Category not found or maybe deleted');
         }
@@ -114,15 +114,15 @@ class CategoryRepository implements CategoryDataSourceInterface
 
     /**
      * Get All Roots
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      * @throws \Exception
      */
-    public function getRoots(string $vendorId): array
+    public function getRoots(string $storeId): array
     {
         /** @noinspection PhpUndefinedMethodInspection */
         $roots = $this::getModel()->roots([
-            'vendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'storeId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $storeId]
         ]);
         $result = [];
         if (count($roots)) {
@@ -137,16 +137,16 @@ class CategoryRepository implements CategoryDataSourceInterface
     /**
      * Getting all children of a node
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      * @throws \Exception
      */
-    public function getChildren(string $categoryId, string $vendorId): array
+    public function getChildren(string $categoryId, string $storeId): array
     {
         /** @var Category[] $children */
         /** @noinspection PhpUndefinedMethodInspection */
         $children = self::getModel()->children($categoryId, [
-            'vendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'storeId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $storeId]
         ]);
 
         $result = [];
@@ -161,17 +161,17 @@ class CategoryRepository implements CategoryDataSourceInterface
     /**
      * Getting all descendants of node
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      *
      * @throws \Exception
      */
-    public function getDescendants(string $categoryId, string $vendorId): array
+    public function getDescendants(string $categoryId, string $storeId): array
     {
         /** @var Category[] $descendants */
         /** @noinspection PhpUndefinedMethodInspection */
         $descendants = self::getModel()->descendants($categoryId, [
-            'vendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'storeId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $storeId]
         ]);
 
         $result = [];
@@ -184,17 +184,17 @@ class CategoryRepository implements CategoryDataSourceInterface
     /**
      * Get ancestor of node
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return array|bool
      *
      * @throws \Exception
      */
-    public function getParents(string $categoryId, string $vendorId): array
+    public function getParents(string $categoryId, string $storeId): array
     {
         /** @var Category[] $parents */
         /** @noinspection PhpUndefinedMethodInspection */
         $parents = self::getModel()->parents($categoryId, [
-            'vendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'storeId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $storeId]
         ]);
 
         $result = [];
@@ -209,16 +209,16 @@ class CategoryRepository implements CategoryDataSourceInterface
     /**
      * Get ancestor of node
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return Category
      *
      * @throws \Exception
      */
-    public function getParent(string $categoryId, string $vendorId): Category
+    public function getParent(string $categoryId, string $storeId): Category
     {
         /** @var Category $parent */
         $parent = self::getModel()->parents($categoryId, [
-            'vendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'storeId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $storeId]
         ], true);
 
         if (!$parent) {
@@ -230,15 +230,15 @@ class CategoryRepository implements CategoryDataSourceInterface
 
     /**
      * Get all categories related to vendor
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      * @throws \Exception
      */
-    public function getAll(string $vendorId): array
+    public function getAll(string $storeId): array
     {
         /** @var Category[] $categories */
         $categories = $this::getModel()->getItems([
-            'vendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'storeId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $storeId]
         ]);
 
         $result = [];
@@ -262,7 +262,7 @@ class CategoryRepository implements CategoryDataSourceInterface
     {
         $category = self::getModel(true);
         if (!empty($data['parentId'])) {
-            $parent = $this->getColumnsForCategory($data['parentId'], $data['vendorId'], ['depth']);
+            $parent = $this->getColumnsForCategory($data['parentId'], $data['storeId'], ['depth']);
             $data['depth'] = $parent->depth + 1;
         }
         if (!$category->create($data, Category::CREATE_WHITE_LIST)) {
@@ -275,16 +275,16 @@ class CategoryRepository implements CategoryDataSourceInterface
      * Update category
      *
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @param array $data
      * @return Category
      * @throws \Exception
      */
-    public function update(string $categoryId, string $vendorId, array $data)
+    public function update(string $categoryId, string $storeId, array $data)
     {
-        $category = self::findById($categoryId, $vendorId);
+        $category = self::findById($categoryId, $storeId);
         if (!empty($data['parentId']) && $category->parentId !== $data['parentId']) {
-            $parentCategory = $this->getColumnsForCategory($data['parentId'], $vendorId, ['depth']);
+            $parentCategory = $this->getColumnsForCategory($data['parentId'], $storeId, ['depth']);
             $data['depth'] += $parentCategory->depth;
         }
         if (!$category->update($data, Category::UPDATE_WHITE_LIST)) {
@@ -297,18 +297,18 @@ class CategoryRepository implements CategoryDataSourceInterface
      * Delete category
      *
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return bool
      *
      * @throws OperationFailedException
      * @throws NotFoundException
      *
      */
-    public function delete(string $categoryId, string $vendorId)
+    public function delete(string $categoryId, string $storeId)
     {
         /** @noinspection PhpUndefinedMethodInspection */
         return self::getModel()->deleteCascade($categoryId, [
-            'vendorId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $vendorId]
+            'storeId' => [SchemaQueryOperatorsEnum::OP_EQUALS => $storeId]
         ]);
     }
 }

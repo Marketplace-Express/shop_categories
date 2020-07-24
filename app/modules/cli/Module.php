@@ -40,9 +40,9 @@ class Module implements ModuleDefinitionInterface
     public function registerServices(DiInterface $di)
     {
         // Register category service as a service
-        $di->set('category', function (string $vendorId){
+        $di->set('category', function (string $storeId){
             $categoryService = new CategoryService();
-            $categoryService::setVendorId($vendorId);
+            $categoryService::setstoreId($storeId);
             return $categoryService;
         });
 

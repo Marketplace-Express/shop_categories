@@ -56,7 +56,7 @@ class CategoryMigration_100 extends Migration
                         ]
                     ),
                     new Column(
-                        'vendor_id',
+                        'store_id',
                         [
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
@@ -70,7 +70,7 @@ class CategoryMigration_100 extends Migration
                             'type' => Column::TYPE_VARCHAR,
                             'notNull' => true,
                             'size' => 36,
-                            'after' => 'vendor_id'
+                            'after' => 'store_id'
                         ]
                     ),
                     new Column(

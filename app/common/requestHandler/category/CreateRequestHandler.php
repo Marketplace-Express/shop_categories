@@ -31,7 +31,7 @@ class CreateRequestHandler extends RequestAbstract
     private $userId;
 
     /** @var string */
-    private $vendorId;
+    private $storeId;
 
     /** @var array */
     private $attributes = [];
@@ -39,7 +39,7 @@ class CreateRequestHandler extends RequestAbstract
     public function __construct()
     {
         parent::__construct(new CategoryRules());
-        $this->setVendorId($this->di->getUserService()->vendorId);
+        $this->setstoreId($this->di->getUserService()->storeId);
         $this->setUserId($this->di->getUserService()->userId);
     }
 
@@ -72,9 +72,9 @@ class CreateRequestHandler extends RequestAbstract
     }
 
     /** @param string */
-    public function setVendorId($vendorId)
+    public function setstoreId($storeId)
     {
-        $this->vendorId = $vendorId;
+        $this->storeId = $storeId;
     }
 
     /**
@@ -147,7 +147,7 @@ class CreateRequestHandler extends RequestAbstract
         );
 
         $validator->add(
-            ['vendorId', 'userId'],
+            ['storeId', 'userId'],
             new UuidValidator()
         );
 
@@ -182,7 +182,7 @@ class CreateRequestHandler extends RequestAbstract
             'parentId'  => $this->parentId,
             'order'     => $this->order,
             'userId'    => $this->userId,
-            'vendorId'  => $this->vendorId,
+            'storeId'  => $this->storeId,
             'attributes' => $this->attributes
         ];
 
@@ -201,7 +201,7 @@ class CreateRequestHandler extends RequestAbstract
             'parentId' => $this->parentId,
             'name' => $this->name,
             'order' => $this->order,
-            'vendorId' => $this->vendorId,
+            'storeId' => $this->storeId,
             'userId' => $this->userId,
             'url' => (new Slug())->generate($this->name),
             'attributes' => $this->getAttributes()

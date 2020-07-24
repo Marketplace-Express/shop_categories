@@ -43,7 +43,7 @@ class IndexingService extends Injectable
     private function create()
     {
         $this->redisIndexing
-            ->addTextField('categoryVendorId', 1.0, false, true)
+            ->addTextField('categoryStoreId', 1.0, false, true)
             ->addTextField('categoryName')
             ->addTextField('categoryUrl', 1.0, false, true)
             ->create();
@@ -53,23 +53,23 @@ class IndexingService extends Injectable
      * Add document to index
      *
      * @param string $docId
-     * @param string $vendorId
+     * @param string $storeId
      * @param string $name
      * @param string $url
      *
      * @throws \Ehann\RediSearch\Exceptions\FieldNotInSchemaException
      * @throws \Exception
      */
-    public function add(string $docId, string $vendorId, string $name, ?string $url)
+    public function add(string $docId, string $storeId, string $name, ?string $url)
     {
-        if (empty($docId) || empty($name) || empty($vendorId)) {
+        if (empty($docId) || empty($name) || empty($storeId)) {
             throw new \Exception('Missing arguments');
         }
         if (!$this->redis->exists($this->indexName))  {
             $this->create();
         }
         $document = new DocumentMapper($docId);
-        $document = $document->makeDocument($vendorId, $name, $url);
+        $document = $document->makeDocument($storeId, $name, $url);
         $this->redisIndexing->add($document);
         $this->redisSuggesting->add($name, 1.0);
     }
@@ -93,19 +93,19 @@ class IndexingService extends Injectable
      * Update document
      *
      * @param string $id
-     * @param string $vendorId
+     * @param string $storeId
      * @param string $name
      * @param string|null $url
      *
      * @throws \Ehann\RediSearch\Exceptions\FieldNotInSchemaException
      * @throws \Exception
      */
-    public function update(string $id, string $vendorId, string $name, ?string $url)
+    public function update(string $id, string $storeId, string $name, ?string $url)
     {
         if (empty($id)) {
             throw new \Exception('Missing argument');
         }
         $this->delete($id);
-        $this->add($id, $vendorId, $name, $url);
+        $this->add($id, $storeId, $name, $url);
     }
 }

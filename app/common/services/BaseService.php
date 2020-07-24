@@ -10,23 +10,23 @@ namespace app\common\services;
 class BaseService
 {
     /**
-     * @var string $vendorId
+     * @var string $storeId
      */
-    protected static $vendorId;
+    protected static $storeId;
 
     /**
-     * @param string $vendorId
+     * @param string $storeId
      */
-    public static function setVendorId(string $vendorId): void
+    public static function setstoreId(string $storeId): void
     {
-        self::$vendorId = $vendorId;
+        self::$storeId = $storeId;
     }
 
     /**
      * @return string
      */
-    public static function getVendorId(): string
+    public static function getstoreId(): string
     {
-        return self::$vendorId;
+        return self::$storeId;
     }
 }

@@ -37,7 +37,7 @@ class CategoryCache implements CategoryDataSourceInterface
     public function __construct()
     {
         self::establishCacheConnection();
-        self::$cacheKey = sprintf(self::$cacheKey, CategoryService::getVendorId());
+        self::$cacheKey = sprintf(self::$cacheKey, CategoryService::getstoreId());
     }
 
     /**
@@ -106,7 +106,7 @@ class CategoryCache implements CategoryDataSourceInterface
     {
         if (!self::has(self::$cacheKey)) {
             // Get all categories from repository and set in cache
-            $categories = CategoryRepository::getInstance()->getAll(CategoryService::getVendorId());
+            $categories = CategoryRepository::getInstance()->getAll(CategoryService::getstoreId());
             $categories = (new ArrayHelper($categories, [
                 'itemIdAttribute' => 'id',
                 'parentIdAttribute' => 'parentId'
@@ -119,82 +119,82 @@ class CategoryCache implements CategoryDataSourceInterface
 
     /**
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      *
      * @throws \Exception
      */
-    public function getCategory(string $categoryId, ?string $vendorId = null): array
+    public function getCategory(string $categoryId, ?string $storeId = null): array
     {
         return $this->prepareCache()->getCategoryCacheUtils()->getCategory($categoryId);
     }
 
     /**
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      *
      * @throws \Exception
      */
-    public function getRoots(?string $vendorId = null): array
+    public function getRoots(?string $storeId = null): array
     {
         return $this->prepareCache()->getCategoryCacheUtils()->getRoots();
     }
 
     /**
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      *
      * @throws \Exception
      */
-    public function getChildren(string $categoryId, ?string $vendorId = null): array
+    public function getChildren(string $categoryId, ?string $storeId = null): array
     {
         return $this->prepareCache()->getCategoryCacheUtils()->getChildren($categoryId);
     }
 
     /**
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      *
      * @throws \Exception
      */
-    public function getDescendants(string $categoryId, ?string $vendorId = null): array
+    public function getDescendants(string $categoryId, ?string $storeId = null): array
     {
         return $this->prepareCache()->getCategoryCacheUtils()->getDescendants($categoryId);
     }
 
     /**
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      *
      * @throws \Exception
      */
-    public function getParents(string $categoryId, ?string $vendorId = null): array
+    public function getParents(string $categoryId, ?string $storeId = null): array
     {
         return $this->prepareCache()->getCategoryCacheUtils()->getParents($categoryId);
     }
 
     /**
      * @param string $categoryId
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      *
      * @throws \Exception
      */
-    public function getParent($categoryId, ?string $vendorId = null): array
+    public function getParent($categoryId, ?string $storeId = null): array
     {
         return $this->prepareCache()->getCategoryCacheUtils()->getParents($categoryId, true);
     }
 
     /**
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      *
      * @throws \Exception
      */
-    public function getAll(?string $vendorId = null): array
+    public function getAll(?string $storeId = null): array
     {
         return $this->prepareCache()->getCategoryCacheUtils()->getAll();
     }
@@ -236,7 +236,7 @@ class CategoryCache implements CategoryDataSourceInterface
             ->setMethod('add')
             ->setData([
                 'id' => $category['id'],
-                'vendorId' => $category['vendorId'],
+                'storeId' => $category['storeId'],
                 'name' => $category['name'],
                 'url' => $category['url']
             ])
@@ -259,7 +259,7 @@ class CategoryCache implements CategoryDataSourceInterface
             ->setMethod('update')
             ->setData([
                 'id' => $category['id'],
-                'vendorId' => $category['vendorId'],
+                'storeId' => $category['storeId'],
                 'name' => $category['name'],
                 'url' => $category['url']
             ])

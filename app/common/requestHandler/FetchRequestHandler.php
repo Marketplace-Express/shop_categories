@@ -50,20 +50,20 @@ class FetchRequestHandler extends RequestAbstract
         $validator = new Validation();
 
         $validator->add(
-            'vendorId',
+            'storeId',
             new Validation\Validator\Callback([
                 'callback' => function ($data) {
-                    if (!empty($data['vendorId'])) {
+                    if (!empty($data['storeId'])) {
                         return new UuidValidator();
                     }
                     return false;
                 },
-                'message' => 'vendorId is required'
+                'message' => 'storeId is required'
             ])
         );
 
         return $validator->validate([
-            'vendorId' => $this->variables['vendorId'] ?? null
+            'storeId' => $this->variables['storeId'] ?? null
         ]);
     }
 
@@ -85,8 +85,8 @@ class FetchRequestHandler extends RequestAbstract
         // Limit the query depth
         DocumentValidator::addRule(new QueryDepth($maxDepth = self::MAX_QUERY_DEPTH));
 
-        // Set vendorId
-        $this->di->getAppServices('categoryService')::setVendorId($this->variables['vendorId']);
+        // Set storeId
+        $this->di->getAppServices('categoryService')::setstoreId($this->variables['storeId']);
 
         $result = GraphQL::executeQuery(
             $this->getSchema(),

@@ -31,7 +31,7 @@ class MutationResultQuery extends ObjectType
                     'name' => self::string(),
                     'url' => self::string(),
                     'parent' => Types::mutateCategoryQuerySchema(),
-                    'vendorId' => self::string(),
+                    'storeId' => self::string(),
                     'userId' => self::string(),
                     'order' => self::int(),
                     'attributes' => self::listOf(Types::queryAttributeSchema())
@@ -81,9 +81,9 @@ class MutationResultQuery extends ObjectType
         return array_shift($parent);
     }
 
-    private function resolveVendorId($category)
+    private function resolvestoreId($category)
     {
-        return $category['vendorId'];
+        return $category['storeId'];
     }
 
     private function resolveUserId($category)

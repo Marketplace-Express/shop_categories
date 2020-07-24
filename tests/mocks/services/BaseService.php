@@ -6,10 +6,10 @@ namespace tests\mocks\services;
 
 class BaseService
 {
-    private static $vendorId;
+    private static $storeId;
 
-    static public function setVendorId(string $vendorId)
+    static public function setstoreId(string $storeId)
     {
-        self::$vendorId = $vendorId;
+        self::$storeId = $storeId;
     }
 }

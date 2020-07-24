@@ -53,20 +53,20 @@ class CategoryService extends AbstractService
         if (!empty($ids)) {
             $categories = CategoryCache::getInstance()->getByIds($ids);
         } else {
-            $categories = CategoryCache::getInstance()->getAll(self::getVendorId());
+            $categories = CategoryCache::getInstance()->getAll(self::getstoreId());
         }
         return $categories;
     }
 
     /**
-     * @param string $vendorId
+     * @param string $storeId
      * @return array
      * @throws \RedisException
      * @throws \Exception
      */
-    public function getByVendorId(string $vendorId): array
+    public function getBystoreId(string $storeId): array
     {
-        self::setVendorId($vendorId);
+        self::setstoreId($storeId);
         return CategoryCache::getInstance()->getAll();
     }
 
@@ -77,7 +77,7 @@ class CategoryService extends AbstractService
      */
     public function getChildren($categoryId): array
     {
-        return CategoryCache::getInstance()->getChildren($categoryId, self::getVendorId());
+        return CategoryCache::getInstance()->getChildren($categoryId, self::getstoreId());
     }
 
     /**
@@ -87,7 +87,7 @@ class CategoryService extends AbstractService
      */
     public function getParent($categoryId): array
     {
-        return CategoryCache::getInstance()->getParent($categoryId, self::getVendorId());
+        return CategoryCache::getInstance()->getParent($categoryId, self::getstoreId());
     }
 
     /**
@@ -119,7 +119,7 @@ class CategoryService extends AbstractService
      */
     public function update(array $data): array
     {
-        $category = CategoryRepository::getInstance()->update($data['id'], self::getVendorId(), $data)->toApiArray();
+        $category = CategoryRepository::getInstance()->update($data['id'], self::getstoreId(), $data)->toApiArray();
         if (!empty($data['attributes'])) {
             foreach ($data['attributes'] as $attribute) {
                 if (!empty($attribute['attribute_id'])) {
@@ -148,7 +148,7 @@ class CategoryService extends AbstractService
      */
     public function delete(array $data): bool
     {
-        $isDeleted = CategoryRepository::getInstance()->delete($data['id'], self::getVendorId());
+        $isDeleted = CategoryRepository::getInstance()->delete($data['id'], self::getstoreId());
         try {
             CategoryCache::getInstance()->invalidateCache();
             CategoryCache::getInstance()->deleteIndex($data['id']);
