@@ -42,7 +42,7 @@ class Module implements ModuleDefinitionInterface
         // Register category service as a service
         $di->set('category', function (string $storeId){
             $categoryService = new CategoryService();
-            $categoryService::setstoreId($storeId);
+            $categoryService::setStoreId($storeId);
             return $categoryService;
         });
 

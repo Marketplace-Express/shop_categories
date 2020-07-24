@@ -17,7 +17,7 @@ class BaseService
     /**
      * @param string $storeId
      */
-    public static function setstoreId(string $storeId): void
+    public static function setStoreId(string $storeId): void
     {
         self::$storeId = $storeId;
     }
@@ -25,7 +25,7 @@ class BaseService
     /**
      * @return string
      */
-    public static function getstoreId(): string
+    public static function getStoreId(): string
     {
         return self::$storeId;
     }

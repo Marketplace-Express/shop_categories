@@ -68,7 +68,7 @@ class MutationResolver extends RequestAbstract
         }
 
         // Set storeId
-        $this->di->getAppServices('categoryService')::setstoreId($this->variables['storeId']);
+        $this->di->getAppServices('categoryService')::setStoreId($this->variables['storeId']);
 
         $requestHandler = new $this->requestHandlers[$this->method];
         $output = GraphQL::executeQuery(

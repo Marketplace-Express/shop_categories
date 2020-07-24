@@ -53,7 +53,7 @@ class CategoryService extends AbstractService
         if (!empty($ids)) {
             $categories = CategoryCache::getInstance()->getByIds($ids);
         } else {
-            $categories = CategoryCache::getInstance()->getAll(self::getstoreId());
+            $categories = CategoryCache::getInstance()->getAll(self::getStoreId());
         }
         return $categories;
     }
@@ -66,7 +66,7 @@ class CategoryService extends AbstractService
      */
     public function getBystoreId(string $storeId): array
     {
-        self::setstoreId($storeId);
+        self::setStoreId($storeId);
         return CategoryCache::getInstance()->getAll();
     }
 
@@ -77,7 +77,7 @@ class CategoryService extends AbstractService
      */
     public function getChildren($categoryId): array
     {
-        return CategoryCache::getInstance()->getChildren($categoryId, self::getstoreId());
+        return CategoryCache::getInstance()->getChildren($categoryId, self::getStoreId());
     }
 
     /**
@@ -87,7 +87,7 @@ class CategoryService extends AbstractService
      */
     public function getParent($categoryId): array
     {
-        return CategoryCache::getInstance()->getParent($categoryId, self::getstoreId());
+        return CategoryCache::getInstance()->getParent($categoryId, self::getStoreId());
     }
 
     /**
@@ -119,7 +119,7 @@ class CategoryService extends AbstractService
      */
     public function update(array $data): array
     {
-        $category = CategoryRepository::getInstance()->update($data['id'], self::getstoreId(), $data)->toApiArray();
+        $category = CategoryRepository::getInstance()->update($data['id'], self::getStoreId(), $data)->toApiArray();
         if (!empty($data['attributes'])) {
             foreach ($data['attributes'] as $attribute) {
                 if (!empty($attribute['attribute_id'])) {
@@ -148,7 +148,7 @@ class CategoryService extends AbstractService
      */
     public function delete(array $data): bool
     {
-        $isDeleted = CategoryRepository::getInstance()->delete($data['id'], self::getstoreId());
+        $isDeleted = CategoryRepository::getInstance()->delete($data['id'], self::getStoreId());
         try {
             CategoryCache::getInstance()->invalidateCache();
             CategoryCache::getInstance()->deleteIndex($data['id']);

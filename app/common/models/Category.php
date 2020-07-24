@@ -140,7 +140,7 @@ class Category extends BaseModel
     }
 
     /** @param string */
-    public function setstoreId(string $storeId)
+    public function setStoreId(string $storeId)
     {
         $this->storeId = $storeId;
     }
@@ -200,7 +200,7 @@ class Category extends BaseModel
     }
 
     /** @return string */
-    public function getstoreId(): string
+    public function getStoreId(): string
     {
         return $this->storeId;
     }

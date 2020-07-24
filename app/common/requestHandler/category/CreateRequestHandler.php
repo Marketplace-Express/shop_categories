@@ -39,7 +39,7 @@ class CreateRequestHandler extends RequestAbstract
     public function __construct()
     {
         parent::__construct(new CategoryRules());
-        $this->setstoreId($this->di->getUserService()->storeId);
+        $this->setStoreId($this->di->getUserService()->storeId);
         $this->setUserId($this->di->getUserService()->userId);
     }
 
@@ -72,7 +72,7 @@ class CreateRequestHandler extends RequestAbstract
     }
 
     /** @param string */
-    public function setstoreId($storeId)
+    public function setStoreId($storeId)
     {
         $this->storeId = $storeId;
     }

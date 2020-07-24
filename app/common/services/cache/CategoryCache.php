@@ -37,7 +37,7 @@ class CategoryCache implements CategoryDataSourceInterface
     public function __construct()
     {
         self::establishCacheConnection();
-        self::$cacheKey = sprintf(self::$cacheKey, CategoryService::getstoreId());
+        self::$cacheKey = sprintf(self::$cacheKey, CategoryService::getStoreId());
     }
 
     /**
@@ -106,7 +106,7 @@ class CategoryCache implements CategoryDataSourceInterface
     {
         if (!self::has(self::$cacheKey)) {
             // Get all categories from repository and set in cache
-            $categories = CategoryRepository::getInstance()->getAll(CategoryService::getstoreId());
+            $categories = CategoryRepository::getInstance()->getAll(CategoryService::getStoreId());
             $categories = (new ArrayHelper($categories, [
                 'itemIdAttribute' => 'id',
                 'parentIdAttribute' => 'parentId'

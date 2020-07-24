@@ -86,7 +86,7 @@ class FetchRequestHandler extends RequestAbstract
         DocumentValidator::addRule(new QueryDepth($maxDepth = self::MAX_QUERY_DEPTH));
 
         // Set storeId
-        $this->di->getAppServices('categoryService')::setstoreId($this->variables['storeId']);
+        $this->di->getAppServices('categoryService')::setStoreId($this->variables['storeId']);
 
         $result = GraphQL::executeQuery(
             $this->getSchema(),
