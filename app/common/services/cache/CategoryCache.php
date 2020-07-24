@@ -21,7 +21,7 @@ class CategoryCache implements CategoryDataSourceInterface
 
     const INDEX_NAME = 'category';
 
-    private static $cacheKey = 'categories:vendor:%s';
+    private static $cacheKey = 'categories:store:%s';
 
     /** @var \Redis $categoryCacheInstance */
     private static $categoryCacheInstance;
@@ -210,7 +210,7 @@ class CategoryCache implements CategoryDataSourceInterface
     }
 
     /**
-     * Flush cache related to vendor
+     * Flush cache related to store
      * @return bool
      */
     public static function invalidateCache()

@@ -229,7 +229,7 @@ class CategoryRepository implements CategoryDataSourceInterface
     }
 
     /**
-     * Get all categories related to vendor
+     * Get all categories related to store
      * @param string $storeId
      * @return array
      * @throws \Exception
