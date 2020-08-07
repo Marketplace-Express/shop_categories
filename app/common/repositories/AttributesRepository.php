@@ -58,7 +58,6 @@ class AttributesRepository implements AttributeDataSourceInterface
      */
     public function getAll(string $categoryId): array
     {
-        /** @var Attribute[] $attributes */
         $attributes = self::getModel()::find([
             'conditions' => [
                 'attribute_category_id' => $categoryId

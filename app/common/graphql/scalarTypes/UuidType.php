@@ -26,7 +26,6 @@ class UuidType extends ScalarType
      *
      * @return mixed
      *
-     * @throws Error
      */
     public function serialize($value)
     {

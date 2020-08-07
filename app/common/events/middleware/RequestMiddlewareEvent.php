@@ -71,11 +71,12 @@ class RequestMiddlewareEvent extends Plugin implements MiddlewareInterface
     private function decode(string $token)
     {
         try {
-            $token = explode(' ', $token)[1];
-            return JWT::decode($token, $this->saltKey, [$this->allowedAlg]);
+            $token = JWT::decode(explode(' ', $token)[1], $this->saltKey, [$this->allowedAlg]);
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), 400);
         }
+
+        return $token;
     }
 
     /**

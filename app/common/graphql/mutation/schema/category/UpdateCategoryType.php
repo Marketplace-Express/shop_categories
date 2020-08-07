@@ -22,6 +22,7 @@ class UpdateCategoryType extends InputObjectType
                     'id' => self::nonNull(Types::uuidType()),
                     'name' => self::string(),
                     'parentId' => Types::uuidType(),
+                    'order' => self::int(),
                     'attributes' => [
                         'type' => self::listOf(Types::updateAttributeSchema())
                     ]

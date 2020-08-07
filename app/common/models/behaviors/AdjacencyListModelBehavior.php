@@ -73,6 +73,8 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
             'subItemsSlug' => $this->subItemsSlug,
             'noParentValue' => $this->noParentValue
         ];
+
+        parent::__construct();
     }
 
     /**
@@ -321,9 +323,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         $query = $this->getOwner()->getReadConnection()->query($queryBuilder->getQuery(), $queryBuilder->getBinds());
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
-        $result = $query->fetchAll();
-
-        return $result;
+        return $query->fetchAll();
     }
 
     /**
@@ -383,9 +383,7 @@ class AdjacencyListModelBehavior extends Behavior implements BehaviorInterface
         $query = $this->getOwner()->getReadConnection()->query($queryBuilder->getQuery(), $queryBuilder->getBinds());
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->getOwner()));
-        $result = $query->fetchAll();
-
-        return $result;
+        return $query->fetchAll();
     }
 
     /**

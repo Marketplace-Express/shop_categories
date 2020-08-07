@@ -8,13 +8,10 @@
 namespace app\common\requestHandler\category;
 
 use app\common\requestHandler\RequestAbstract;
-use app\common\services\user\UserService;
-use app\common\validators\rules\AttributeRules;
 use app\common\validators\rules\CategoryRules;
 use app\common\validators\UuidValidator;
 use Phalcon\Utils\Slug;
 use Phalcon\Validation;
-use Ramsey\Uuid\Uuid;
 
 class CreateRequestHandler extends RequestAbstract
 {
@@ -27,48 +24,34 @@ class CreateRequestHandler extends RequestAbstract
     /** @var string */
     private $parentId;
 
-    /** @var string */
-    private $userId;
+    /** @var array */
+    private $attributes = [];
 
     /** @var string */
     private $storeId;
 
-    /** @var array */
-    private $attributes = [];
+    /** @var string */
+    private $userId;
 
     public function __construct()
     {
         parent::__construct(new CategoryRules());
-        $this->setStoreId($this->di->getUserService()->storeId);
-        $this->setUserId($this->di->getUserService()->userId);
     }
 
-    /**
-     * @param string
-     */
-    public function setName($name)
+    /** @param array */
+    public function setCategory($category)
     {
-        $this->name = $name;
-    }
-
-    /**
-     * @param string|null
-     */
-    public function setParentId($parentId)
-    {
-        $this->parentId = $parentId;
-    }
-
-    /** @param int */
-    public function setOrder($order)
-    {
-        $this->order = $order;
-    }
-
-    /** @param string */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
+        $this->name = $category['name'];
+        $this->parentId = $category['parentId'];
+        $this->order = $category['order'];
+        if ($category['attributes']) {
+            $this->attributes = array_map(function ($attribute) {
+                return $this->di->get('jsonMapper')->map(
+                    (object)($attribute),
+                    new \app\common\requestHandler\attribute\CreateRequestHandler()
+                );
+            }, $category['attributes']);
+        }
     }
 
     /** @param string */
@@ -77,20 +60,10 @@ class CreateRequestHandler extends RequestAbstract
         $this->storeId = $storeId;
     }
 
-    /**
-     * @param array|null $attributes
-     */
-    public function setAttributes(?array $attributes)
+    /** @param string */
+    public function setUserId($userId)
     {
-        if ($attributes) {
-            $attributes = array_map(function ($attribute) {
-                return $this->di->get('jsonMapper')->map(
-                    (object) ($attribute),
-                    new \app\common\requestHandler\attribute\CreateRequestHandler(new AttributeRules())
-                );
-            }, $attributes);
-        }
-        $this->attributes = $attributes;
+        $this->userId = $userId;
     }
 
     /**
@@ -178,12 +151,12 @@ class CreateRequestHandler extends RequestAbstract
 
         // Fields to be validated
         $fields = [
-            'name'      => $this->name,
-            'parentId'  => $this->parentId,
-            'order'     => $this->order,
-            'userId'    => $this->userId,
-            'storeId'  => $this->storeId,
-            'attributes' => $this->attributes
+            'name'       => $this->name,
+            'parentId'   => $this->parentId,
+            'order'      => $this->order,
+            'attributes' => $this->attributes,
+            'storeId'    => $this->storeId,
+            'userId'     => $this->userId
         ];
 
         return $validator->validate($fields);
@@ -197,14 +170,14 @@ class CreateRequestHandler extends RequestAbstract
     public function toArray(): array
     {
         return [
-            'id' => Uuid::uuid4()->toString(),
-            'parentId' => $this->parentId,
-            'name' => $this->name,
-            'order' => $this->order,
-            'storeId' => $this->storeId,
-            'userId' => $this->userId,
-            'url' => (new Slug())->generate($this->name),
-            'attributes' => $this->getAttributes()
+            'id'         => $this->security->getRandom()->uuid(),
+            'parentId'   => $this->parentId,
+            'name'       => $this->name,
+            'order'      => $this->order,
+            'url'        => (new Slug())->generate($this->name),
+            'attributes' => $this->getAttributes(),
+            'storeId'    => $this->storeId,
+            'userId'     => $this->userId
         ];
     }
 }

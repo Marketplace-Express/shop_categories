@@ -47,10 +47,8 @@ class Module implements ModuleDefinitionInterface
         });
 
         // Register attributes service as a service
-        $di->set('attributes', function (string $categoryId){
-            $attributesService = new AttributesService();
-            $attributesService::setCategoryId($categoryId);
-            return $attributesService;
+        $di->set('attributes', function (){
+            return new AttributesService();
         });
 
         // Register indexing service as a service

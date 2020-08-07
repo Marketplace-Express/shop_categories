@@ -34,13 +34,15 @@ class Mutation extends ObjectType
                     'create' => [
                         'args' => [
                             'storeId' => Types::uuidType(),
+                            'userId' => Types::uuidType(),
                             'category' => Types::createCategorySchema()
                         ],
                         'type' => Types::mutateCategoryQuerySchema()
                     ],
                     'update' => [
                         'args' => [
-                            'storeId' => Types::uuidType(),
+                            'storeId' => self::nonNull(Types::uuidType()),
+                            'userId' => self::nonNull(Types::uuidType()),
                             'category' => Types::updateCategorySchema()
                         ],
                         'type' => Types::mutateCategoryQuerySchema()
@@ -54,12 +56,12 @@ class Mutation extends ObjectType
                     ]
                 ];
             },
-            'resolveField' => function (IRequestHandler $requestHandler, $args, $context, ResolveInfo $info) {
+            'resolveField' => function ($rootValue, $args, IRequestHandler $requestHandler, ResolveInfo $info) {
                 if ($this->operation) {
                     throw new ArrayOfStringsException([$info->fieldName => 'Cannot perform more than one operation at once']);
                 }
                 $this->operation = $info->fieldName;
-                return $this->process($args['category'], $requestHandler, $info->fieldName);
+                return $this->process($args, $requestHandler, $info->fieldName);
             }
         ];
         parent::__construct($config);
@@ -98,7 +100,6 @@ class Mutation extends ObjectType
         if (!$request->isValid()) {
             $request->invalidRequest();
         }
-        $category = $this->getService()->{$operation}($request->toArray());
-        return $category;
+        return $this->getService()->{$operation}($request->toArray());
     }
 }

@@ -60,7 +60,7 @@ class CategoryRepository implements CategoryDataSourceInterface
      * Find multiple categories
      * @param array $categoriesIds
      * @param string $storeId
-     * @return \Phalcon\Mvc\Model\ResultsetInterface
+     * @return array
      * @throws \Exception
      */
     public static function findAllByIds(array $categoriesIds, string $storeId)
@@ -261,10 +261,6 @@ class CategoryRepository implements CategoryDataSourceInterface
     public function create(array $data): Category
     {
         $category = self::getModel(true);
-        if (!empty($data['parentId'])) {
-            $parent = $this->getColumnsForCategory($data['parentId'], $data['storeId'], ['depth']);
-            $data['depth'] = $parent->depth + 1;
-        }
         if (!$category->create($data, Category::CREATE_WHITE_LIST)) {
             throw new ArrayOfStringsException($category->getMessages(), 400);
         }
@@ -283,10 +279,7 @@ class CategoryRepository implements CategoryDataSourceInterface
     public function update(string $categoryId, string $storeId, array $data)
     {
         $category = self::findById($categoryId, $storeId);
-        if (!empty($data['parentId']) && $category->parentId !== $data['parentId']) {
-            $parentCategory = $this->getColumnsForCategory($data['parentId'], $storeId, ['depth']);
-            $data['depth'] += $parentCategory->depth;
-        }
+
         if (!$category->update($data, Category::UPDATE_WHITE_LIST)) {
             throw new ArrayOfStringsException($category->getMessages(), 400);
         }

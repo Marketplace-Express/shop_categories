@@ -140,7 +140,7 @@ class AttributesCache implements AttributeDataSourceInterface
      */
     public function delete(string ...$cacheKeys)
     {
-        return self::$attributesCacheInstance->delete($cacheKeys);
+        return self::$attributesCacheInstance->del($cacheKeys);
     }
 
     /**
@@ -208,7 +208,7 @@ class AttributesCache implements AttributeDataSourceInterface
         $attributeCacheKey = $this->getAttributeCacheKey($attributeId);
         if (self::exists($attributeCacheKey)) {
             $attribute = self::get($attributeCacheKey);
-            $deleteAttribute =  self::$attributesCacheInstance->delete($attributeCacheKey);
+            $deleteAttribute =  self::$attributesCacheInstance->del($attributeCacheKey);
             $deleteFromCategory = self::hDelete($this->getCategoryCacheKey($attribute['attributeCategoryId']), $attributeId);
             if ($deleteAttribute && $deleteFromCategory) {
                 return true;

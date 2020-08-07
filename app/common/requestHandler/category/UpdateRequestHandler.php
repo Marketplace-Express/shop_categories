@@ -12,7 +12,6 @@ use app\common\requestHandler\RequestAbstract;
 use app\common\validators\rules\CategoryRules;
 use app\common\validators\UuidValidator;
 use Phalcon\Exception;
-use Phalcon\Mvc\Controller;
 use Phalcon\Utils\Slug;
 use Phalcon\Validation;
 
@@ -34,6 +33,12 @@ class UpdateRequestHandler extends RequestAbstract
     /** @var int|null */
     private $order;
 
+    /** @var string */
+    private $storeId;
+
+    /** @var string */
+    private $userId;
+
     /**
      * @var \app\common\requestHandler\attribute\CreateRequestHandler[]|\app\common\requestHandler\attribute\UpdateRequestHandler[]
      */
@@ -47,52 +52,33 @@ class UpdateRequestHandler extends RequestAbstract
         parent::__construct(new CategoryRules());
     }
 
-    /**
-     * @param string $id
-     */
-    public function setId($id)
+    /** @param string */
+    public function setStoreId($storeId)
     {
-        $this->id = $id;
+        $this->storeId = $storeId;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    /** @param string */
+    public function setUserId($userId)
     {
-        $this->name = $name;
+        $this->userId = $userId;
     }
 
-    /**
-     * @param null|string $parentId
-     */
-    public function setParentId($parentId)
+    /** @param array */
+    public function setCategory($category)
     {
-        $this->parentId = $parentId;
-    }
-
-    /**
-     * @param int|null $order
-     */
-    public function setOrder($order)
-    {
-        $this->order = $order;
-    }
-
-    /**
-     * @param array|null $attributes
-     */
-    public function setAttributes(?array $attributes)
-    {
-        if ($attributes) {
-            $attributes = array_map(function ($attribute) {
+        $this->id = $category['id'];
+        $this->name = $category['name'];
+        $this->parentId = $category['parentId'];
+        $this->order = $category['order'];
+        if ($category['attributes']) {
+            $this->attributes = array_map(function ($attribute) {
                 return $this->di->get('jsonMapper')->map(
                     json_decode(json_encode($attribute)),
                     $this->getAttributesRequestHandler($attribute)
                 );
-            }, $attributes);
+            }, $category['attributes']);
         }
-        $this->attributes = $attributes;
     }
 
     /**
@@ -185,11 +171,18 @@ class UpdateRequestHandler extends RequestAbstract
             ])
         );
 
+        $validator->add(
+            ['storeId', 'userId'],
+            new UuidValidator()
+        );
+
         return $validator->validate([
-            'name'      => $this->name,
-            'parentId'  => $this->parentId,
-            'order'     => $this->order,
-            'attributes' => $this->attributes
+            'name'       => $this->name,
+            'parentId'   => $this->parentId,
+            'order'      => $this->order,
+            'attributes' => $this->attributes,
+            'storeId'    => $this->storeId,
+            'userId'     => $this->userId
         ]);
     }
 

@@ -13,16 +13,15 @@ class Handler extends Injectable
 {
     /**
      * @param string $service
-     * @param $serviceArgs
      * @param string $method
      * @param $data
      * @return mixed
      *
      * @throws \Exception
      */
-    static public function process(string $service, $serviceArgs, string $method, $data)
+    static public function process(string $service, string $method, $data)
     {
-        $service = \Phalcon\Di::getDefault()->get($service, $serviceArgs);
+        $service = \Phalcon\Di::getDefault()->getAppServices($service);
         if (!is_callable([$service, $method])) {
             throw new \Exception('Method "' . get_class($service) . '::' . $method . '" is not a callable method');
         }

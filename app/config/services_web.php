@@ -1,7 +1,6 @@
 <?php
 
 use Phalcon\Events\Event;
-use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Router;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
@@ -78,7 +77,6 @@ $di->setShared('dispatcher', function() {
                         'controller' => 'Notfound'
                     ]);
                     return false;
-                    break;
             }
 
             switch (true) {
@@ -91,7 +89,6 @@ $di->setShared('dispatcher', function() {
                         'params' => [$exception->getMessage()]
                     ]);
                     return false;
-                    break;
             }
         }
     );

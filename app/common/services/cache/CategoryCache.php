@@ -119,7 +119,7 @@ class CategoryCache implements CategoryDataSourceInterface
 
     /**
      * @param string $categoryId
-     * @param string $storeId
+     * @param string|null $storeId
      * @return array
      *
      * @throws \Exception
@@ -130,7 +130,7 @@ class CategoryCache implements CategoryDataSourceInterface
     }
 
     /**
-     * @param string $storeId
+     * @param string|null $storeId
      * @return array
      *
      * @throws \Exception
@@ -142,7 +142,7 @@ class CategoryCache implements CategoryDataSourceInterface
 
     /**
      * @param string $categoryId
-     * @param string $storeId
+     * @param string|null $storeId
      * @return array
      *
      * @throws \Exception
@@ -154,7 +154,7 @@ class CategoryCache implements CategoryDataSourceInterface
 
     /**
      * @param string $categoryId
-     * @param string $storeId
+     * @param string|null $storeId
      * @return array
      *
      * @throws \Exception
@@ -166,7 +166,7 @@ class CategoryCache implements CategoryDataSourceInterface
 
     /**
      * @param string $categoryId
-     * @param string $storeId
+     * @param string|null $storeId
      * @return array
      *
      * @throws \Exception
@@ -178,7 +178,7 @@ class CategoryCache implements CategoryDataSourceInterface
 
     /**
      * @param string $categoryId
-     * @param string $storeId
+     * @param string|null $storeId
      * @return array
      *
      * @throws \Exception
@@ -189,7 +189,7 @@ class CategoryCache implements CategoryDataSourceInterface
     }
 
     /**
-     * @param string $storeId
+     * @param string|null $storeId
      * @return array
      *
      * @throws \Exception

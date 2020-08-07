@@ -55,10 +55,9 @@ class IndexingService extends Injectable
      * @param string $docId
      * @param string $storeId
      * @param string $name
-     * @param string $url
+     * @param string|null $url
      *
      * @throws \Ehann\RediSearch\Exceptions\FieldNotInSchemaException
-     * @throws \Exception
      */
     public function add(string $docId, string $storeId, string $name, ?string $url)
     {

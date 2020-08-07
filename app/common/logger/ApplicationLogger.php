@@ -8,6 +8,7 @@
 namespace app\common\logger;
 
 use Phalcon\Di\Injectable;
+use Phalcon\Logger;
 use Phalcon\Logger\Adapter\File;
 
 class ApplicationLogger extends Injectable
@@ -17,24 +18,21 @@ class ApplicationLogger extends Injectable
      */
     const LOG_FILE = 'app.log';
 
-    private $file;
-
     /**
      * @return File
      */
     public function getFile()
     {
-        $config = $this->di->getConfig();
-        if (!file_exists($config->application->logsDir . self::LOG_FILE)) {
-            touch($config->application->logsDir . self::LOG_FILE);
+        $config = $this->di->getConfig()->application;
+        if (!file_exists($config->logsDir . self::LOG_FILE)) {
+            touch($config->logsDir . self::LOG_FILE);
         }
-        $this->file = new File($config->application->logsDir . self::LOG_FILE);
-        return $this->file;
+        return new File($config->logsDir . self::LOG_FILE);
     }
 
     public function logError($errors)
     {
         $errors = (is_array($errors)) ? json_encode($errors) : $errors;
-        $this->getFile()->log(\Phalcon\Logger::ERROR, $errors);
+        $this->getFile()->log(Logger::ERROR, $errors);
     }
 }

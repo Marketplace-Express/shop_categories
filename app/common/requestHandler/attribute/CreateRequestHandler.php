@@ -9,6 +9,7 @@ namespace app\common\requestHandler\attribute;
 
 use app\common\requestHandler\RequestAbstract;
 use app\common\validators\rules\AttributeRules;
+use app\common\validators\rules\RulesAbstract;
 use app\common\validators\UuidValidator;
 use Phalcon\Mvc\Controller;
 use Phalcon\Validation;
@@ -25,6 +26,11 @@ class CreateRequestHandler extends RequestAbstract
 
     /** @var mixed $values */
     private $values;
+
+    public function __construct()
+    {
+        parent::__construct(new AttributeRules());
+    }
 
     /**
      * @param string $name

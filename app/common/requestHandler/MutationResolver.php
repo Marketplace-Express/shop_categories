@@ -13,10 +13,8 @@ use app\common\graphql\mutation\Mutation;
 use app\common\requestHandler\category\CreateRequestHandler;
 use app\common\requestHandler\category\DeleteRequestHandler;
 use app\common\requestHandler\category\UpdateRequestHandler;
-use app\common\validators\UuidValidator;
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
-use Phalcon\Validation;
 use Phalcon\Validation\Message\Group;
 
 class MutationResolver extends RequestAbstract
@@ -63,24 +61,28 @@ class MutationResolver extends RequestAbstract
      */
     public function resolve()
     {
-        if (!array_key_exists($this->method, $this->requestHandlers)) {
-            throw new \Exception('Unknown request method');
+        if (!array_key_exists('storeId', $this->variables)) {
+            throw new \InvalidArgumentException('storeId is required', 400);
         }
 
         // Set storeId
         $this->di->getAppServices('categoryService')::setStoreId($this->variables['storeId']);
 
         $requestHandler = new $this->requestHandlers[$this->method];
+
         $output = GraphQL::executeQuery(
             $this->getMutationSchema(),
             $this->query,
-            $requestHandler, null,
+            null, $requestHandler,
             $this->variables
         );
+
         if ($output->errors) {
             throw new ArrayOfStringsException($output->errors);
         }
+
         $this->output = $output;
+
         return $this;
     }
 
@@ -89,24 +91,7 @@ class MutationResolver extends RequestAbstract
      */
     public function validate(): Group
     {
-        $validator = new Validation();
-
-        $validator->add(
-            'storeId',
-            new Validation\Validator\Callback([
-                'callback' => function ($data) {
-                    if (!empty($data['storeId'])) {
-                        return new UuidValidator();
-                    }
-                    return false;
-                },
-                'message' => 'storeId is required'
-            ])
-        );
-
-        return $validator->validate([
-            'storeId' => $this->variables['storeId'] ?? null
-        ]);
+        return new Group();
     }
 
     /**

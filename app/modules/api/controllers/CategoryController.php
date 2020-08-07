@@ -43,7 +43,10 @@ class CategoryController extends BaseController
                 $this->request->getJsonRawBody(),
                 $resolver
             );
-            $resolver->successRequest($resolver->resolve()->toArray(), 200);
+            if (!$resolver->isValid()) {
+                $resolver->invalidRequest();
+            }
+            $resolver->successRequest($resolver->resolve()->toArray());
         } catch (\Throwable $exception) {
             $this->handleError($exception->getMessage(), $exception->getCode());
         }

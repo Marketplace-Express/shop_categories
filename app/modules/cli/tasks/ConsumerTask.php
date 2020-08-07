@@ -42,7 +42,6 @@ class ConsumerTask extends Task
                         // handle request
                         $response = RequestHandler::process(
                             $payload['service'],
-                            $payload['service_args'],
                             $payload['method'],
                             $payload['params']
                         );
@@ -90,7 +89,6 @@ class ConsumerTask extends Task
                     $payload = json_decode($message->getBody(), true);
                     RequestHandler::process(
                         $payload['service'],
-                        $payload['service_args'],
                         $payload['method'],
                         $payload['params']
                     );
