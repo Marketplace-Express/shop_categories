@@ -64,10 +64,10 @@ class CategoryService extends AbstractService
      * @throws \RedisException
      * @throws \Exception
      */
-    public function getBystoreId(string $storeId): array
+    public function getByStoreId(string $storeId): array
     {
         self::setStoreId($storeId);
-        return CategoryCache::getInstance()->getAll();
+        return CategoryCache::getInstance()->getAll($storeId);
     }
 
     /**
