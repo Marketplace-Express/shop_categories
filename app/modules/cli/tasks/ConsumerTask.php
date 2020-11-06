@@ -40,21 +40,20 @@ class ConsumerTask extends Task
                     try {
 
                         // handle request
-                        $response = RequestHandler::process(
-                            $payload['service'],
+                        $message = RequestHandler::getInstance()->process(
+                            $payload['route'],
                             $payload['method'],
-                            $payload['params']
+                            $payload['body'],
+                            $payload['query'],
+                            $payload['headers']
                         );
-
-                        // send response
-                        $message = json_encode($response);
 
                     } catch (\Throwable $exception) {
                         $this->di->getLogger()->logError($exception->getMessage());
                         $message = json_encode([
                             'hasError' => true,
                             'message' => $exception->getMessage(),
-                            'code' => $exception->getCode() ?: 500
+                            'status' => $exception->getCode() ?: 500
                         ]);
                     }
                     $amqpRequest->basic_ack($request->delivery_info['delivery_tag']);
@@ -87,10 +86,12 @@ class ConsumerTask extends Task
             $channel->basic_consume(self::ASYNC_QUEUE_NAME, '', false, true, false, false,
                 function (AMQPMessage $message) {
                     $payload = json_decode($message->getBody(), true);
-                    RequestHandler::process(
-                        $payload['service'],
+                    RequestHandler::getInstance()->process(
+                        $payload['route'],
                         $payload['method'],
-                        $payload['params']
+                        $payload['body'],
+                        $payload['query'],
+                        $payload['headers']
                     );
                 }
             );

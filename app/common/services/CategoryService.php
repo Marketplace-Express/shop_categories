@@ -10,10 +10,8 @@ namespace app\common\services;
 use app\common\exceptions\ArrayOfStringsException;
 use app\common\exceptions\NotFoundException;
 use app\common\exceptions\OperationFailedException;
-use app\common\helpers\ArrayHelper;
 use app\common\repositories\CategoryRepository;
 use app\common\services\cache\CategoryCache;
-use app\common\utils\UuidUtil;
 
 class CategoryService extends AbstractService
 {
@@ -56,18 +54,6 @@ class CategoryService extends AbstractService
             $categories = CategoryCache::getInstance()->getAll(self::getStoreId());
         }
         return $categories;
-    }
-
-    /**
-     * @param string $storeId
-     * @return array
-     * @throws \RedisException
-     * @throws \Exception
-     */
-    public function getByStoreId(string $storeId): array
-    {
-        self::setStoreId($storeId);
-        return CategoryCache::getInstance()->getAll($storeId);
     }
 
     /**

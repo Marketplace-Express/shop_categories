@@ -2,7 +2,7 @@ version: '3.3'
 services:
   categories-sync:
     image: 'registry.gitlab.com/shop_ecommerce/shop_categories'
-    command: ./run consumer syncConsumer
+    command: bash -c "./run consumer syncConsumer | phalcon serve"
     environment:
       - PHP_IDE_CONFIG=serverName=phalcon.local
     volumes:
@@ -12,7 +12,7 @@ services:
 
   categories-async:
     image: 'registry.gitlab.com/shop_ecommerce/shop_categories'
-    command: ./run consumer asyncConsumer
+    command: bash -c "./run consumer asyncConsumer | phalcon serve"
     environment:
       - PHP_IDE_CONFIG=serverName=phalcon.local
     volumes:

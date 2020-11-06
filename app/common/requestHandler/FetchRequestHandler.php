@@ -51,14 +51,8 @@ class FetchRequestHandler extends RequestAbstract
 
         $validator->add(
             'storeId',
-            new Validation\Validator\Callback([
-                'callback' => function ($data) {
-                    if (!empty($data['storeId'])) {
-                        return new UuidValidator();
-                    }
-                    return false;
-                },
-                'message' => 'storeId is required'
+            new UuidValidator([
+                'allowEmpty' => false
             ])
         );
 
