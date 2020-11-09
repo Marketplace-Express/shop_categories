@@ -32,45 +32,32 @@ class ArrayHelper
         }
     }
 
+
     /**
-     * Creating multidimensional array from one-dimensional array, based on itemId and parentId
      * @return array
-     * @throws \Exception
      */
     public function tree()
     {
-        // TODO ENHANCE PERFORMANCE
-        $ids = array_column($this->array, $this->itemIdAttribute);
-        foreach ($this->array as $key => $value) {
-            if ($value[$this->parentIdAttribute] != $this->noParentValue) {
-                $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->array), \RecursiveIteratorIterator::CHILD_FIRST);
-                while ($iterator->valid()) {
-                    if ($iterator->key() == $this->itemIdAttribute && $iterator->current() == $value[$this->parentIdAttribute]) {
-                        if (array_key_exists($this->subItemsSlug, (array) $iterator->getInnerIterator())) {
-                            $iterator->offsetSet($this->subItemsSlug, array_merge((array)$iterator->offsetGet($this->subItemsSlug), [$value]));
-                        } else {
-                            $iterator->offsetSet($this->subItemsSlug, [$value]);
-                        }
-                        $current = (array) $iterator->getSubIterator($iterator->getDepth());
-                        for ($i = $iterator->getDepth()-1; $i > 0; $i--) {
-                            $parents = (array) $iterator->getSubIterator($i);
-                            if (array_key_exists($this->subItemsSlug, $parents)) {
-                                $parents[$this->subItemsSlug] = $current;
-                            } else {
-                                $parentItemsIndexes = array_column($parents, $this->itemIdAttribute);
-                                $parentIndex = array_search($current[$this->itemIdAttribute], $parentItemsIndexes);
-                                $parents[$parentIndex] = $current;
-                            }
-                            $current = $parents;
-                        }
-                        $this->array[array_search($current[$this->itemIdAttribute], $ids)] = $current;
-                        unset($this->array[$key]);
-                        break;
-                    }
-                    $iterator->next();
-                }
+        // First, convert the array so that the keys match the ids
+        $reKeyed = array();
+        foreach ($this->array as $item) {
+            $reKeyed[$item[$this->itemIdAttribute]] = $item;
+        }
+
+        // Next, use references to associate children with parents
+        foreach ($reKeyed as $id => $item) {
+            if (isset($item[$this->parentIdAttribute], $reKeyed[$item[$this->parentIdAttribute]])) {
+                $reKeyed[$item[$this->parentIdAttribute]][$this->subItemsSlug][] =& $reKeyed[$id];
             }
         }
-        return array_values($this->array);
+
+        // Finally, go through and remove children from the outer level
+        foreach ($reKeyed as $id => $item) {
+            if (isset($item[$this->parentIdAttribute])) {
+                unset($reKeyed[$id]);
+            }
+        }
+
+        return $reKeyed;
     }
 }

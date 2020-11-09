@@ -66,6 +66,13 @@ return new \Phalcon\Config([
         'token' => [
             'saltKey' => 'abc@123456789012',
             'allowedAlg' => 'HS512'
+        ],
+        'api' => [
+            'base_uri' => 'http://localhost:8000/api/',
+            'timeout' => 10
+        ],
+        'graphql' => [
+            'maxQueryDepth' => 5
         ]
     ],
     'printNewLine' => true

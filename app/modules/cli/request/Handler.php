@@ -21,9 +21,11 @@ class Handler extends Injectable implements RequestHandlerInterface
      */
     public function __construct()
     {
+        $config = \Phalcon\Di::getDefault()->getConfig()->application;
+
         $this->guzzleHttp = new Client([
-            'base_uri' => 'http://localhost:8000/api/',
-            'timeout' => 10
+            'base_uri' => $config->api->base_uri,
+            'timeout' => $config->api->timeout
         ]);
     }
 

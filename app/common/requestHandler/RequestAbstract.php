@@ -65,7 +65,10 @@ abstract class RequestAbstract extends Injectable implements IRequestHandler
         http_response_code($code);
         if ($code != 204) {
             $this->response
-                ->setJsonContent($message);
+                ->setJsonContent([
+                    'status' => $code,
+                    'message' => $message
+                ]);
         }
         return $this->response;
     }

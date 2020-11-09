@@ -21,8 +21,6 @@ use Phalcon\Validation\Message\Group;
 
 class FetchRequestHandler extends RequestAbstract
 {
-    const MAX_QUERY_DEPTH = 5;
-
     /** @var string */
     public $query;
 
@@ -67,7 +65,7 @@ class FetchRequestHandler extends RequestAbstract
      */
     public function toArray(): array
     {
-        return $this->execute()->toArray();
+        return $this->execute()->data['categories'];
     }
 
     /**
@@ -76,8 +74,11 @@ class FetchRequestHandler extends RequestAbstract
      */
     public function execute(): ExecutionResult
     {
+        // Get config
+        $config = \Phalcon\Di::getDefault()->getConfig()->application;
+
         // Limit the query depth
-        DocumentValidator::addRule(new QueryDepth($maxDepth = self::MAX_QUERY_DEPTH));
+        DocumentValidator::addRule(new QueryDepth($config->graphql->maxQueryDepth));
 
         // Set storeId
         $this->di->getAppServices('categoryService')::setStoreId($this->variables['storeId']);
