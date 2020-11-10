@@ -3,7 +3,9 @@
 namespace app\common\models;
 
 use app\common\validators\rules\CategoryRules;
+use app\common\validators\UniquenessValidator;
 use app\common\validators\UuidValidator;
+use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\AlphaNumericValidator;
 use app\common\models\behaviors\AdjacencyListModelBehavior;
@@ -385,14 +387,15 @@ class Category extends BaseModel
         );
 
         $validator->add(
-            ['name', 'storeId'],
-            new Validation\Validator\Uniqueness([
-                'model' => self::model(true),
-                'convert' => function ($values) {
-                    $values['storeId'] = $this->storeId;
-                    return $values;
+            'name',
+            new UniquenessValidator([
+                'model' => $this,
+                'conditions' => function (Criteria $criteria) {
+                    return $criteria
+                        ->where('id <> :id:', ['id' => $this->id])
+                        ->andWhere('storeId = :storeId:', ['storeId' => $this->storeId])
+                        ->andWhere('isDeleted = false');
                 },
-                'except' => ['id' => $this->id],
                 'message' => 'Category name already exists'
             ])
         );

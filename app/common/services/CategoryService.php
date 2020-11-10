@@ -126,13 +126,13 @@ class CategoryService extends AbstractService
 
     /**
      * @param array $data
-     * @return bool
+     * @return array
      *
      * @throws ArrayOfStringsException
      * @throws NotFoundException
      * @throws OperationFailedException
      */
-    public function delete(array $data): bool
+    public function delete(array $data)
     {
         $isDeleted = CategoryRepository::getInstance()->delete($data['id'], self::getStoreId());
         try {
@@ -141,6 +141,6 @@ class CategoryService extends AbstractService
         } catch (\RedisException $exception) {
             // do nothing
         }
-        return $isDeleted;
+        return ['isDeleted' => $isDeleted];
     }
 }

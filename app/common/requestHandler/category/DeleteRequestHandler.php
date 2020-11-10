@@ -16,9 +16,10 @@ class DeleteRequestHandler extends RequestAbstract
     /** @var string */
     private $id;
 
-    public function setId($id)
+    /** @param array */
+    public function setCategory($category)
     {
-        $this->id = $id;
+        $this->id = $category['id'];
     }
 
     /** Validate request fields using \Phalcon\Validation\Validator

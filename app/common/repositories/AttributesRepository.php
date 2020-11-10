@@ -86,8 +86,10 @@ class AttributesRepository implements AttributeDataSourceInterface
     public function create(array $data, string $categoryId): Attribute
     {
         $attribute = self::getModel();
-        $attribute->attribute_category_id = $categoryId;
+
+        $data['attribute_category_id'] = $categoryId;
         $attribute->setAttributes($data);
+
         if (!$attribute->save()) {
             throw new ArrayOfStringsException($attribute->getMessages(), 400);
         }

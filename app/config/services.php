@@ -75,11 +75,17 @@ $di->setShared('db', function () {
                 touch($config->application->logsDir . 'db.log');
             }
 
+            $lastProfile = $profiler->getLastProfile();
+
             // Log last SQL statement
             Factory::load([
                 'name' => $config->application->logsDir . 'db.log',
                 'adapter' => 'file'
-            ])->info($profiler->getLastProfile()->getSqlStatement());
+            ])->info(
+                $lastProfile->getSqlStatement()
+                ."\n"
+                .json_encode($connection->getSQLVariables())
+            );
         }
     });
     $connection->setEventsManager($eventsManager);

@@ -96,10 +96,10 @@ class Mutation extends ObjectType
     private function process(array $args, IRequestHandler $requestHandler, string $operation = 'create')
     {
         /** @var IRequestHandler $request */
-        $request = $this->getJsonMapper()->map($args, $requestHandler);
-        if (!$request->isValid()) {
-            $request->invalidRequest();
+        $requestHandler = $this->getJsonMapper()->map($args, $requestHandler);
+        if (!$requestHandler->isValid()) {
+            $requestHandler->invalidRequest();
         }
-        return $this->getService()->{$operation}($request->toArray());
+        return $this->getService()->{$operation}($requestHandler->toArray());
     }
 }

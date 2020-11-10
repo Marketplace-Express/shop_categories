@@ -71,7 +71,7 @@ class UpdateRequestHandler extends RequestAbstract
         $this->name = $category['name'];
         $this->parentId = $category['parentId'];
         $this->order = $category['order'];
-        if ($category['attributes']) {
+        if (!empty($category['attributes'])) {
             $this->attributes = array_map(function ($attribute) {
                 return $this->di->get('jsonMapper')->map(
                     json_decode(json_encode($attribute)),

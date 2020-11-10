@@ -26,6 +26,7 @@ class ArrayOfStringsException extends \Exception
                 if ($message instanceof Error) {
                     if ($message->getPrevious() != null) {
                         $errors[$key] = $message->getPrevious()->getMessage();
+                        $code = $message->getPrevious()->getCode();
                     } else {
                         $errors[$key] = $message->getMessage();
                     }
