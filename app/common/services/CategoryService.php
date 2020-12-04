@@ -141,6 +141,7 @@ class CategoryService extends AbstractService
         } catch (\RedisException $exception) {
             // do nothing
         }
+
         return ['isDeleted' => $isDeleted];
     }
 }

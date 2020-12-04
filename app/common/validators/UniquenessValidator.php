@@ -15,7 +15,22 @@ use Phalcon\Validation\ValidatorInterface;
 
 class UniquenessValidator extends Validator implements ValidatorInterface
 {
-
+    /**
+     * @param \Phalcon\Validation $validation
+     * @param string $attribute
+     * @return bool
+     *
+     * $validator->add(
+     *     'name',
+     *      new UniquenessValidator([
+     *           'model' => $this,
+     *           'conditions' => function (Criteria $criteria) {
+     *                 return $criteria->where('id <> :id:', ['id' => $id]);
+     *            },
+     *           'message' => 'Item already exists'
+     *      ])
+     * );
+     */
     public function validate(\Phalcon\Validation $validation, $attribute)
     {
         $message = $this->getOption('message', "{$attribute} should be unique");
@@ -29,12 +44,12 @@ class UniquenessValidator extends Validator implements ValidatorInterface
         /** @var \Closure $conditions */
         $conditions = $this->getOption('conditions');
 
+        if (!is_callable($conditions)) {
+            throw new \InvalidArgumentException('conditions should be callable');
+        }
+
         /** @var Model\Criteria $conditions */
         $conditions = $conditions($model::query());
-
-        if (!$conditions instanceof \Closure) {
-            throw new \InvalidArgumentException('conditions should be closure');
-        }
 
         $value = trim($model->{$attribute});
         $conditions->andWhere(sprintf('%s = :value:', $attribute), ['value' => $value]);

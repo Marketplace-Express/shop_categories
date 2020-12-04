@@ -15,20 +15,38 @@ use app\common\exceptions\ArrayOfStringsException;
 
 class QueueRequestHandler extends Injectable
 {
+    const REQUEST_TYPE_SYNC = 'sync';
+    const REQUEST_TYPE_ASYNC = 'async';
+
     private $queueName;
-    private $service;
+    private $route;
     private $method;
     private $correlationId;
-    private $data;
-    private $serviceArgs = [];
+    private $headers = [];
+    private $body = [];
+    private $query = [];
     private $replyTo = null;
     private $exchange = null;
+    private $requestType;
 
     /** @var AMQPChannel */
     private $channel;
 
     /** @var AMQPMessage */
     private $response;
+
+    /**
+     * QueueRequestHandler constructor.
+     * @param $requestType
+     */
+    public function __construct($requestType)
+    {
+        $this->requestType = $requestType;
+        $this->channel = $this->getDI()->getAmqp()->getChannel();
+        if ($requestType == self::REQUEST_TYPE_SYNC) {
+            list($this->replyTo, ,) = $this->channel->queue_declare('', false, true, true, true);
+        }
+    }
 
     /**
      * @return string
@@ -49,12 +67,13 @@ class QueueRequestHandler extends Injectable
     }
 
     /**
-     * @param string $service
+     * @param string $route
      * @return QueueRequestHandler
      */
-    public function setService(string $service)
+    public function setRoute(string $route)
     {
-        $this->service = $service;
+        $this->route = $route;
+
         return $this;
     }
 
@@ -65,36 +84,36 @@ class QueueRequestHandler extends Injectable
     public function setMethod(string $method)
     {
         $this->method = $method;
+
+        return $this;
+    }
+
+    public function setHeaders(array $headers = [])
+    {
+        $this->headers = $headers;
+
         return $this;
     }
 
     /**
-     * @param array $data
+     * @param array $body
      * @return QueueRequestHandler
      */
-    public function setData(array $data)
+    public function setBody(array $body)
     {
-        $this->data = $data;
+        $this->body = $body;
+
         return $this;
     }
 
     /**
-     * @param array $args
+     * @param array $query
      * @return QueueRequestHandler
      */
-    public function setServiceArgs(array $args = [])
+    public function setQuery(array $query)
     {
-        $this->serviceArgs = $args;
-        return $this;
-    }
+        $this->query = $query;
 
-    /**
-     * @param string $replyTo
-     * @return QueueRequestHandler
-     */
-    public function setReplyTo(string $replyTo)
-    {
-        $this->replyTo = $replyTo;
         return $this;
     }
 
@@ -109,14 +128,6 @@ class QueueRequestHandler extends Injectable
     }
 
     /**
-     * QueueRequestHandler constructor.
-     */
-    public function __construct()
-    {
-        $this->channel = $this->getDI()->getAmqp()->getChannel();
-    }
-
-    /**
      * @return bool
      * @throws ArrayOfStringsException
      */
@@ -125,13 +136,13 @@ class QueueRequestHandler extends Injectable
         $validator = new Validation();
 
         $validator->add(
-            ['queueName', 'service', 'method'],
+            ['queueName', 'route', 'method'],
             new Validation\Validator\PresenceOf()
         );
 
         $messages = $validator->validate([
             'queueName' => $this->queueName,
-            'service' => $this->service,
+            'route' => $this->route,
             'method' => $this->method
         ]);
 
@@ -205,10 +216,11 @@ class QueueRequestHandler extends Injectable
 
         $this->initializeConsumer();
         $message = new AMQPMessage(json_encode([
-            'service' => $this->service,
-            'service_args' => $this->serviceArgs,
-            'action' => $this->method,
-            'data' => $this->data
+            'route' => $this->route,
+            'method' => $this->method,
+            'headers' => $this->headers,
+            'query' => $this->query,
+            'body' => $this->body,
         ]), [
             'reply_to' => $this->replyTo,
             'correlation_id' => $this->getCorrelationId(),
@@ -235,10 +247,11 @@ class QueueRequestHandler extends Injectable
         $this->validate();
 
         $message = new AMQPMessage(json_encode([
-            'service' => $this->service,
-            'service_args' => $this->serviceArgs,
+            'route' => $this->route,
             'method' => $this->method,
-            'data' => $this->data
+            'headers' => $this->headers,
+            'query' => $this->query,
+            'body' => $this->body,
         ]));
         $this->channel->basic_publish($message, $this->exchange, $this->queueName);
         $this->channel->close();

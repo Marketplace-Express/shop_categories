@@ -99,6 +99,6 @@ class MutationResolver extends RequestAbstract
      */
     public function toArray(): array
     {
-        return $this->output->data;
+        return array_shift($this->output->data);
     }
 }

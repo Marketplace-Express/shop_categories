@@ -28,7 +28,7 @@ class ExceptionhandlerController extends Controller
      * @param int $code
      * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
      */
-    public function raiseErrorAction($errors, $code)
+    public function raiseErrorAction($errors, $code = 500)
     {
         if (is_array($errors)) {
             $errors = json_encode($errors);
@@ -49,7 +49,8 @@ class ExceptionhandlerController extends Controller
         http_response_code($code);
         return $this->response
             ->setJsonContent([
-                'errors' => $errors
+                'status' => $code,
+                'message' => $errors
             ]);
     }
 }
