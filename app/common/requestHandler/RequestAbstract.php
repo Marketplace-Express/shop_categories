@@ -10,6 +10,7 @@ namespace app\common\requestHandler;
 
 use app\common\exceptions\ArrayOfStringsException;
 use app\common\exceptions\NotFoundException;
+use app\common\interfaces\ApiArrayData;
 use app\common\validators\rules\RulesAbstract;
 use Phalcon\Di\Injectable;
 use Phalcon\Mvc\Controller;
@@ -63,6 +64,17 @@ abstract class RequestAbstract extends Injectable implements IRequestHandler
     public function successRequest($message = null, int $code = 200)
     {
         http_response_code($code);
+
+        if ($message instanceof ApiArrayData) {
+            $message = $message->toApiArray();
+        }
+
+        if (is_array($message)) {
+            array_walk($message, function (&$data) {
+                $data = ($data instanceof ApiArrayData) ? $data->toApiArray() : $data;
+            });
+        }
+
         if ($code != 204) {
             $this->response
                 ->setJsonContent([

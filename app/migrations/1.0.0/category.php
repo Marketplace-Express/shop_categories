@@ -76,8 +76,8 @@ class CategoryMigration_100 extends Migration
                     new Column(
                         'url',
                         [
-                            'type' => Column::TYPE_TEXT,
-                            'size' => 1,
+                            'type' => Column::TYPE_VARCHAR,
+                            'size' => 150,
                             'after' => 'user_id'
                         ]
                     ),
