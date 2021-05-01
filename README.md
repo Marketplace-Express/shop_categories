@@ -1,7 +1,7 @@
 Shop: Categories Service
 --
 ### Introduction:
-Welcome to development team of Marketplace project, This project involves the following technologies:
+Welcome to Marketplace project, This project involves the following technologies:
 1. PHP 7.3 - using phalcon framework
 2. MySQL 8
 3. Redis
@@ -51,25 +51,10 @@ And so on for Redis and RabbitMQ ...
 
 ---
 
-Now, you have two options:
 
-Option 1:
-1. Login to docker registry provider, in order to pull this micro service docker image:
+3. Build a new image:
 ```bash
-docker login registry.gitlab.com
-```
-Provide your user name and password on gitlab, you should have access to the project, so you can pull the image.
-
-2. Pull the docker image from container registry:
-```bash
-docker pull registry.gitlab.com/shop_ecommerce/shop_categories
-```
-Provide your user name and password on gitlab, you should have access to the project, so you can pull the image.
-
-Option 2:
-1. Build a new image (for x64 arch):
-```bash
-docker build -t registry.gitlab.com/shop_ecommerce/shop_categories .
+docker-compose build
 ```
 
 ---
