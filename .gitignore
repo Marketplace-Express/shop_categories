@@ -1,11 +1,7 @@
-# .idea PHPSTORM
+# exclude folders
 .idea
 
-# phalcon aut generated folder
-.phalcon
-
-# exclude router file
+# exclude files
 .htrouter.php
-
-composer.lock
 index.html
+.env

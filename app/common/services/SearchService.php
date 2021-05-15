@@ -24,9 +24,9 @@ class SearchService extends AbstractService
     public static function getDataSource($instance = 'indexing')
     {
         if ($instance == 'indexing') {
-            return \Phalcon\Di::getDefault()->get('categoryCacheIndex');
+            return \Phalcon\Di::getDefault()->get('categoriesCacheIndex');
         } elseif ($instance == 'suggestion') {
-            return \Phalcon\Di::getDefault()->get('categoryCacheSuggest');
+            return \Phalcon\Di::getDefault()->get('categoriesCacheSuggest');
         } else {
             throw new \Exception('No data source is available');
         }

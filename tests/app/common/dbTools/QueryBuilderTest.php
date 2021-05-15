@@ -14,7 +14,6 @@ use tests\UnitTestCase;
 class QueryBuilderTest extends UnitTestCase
 {
     const TABLE_NAME = 'test';
-    const ANOTHER_TABLE_NAME = 'test2';
     const COLUMNS = ['column1', 'column2'];
 
     /** @var \PDO $pdo */
@@ -25,14 +24,15 @@ class QueryBuilderTest extends UnitTestCase
         parent::setUp();
 
         $config = $this->di->getConfig();
+
         if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
             $this->markTestSkipped('PDO extension should be enabled');
         }
-        $this->pdo = new \PDO(sprintf('mysql:dbname=%s;host=%s:%d', $_ENV['TEST_DB_NAME'], $config->database->host, $config->database->port), $config->database->username, $config->database->password, [
+
+        $this->pdo = new \PDO(sprintf('mysql:dbname=%s;host=%s:%d', $_ENV['MYSQL_DATABASE'], $config->database->host, $config->database->port), $config->database->username, $config->database->password, [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
             \PDO::ATTR_TIMEOUT => 10
         ]);
-        $this->createTables();
     }
 
     /**

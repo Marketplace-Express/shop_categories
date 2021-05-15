@@ -141,19 +141,19 @@ $di->set('cache', function(int $database = 0) {
 /**
  * Register cache service
  */
-$di->setShared('categoryCache', function () {
-    $config = $this->getConfig()->cache->category_cache;
+$di->setShared('categoriesCache', function () {
+    $config = $this->getConfig()->cache->categories_cache;
     return $this->getCache($config->database)['instance'];
 });
 
-$di->setShared('categoryCacheIndex', function () {
-    $config = $this->getConfig()->cache->category_cache;
+$di->setShared('categoriesCacheIndex', function () {
+    $config = $this->getConfig()->cache->categories_cache;
     return new Index($this->get('cache', [$config->database])['adapter'],
         CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });
 
-$di->setShared('categoryCacheSuggest', function() {
-    $config = $this->getConfig()->cache->category_cache;
+$di->setShared('categoriesCacheSuggest', function() {
+    $config = $this->getConfig()->cache->categories_cache;
     return new Suggestion($this->getCache($config->database, true)['adapter'],
         CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });

@@ -29,6 +29,7 @@
         </whitelist>
     </filter>
     <php>
-        <env name="TEST_DB_NAME" value="shop_categories_test" force="true" />
+        <env name="MYSQL_DATABASE" value="shop_categories_test" force="true" />
+        <env name="MONGODB_DATABASE" value="shop_categories_test" force="true" />
     </php>
 </phpunit>

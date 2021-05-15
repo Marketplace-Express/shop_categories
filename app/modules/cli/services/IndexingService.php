@@ -32,8 +32,8 @@ class IndexingService extends Injectable
     public function __construct()
     {
         $this->redis = $this->getDI()->get('categoryCache');
-        $this->redisIndexing = $this->getDI()->get('categoryCacheIndex');
-        $this->redisSuggesting = $this->getDI()->get('categoryCacheSuggest');
+        $this->redisIndexing = $this->getDI()->get('categoriesCacheIndex');
+        $this->redisSuggesting = $this->getDI()->get('categoriesCacheSuggest');
     }
 
     /**

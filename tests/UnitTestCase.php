@@ -36,14 +36,4 @@ abstract class UnitTestCase extends PhalconTestCase
 
         $this->setDi($di);
     }
-
-    protected function createTables()
-    {
-        $this->pdo->query(sprintf("CREATE TABLE IF NOT EXISTS %s (
-            %s VARCHAR(10), %s VARCHAR(10)
-        )", static::TABLE_NAME, static::COLUMNS[0], static::COLUMNS[1]));
-        $this->pdo->query(sprintf("CREATE TABLE IF NOT EXISTS %s (
-            %s VARCHAR(10), %s VARCHAR(10)
-        )", static::ANOTHER_TABLE_NAME, static::COLUMNS[0], static::COLUMNS[1]));
-    }
 }

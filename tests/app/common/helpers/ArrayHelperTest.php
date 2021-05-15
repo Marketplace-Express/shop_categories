@@ -47,7 +47,7 @@ class ArrayHelperTest extends UnitTestCase
                 ],
                 [
                     // Expected
-                    [
+                    'item1' => [
                         'itemId' => 'item1',
                         'parentId' => null,
                         'children' => [
@@ -63,7 +63,7 @@ class ArrayHelperTest extends UnitTestCase
                             ]
                         ],
                     ],
-                    [
+                    'item2' => [
                         'itemId' => 'item2',
                         'parentId' => null,
                         'children' => [

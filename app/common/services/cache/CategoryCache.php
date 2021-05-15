@@ -18,8 +18,7 @@ use app\common\services\CategoryService;
 
 class CategoryCache implements CategoryDataSourceInterface
 {
-
-    const INDEX_NAME = 'category';
+    const CATEGORIES_CACHE_CONFIG_KEY = 'categoriesCache';
 
     private static $cacheKey = 'categories:store:%s';
 
@@ -54,7 +53,7 @@ class CategoryCache implements CategoryDataSourceInterface
      */
     public static function establishCacheConnection(): void
     {
-        self::$categoryCacheInstance = Di::getDefault()->getShared('categoryCache');
+        self::$categoryCacheInstance = Di::getDefault()->getShared(self::CATEGORIES_CACHE_CONFIG_KEY);
     }
 
     /**

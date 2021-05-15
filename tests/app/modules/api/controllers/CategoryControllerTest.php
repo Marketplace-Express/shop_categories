@@ -74,9 +74,8 @@ class CategoryControllerTest extends UnitTestCase
         $this->controller->fetchAction(new FetchRequestHandler());
 
         $this->assertEquals([
-            'data' => [
-                'categories' => []
-            ]
+            'status' => 200,
+            'message' => []
         ], $response->jsonContent);
     }
 }

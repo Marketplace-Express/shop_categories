@@ -57,6 +57,9 @@ class ExceptionhandlerControllerTest extends UnitTestCase
 
         $this->controller->raiseErrorAction($expectedResponse['message'], $expectedResponse['status']);
 
-        $this->assertEquals(['errors' => $expectedResponse['message']], $response->jsonContent);
+        $this->assertEquals([
+            'status' => $expectedResponse['status'],
+            'message' => $expectedResponse['message']
+        ], $response->jsonContent);
     }
 }

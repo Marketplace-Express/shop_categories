@@ -1,51 +1,61 @@
 version: '3.3'
 services:
   categories-api:
+    image: marketplace_shop_categories
     build:
       context: .
     command: >
       bash -c "rm -f /src/public/webtools*
       && phalcon webtools enable
       && phalcon serve"
+    env_file:
+      - .env
     environment:
       - PHP_IDE_CONFIG=serverName=phalcon.local
     volumes:
       - .:/src
       - /src/app/vendor
-      - /src/.phalcon
     ports:
       - "1000:8000"
 
   categories-sync:
-    build:
-      context: .
+    image: marketplace_shop_categories
     command: ./run consumer syncConsumer
+    env_file:
+      - .env
     environment:
       - PHP_IDE_CONFIG=serverName=phalcon.local
     volumes:
       - .:/src
       - /src/app/vendor
       - /src/.phalcon
+    depends_on:
+      - categories-api
 
   categories-async:
-    build:
-      context: .
+    image: marketplace_shop_categories
     command: ./run consumer asyncConsumer
+    env_file:
+      - .env
     environment:
       - PHP_IDE_CONFIG=serverName=phalcon.local
     volumes:
       - .:/src
       - /src/app/vendor
       - /src/.phalcon
+    depends_on:
+      - categories-api
 
   categories-unit-test:
-    build:
-      context: .
+    image: marketplace_shop_categories
     command: app/vendor/bin/phpunit -c tests/phpunit.xml
     volumes:
       - .:/src
       - /src/app/vendor
-      - /src/.phalcon
+    env_file:
+      - .env
+    environment:
+      - UNIT_TEST=1
 
 networks:
   default:
