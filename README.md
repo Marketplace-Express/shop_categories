@@ -21,7 +21,7 @@ This service handles categories functionality, including CRUDs, processing and h
 
 1. Clone the repository:
 ```shell script
-git clone git@gitlab.com:shop_ecommerce/shop_categories.git
+git clone git@github.com:Marketplace-Express/shop_categories.git
 ```
 
 2- Rename file “config.example.php” under “app/config” to “config.php” then change the parameters to match your preferences, example:
