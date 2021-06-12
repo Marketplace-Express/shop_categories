@@ -229,11 +229,11 @@ class CategoryCache implements CategoryDataSourceInterface
         if (empty($category)) {
             return;
         }
-        (new QueueRequestHandler())
+        (new QueueRequestHandler(QueueRequestHandler::REQUEST_TYPE_ASYNC))
             ->setQueueName(QueueNamesEnum::CATEGORY_ASYNC_QUEUE)
-            ->setService('indexing')
-            ->setMethod('add')
-            ->setData([
+            ->setRoute('search/indexing')
+            ->setMethod('POST')
+            ->setBody([
                 'id' => $category['id'],
                 'storeId' => $category['storeId'],
                 'name' => $category['name'],
@@ -252,11 +252,11 @@ class CategoryCache implements CategoryDataSourceInterface
             return;
         }
 
-        (new QueueRequestHandler())
+        (new QueueRequestHandler(QueueRequestHandler::REQUEST_TYPE_ASYNC))
             ->setQueueName(QueueNamesEnum::CATEGORY_ASYNC_QUEUE)
-            ->setService('indexing')
-            ->setMethod('update')
-            ->setData([
+            ->setRoute('search/indexing')
+            ->setMethod('PUT')
+            ->setBody([
                 'id' => $category['id'],
                 'storeId' => $category['storeId'],
                 'name' => $category['name'],
@@ -271,11 +271,11 @@ class CategoryCache implements CategoryDataSourceInterface
      */
     public function deleteIndex(string $categoryId): void
     {
-        (new QueueRequestHandler())
+        (new QueueRequestHandler(QueueRequestHandler::REQUEST_TYPE_ASYNC))
             ->setQueueName(QueueNamesEnum::CATEGORY_ASYNC_QUEUE)
-            ->setService('indexing')
-            ->setMethod('delete')
-            ->setData([
+            ->setRoute('search/indexing')
+            ->setMethod('DELETE')
+            ->setBody([
                 'id' => $categoryId
             ])
             ->sendAsync();

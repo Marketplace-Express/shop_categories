@@ -130,10 +130,10 @@ $di->set('cache', function(int $database = 0) {
     $config = $this->getConfig()->cache;
     $redisInstance = new Connector();
     $redisInstance->connect(
-        $config->category_cache->host,
-        $config->category_cache->port,
+        $config->categories_cache->host,
+        $config->categories_cache->port,
         $database,
-        $config->category_cache->auth
+        $config->categories_cache->auth
     );
     return ['adapter' => $redisInstance, 'instance' => $redisInstance->redis];
 });
@@ -148,13 +148,13 @@ $di->setShared('categoriesCache', function () {
 
 $di->setShared('categoriesCacheIndex', function () {
     $config = $this->getConfig()->cache->categories_cache;
-    return new Index($this->get('cache', [$config->database])['adapter'],
+    return new Index($this->getCache()['adapter'],
         CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });
 
 $di->setShared('categoriesCacheSuggest', function() {
     $config = $this->getConfig()->cache->categories_cache;
-    return new Suggestion($this->getCache($config->database, true)['adapter'],
+    return new Suggestion($this->getCache()['adapter'],
         CacheIndexesEnum::CATEGORY_INDEX_NAME);
 });
 
@@ -193,7 +193,8 @@ $di->set('appServices', function($serviceName) {
     $services = [
         'categoryService' => 'app\common\services\CategoryService',
         'attributeService' => 'app\common\services\AttributesService',
-        'searchService' => 'app\common\services\SearchService'
+        'searchService' => 'app\common\services\SearchService',
+        'indexingService' => 'app\common\services\IndexingService',
     ];
 
     if (!array_key_exists($serviceName, $services)) {

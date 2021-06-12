@@ -5,7 +5,7 @@
  * Time: 12:11 م
  */
 
-namespace app\modules\cli\services;
+namespace app\common\services;
 
 use Ehann\RediSearch\Index;
 use Ehann\RediSearch\Suggestion;
@@ -31,7 +31,7 @@ class IndexingService extends Injectable
 
     public function __construct()
     {
-        $this->redis = $this->getDI()->get('categoryCache');
+        $this->redis = $this->getDI()->get('categoriesCache');
         $this->redisIndexing = $this->getDI()->get('categoriesCacheIndex');
         $this->redisSuggesting = $this->getDI()->get('categoriesCacheSuggest');
     }

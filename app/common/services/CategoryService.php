@@ -92,7 +92,9 @@ class CategoryService extends AbstractService
             CategoryCache::getInstance()->invalidateCache();
             CategoryCache::getInstance()->indexCategory($category);
         } catch (\RedisException $exception) {
-            // do nothing
+            throw new OperationFailedException("", 503, $exception);
+        } catch (\Throwable $exception) {
+            throw new OperationFailedException($exception->getMessage());
         }
         return $category;
     }

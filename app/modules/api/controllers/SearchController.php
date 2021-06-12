@@ -54,4 +54,56 @@ class SearchController extends BaseController
             $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
+
+    /**
+     * @Post('/indexing')
+     */
+    public function indexingAction()
+    {
+        try {
+            $requestBody = json_decode($this->request->getRawBody(), true);
+            $this->di->getAppServices('indexingService')->add(
+                $requestBody['id'],
+                $requestBody['storeId'],
+                $requestBody['name'],
+                $requestBody['url']
+            );
+            $this->response->setStatusCode(202)->send();
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
+        }
+    }
+
+    /**
+     * @Put('/indexing')
+     */
+    public function updateIndexAction()
+    {
+        try {
+            $requestBody = json_decode($this->request->getRawBody(), true);
+            $this->di->getAppServices('indexingService')->update(
+                $requestBody['id'],
+                $requestBody['storeId'],
+                $requestBody['name'],
+                $requestBody['url']
+            );
+            $this->response->setStatusCode(204)->send();
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
+        }
+    }
+
+    /**
+     * @Delete('/indexing')
+     */
+    public function deleteIndexAction()
+    {
+        try {
+            $requestBody = json_decode($this->request->getRawBody(), true);
+            $this->di->getAppServices('indexingService')->delete($requestBody['id']);
+            $this->response->setStatusCode(204)->send();
+        } catch (\Throwable $exception) {
+            $this->handleError($exception->getMessage(), $exception->getCode() ?: 500);
+        }
+    }
 }
